@@ -6,7 +6,7 @@ namespace Firehed\U2F;
 use JsonSerializable;
 use Firehed\U2F\InvalidDataException as IDE;
 
-class ClientData implements JsonSerializable
+class ClientData implements JsonSerializable, ChallengeProvider
 {
     use ChallengeTrait;
 
