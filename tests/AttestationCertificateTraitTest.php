@@ -11,7 +11,7 @@ namespace Firehed\U2F;
 class AttestationCertificateTraitTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers ::getAttestationCertificate
+     * @covers ::getAttestationCertificateRaw
      * @covers ::setAttestationCertificate
      */
     public function testAccessors() {
@@ -21,8 +21,23 @@ class AttestationCertificateTraitTest extends \PHPUnit_Framework_TestCase
         $cert = bin2hex(random_bytes(35));
         $this->assertSame($obj, $obj->setAttestationCertificate($cert),
             'setAttestationCertificate should return $this');
-        $this->assertSame($cert, $obj->getAttestationCertificate(),
+        $this->assertSame($cert, $obj->getAttestationCertificateRaw(),
             'getAttestationCertificate should return the challenge that was set');
     }
 
+    /**
+     * @covers ::getAttestationCertificatePem
+     */
+    public function testGetAttestationCertificatePem() {
+        $obj = new class {
+            use AttestationCertificateTrait;
+        };
+        $raw = random_bytes(128);
+        $expected  = "-----BEGIN CERTIFICATE-----\r\n";
+        $expected .= chunk_split(base64_encode($raw), 64);
+        $expected .= "-----END CERTIFICATE-----";
+        $obj->setAttestationCertificate($raw);
+        $this->assertSame($expected, $obj->getAttestationCertificatePem(),
+            'PEM-formatted certificate was incorrect');
+    }
 }

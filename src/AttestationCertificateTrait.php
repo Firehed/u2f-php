@@ -10,8 +10,16 @@ trait AttestationCertificateTrait
     private $attest = '';
 
     // Binary string of attestation certificate (from device issuer)
-    public function getAttestationCertificate(): string {
+    public function getAttestationCertificateRaw(): string {
         return base64_decode($this->attest);
+    }
+
+    // PEM formatted cert
+    public function getAttestationCertificatePem(): string {
+        $pem  = "-----BEGIN CERTIFICATE-----\r\n";
+        $pem .= chunk_split($this->attest, 64);
+        $pem .= "-----END CERTIFICATE-----";
+        return $pem;
     }
 
     public function setAttestationCertificate(string $cert): self {
