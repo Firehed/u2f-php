@@ -31,18 +31,4 @@ class RegistrationTest extends \PHPUnit_Framework_TestCase
         $this->expectException(\OutOfBoundsException::class);
         $obj->setCounter(-1);
     }
-
-    /**
-     * @covers ::setPublicKey
-     * @covers ::getPublicKey
-     */
-    public function testPublicKey() {
-        $obj = new Registration();
-        $key = "\x04".\random_bytes(64);
-        $this->assertSame($obj, $obj->setPublicKey($key),
-            'setCounter should return $this');
-        $this->assertSame($key, $obj->getPublicKey(),
-            'getCounter should return the set value');
-    }
-
 }

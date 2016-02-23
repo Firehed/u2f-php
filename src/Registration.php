@@ -7,18 +7,10 @@ use OutOfBoundsException;
 class Registration
 {
     use AttestationCertificateTrait;
+    use ECPublicKeyTrait;
     use KeyHandleTrait;
 
     private $counter = -1;
-    private $pubKey = '';
-
-    public function getPublicKey(): string {
-        return base64_decode($this->pubKey);
-    }
-    public function setPublicKey(string $pubKey): self {
-        $this->pubKey = base64_encode($pubKey);
-        return $this;
-    }
 
     public function getCounter(): int {
         return $this->counter;

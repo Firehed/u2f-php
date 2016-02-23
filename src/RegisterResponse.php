@@ -7,31 +7,8 @@ use Firehed\U2F\InvalidDataException as IDE;
 class RegisterResponse
 {
     use AttestationCertificateTrait;
+    use ECPublicKeyTrait;
     use ResponseTrait;
-
-
-    // Stored base64-encoded
-    private $pubKey = '';
-
-    // Binary string of public key
-    public function getPublicKey(): string {
-        return base64_decode($this->pubKey);
-    }
-
-    protected function setPublicKey(string $key): self {
-        // RFC5480 2.2 - must be uncompressed value
-        if ($key[0] !== "\x04") {
-            throw new IDE(IDE::MALFORMED_DATA,
-                'public key: first byte not x04 (uncompressed)');
-        }
-        if (strlen($key) !== 65) {
-            // This is unreachable since length is checked before the only call
-            // to this method
-            throw new IDE(IDE::PUBLIC_KEY_LENGTH, '65');
-        }
-        $this->pubKey = base64_encode($key);
-        return $this;
-    }
 
     protected function parseResponse(array $response): self {
         $this->validateKeyInArray('registrationData', $response);
