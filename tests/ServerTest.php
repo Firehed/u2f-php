@@ -510,6 +510,36 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->authenticate($response);
     }
 
+    /**
+     * Arguably the most important authentication test: ensure that
+     * a perfectly-valid signature is rejected if it's not actually from the
+     * registered keypair.
+     *
+     * @covers ::authenticate
+     */
+    public function testAuthenticateThrowsIfRequestIsSignedWithWrongKey() {
+        // This was a different key genearated with:
+        // $ openssl ecparam -name prime256v1 -genkey -out private.pem
+        // $ openssl ec -in private.pem -pubout -out public.pem
+        // Then taking the trailing 65 bytes of the base64-decoded value (the
+        // leading bytes are formatting; see ECPublicKeyTrait)
+        $registration = (new Registration())
+            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
+            ->setPublicKey(base64_decode(
+                'BCXk9bGiuzLRJaX6pFONm+twgIrDkOSNDdXgltt+KhOD'.
+                '9OxeRv2zYiz7SrVa8eb4LbGR9IDUE7gJySiiuQYWt1w='))
+            ->setCounter(2)
+            ;
+        $request = $this->getDefaultSignRequest();
+        $response = $this->getDefaultSignResponse();
+        $this->expectException(SecurityException::class);
+        $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
+        $this->server
+            ->setRegistrations([$registration])
+            ->setSignRequests([$request])
+            ->authenticate($response);
+    }
+
     // -( Helpers )------------------------------------------------------------
 
     private function getDefaultRegisterRequest(): RegisterRequest {
