@@ -30,6 +30,7 @@ class SecurityExceptionTest extends \PHPUnit_Framework_TestCase
             [SecurityException::COUNTER_USED],
             [SecurityException::CHALLENGE_MISMATCH],
             [SecurityException::KEY_HANDLE_UNRECOGNIZED],
+            [SecurityException::NO_TRUSTED_CA],
         ];
     }
 
