@@ -13,6 +13,8 @@ use TypeError;
 class ServerTest extends \PHPUnit_Framework_TestCase
 {
     const APP_ID = 'https://u2f.example.com';
+    const ENCODED_KEY_HANDLE = 'JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVaxTqSetHjr22tCjmYLQ';
+    const ENCODED_PUBLIC_KEY = 'BEyIn4ldTViNAgceMA/YgRX1DlJR3bSF39drG44Fx1E2LaF9Md9RUN2CHyfzSokIjjCHP8jMsTYwdt0tKe6qLzc=';
 
     private $server;
 
@@ -409,8 +411,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testAuthenticateThrowsWhenCounterGoesBackwards() {
         // Counter from "DB" bumped, suggesting response was cloned
         $registration = (new Registration())
-            ->setKeyHandle(fromBase64Web('JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVaxTqSetHjr22tCjmYLQ'))
-            ->setPublicKey(base64_decode('BEyIn4ldTViNAgceMA/YgRX1DlJR3bSF39drG44Fx1E2LaF9Md9RUN2CHyfzSokIjjCHP8jMsTYwdt0tKe6qLzc='))
+            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
+            ->setPublicKey(base64_decode(self::ENCODED_PUBLIC_KEY))
             ->setCounter(82)
             ;
         $request = $this->getDefaultSignRequest();
@@ -433,7 +435,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $request = (new SignRequest())
             ->setAppId('https://u2f.ericstern.com')
             ->setChallenge('some-other-challenge')
-            ->setKeyHandle(fromBase64Web("JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVaxTqSetHjr22tCjmYLQ"))
+            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
             ;
         $response = $this->getDefaultSignResponse();
 
@@ -452,7 +454,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         // Change registration KH
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web('some-other-key-handle'))
-            ->setPublicKey(base64_decode('BEyIn4ldTViNAgceMA/YgRX1DlJR3bSF39drG44Fx1E2LaF9Md9RUN2CHyfzSokIjjCHP8jMsTYwdt0tKe6qLzc='))
+            ->setPublicKey(base64_decode(self::ENCODED_PUBLIC_KEY))
             ->setCounter(2)
             ;
         $request = $this->getDefaultSignRequest();
@@ -527,15 +529,15 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         return (new SignRequest())
             ->setAppId('https://u2f.ericstern.com')
             ->setChallenge('wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg')
-            ->setKeyHandle(fromBase64Web("JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVaxTqSetHjr22tCjmYLQ"))
+            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
             ;
     }
 
     private function getDefaultRegistration(): Registration {
         // From database attached to the authenticating user
         return  (new Registration())
-            ->setKeyHandle(fromBase64Web('JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVaxTqSetHjr22tCjmYLQ'))
-            ->setPublicKey(base64_decode('BEyIn4ldTViNAgceMA/YgRX1DlJR3bSF39drG44Fx1E2LaF9Md9RUN2CHyfzSokIjjCHP8jMsTYwdt0tKe6qLzc='))
+            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
+            ->setPublicKey(base64_decode(self::ENCODED_PUBLIC_KEY))
             ->setCounter(2)
             ;
     }
