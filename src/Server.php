@@ -328,7 +328,7 @@ class Server
      * @return array<SignRequest>
      */
     public function generateSignRequests(array $registrations): array {
-        return array_map([$this, 'generateSignRequest'], $registrations);
+        return array_values(array_map([$this, 'generateSignRequest'], $registrations));
     }
 
     /**
