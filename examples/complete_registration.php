@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-require_once 'vendor/autoload.php';
 require_once 'common.php';
 
 use Firehed\U2F\RegisterResponse;

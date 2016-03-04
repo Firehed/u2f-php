@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+require_once 'vendor/autoload.php';
+
 const SECRET = 'asdfklj209flwjaflksdnflk2ifnas';
 
 use Firehed\JWT\{
