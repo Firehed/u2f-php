@@ -1,0 +1,21 @@
+{
+    "name": "firehed/u2f",
+    "require-dev": {
+        "firehed/arctools": "^1",
+        "phpunit/phpunit": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Firehed\\U2F\\": ["src/", "tests/"]
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Eric Stern",
+            "email": "eric@ericstern.com"
+        }
+    ]
+}
