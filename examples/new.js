@@ -67,18 +67,18 @@ document.getElementById('register').addEventListener("submit", function(e) {
     e.preventDefault();
     var username = document.getElementById("reg_username").value;
     var password = document.getElementById("reg_password").value;
-    ajaxPost('/new/register_user.php', {"username":username, "password":password}, displayResponse);
+    ajaxPost('/register_user.php', {"username":username, "password":password}, displayResponse);
 });
 
 document.getElementById('login').addEventListener("submit", function(e) {
     e.preventDefault();
     var username = document.getElementById("login_username").value;
     var password = document.getElementById("login_password").value;
-    ajaxPost('/new/login_user.php', {"username":username, "password":password}, displayResponse);
+    ajaxPost('/login_user.php', {"username":username, "password":password}, displayResponse);
 });
 document.getElementById('register_token').addEventListener("submit", function(e) {
     e.preventDefault();
-    ajaxPost('/new/u2f_register_data.php', {}, function(resp) {
+    ajaxPost('/u2f_register_data.php', {}, function(resp) {
         document.getElementById('reg_request_to_sign').value = JSON.stringify(resp.request) + "\n" + JSON.stringify(resp.signatures);
         showPress();
         u2f.register([resp.request], resp.signatures, function(sig) {
@@ -86,7 +86,7 @@ document.getElementById('register_token').addEventListener("submit", function(e)
             if (sig.errorCode) { showAuthError(sig.errorCode); return; }
             document.getElementById('reg_signature').value = JSON.stringify(sig);
             // actually submit stuff now
-            ajaxPost('/new/complete_registration.php', {
+            ajaxPost('/complete_registration.php', {
                 "signature_str": JSON.stringify(sig)
             }, displayResponse, displayResponse);
         });
@@ -95,7 +95,7 @@ document.getElementById('register_token').addEventListener("submit", function(e)
 
 document.getElementById('auth_form').addEventListener("submit", function(e) {
     e.preventDefault();
-    ajaxPost('/new/u2f_auth_data.php', {}, function(resp) {
+    ajaxPost('/u2f_auth_data.php', {}, function(resp) {
         document.getElementById("auth_request_to_sign").value = JSON.stringify(resp);
         showPress();
         u2f.sign(resp, function(sig) {
@@ -103,7 +103,7 @@ document.getElementById('auth_form').addEventListener("submit", function(e) {
             if (sig.errorCode) { showAuthError(sig.errorCode); return; }
             document.getElementById("auth_signature").value = JSON.stringify(sig);
             // Do auth POST
-            ajaxPost('/new/complete_auth.php', {
+            ajaxPost('/complete_auth.php', {
                 "signature_str": JSON.stringify(sig)
             }, displayResponse, displayResponse);
         });

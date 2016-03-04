@@ -29,7 +29,7 @@ session_start();
 
 // This will intentionally leak into the other files' scope; normally, you'd set this up in a dependency inversion container or config file
 $server = (new Server())
-    ->setTrustedCAs(glob(__DIR__.'/CAcerts/*.pem'))
+    ->setTrustedCAs(glob(dirname(__DIR__).'/CAcerts/*.pem'))
     ->setAppId('https://u2f.ericstern.com');
 
 // This is a dumbed-down "load user by username" function
