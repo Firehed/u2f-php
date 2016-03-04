@@ -2,14 +2,14 @@
 
 require_once 'vendor/autoload.php';
 
-const SECRET = 'asdfklj209flwjaflksdnflk2ifnas';
-
 use Firehed\JWT\{
     Algorithm,
     SessionHandler
 };
 use Firehed\U2F\Server;
 
+// This is for session storage
+const SECRET = 'asdfklj209flwjaflksdnflk2ifnas';
 $sh = new SessionHandler([
     '20160303' => [
         'alg' => Algorithm::HMAC_SHA_256(),
@@ -27,10 +27,11 @@ session_set_cookie_params(
 session_set_save_handler($sh);
 session_start();
 
+
 // This will intentionally leak into the other files' scope; normally, you'd set this up in a dependency inversion container or config file
 $server = (new Server())
     ->setTrustedCAs(glob(dirname(__DIR__).'/CAcerts/*.pem'))
-    ->setAppId('https://u2f.ericstern.com');
+    ->setAppId('https://u2f.ericstern.com'); // This needs to be your site, and must be HTTPS
 
 // This is a dumbed-down "load user by username" function
 function get_user_data(string $user): array {
