@@ -3,54 +3,56 @@
         <title>Basic U2F setup</title>
         <script src="/u2f-api.js"></script>
         <style type="text/css">
-    label.debug {
-        display: none;
-    }
-    body.debug label.debug {
-        display: inline-block;
-    }
+        label.debug {
+            display: none;
+        }
+        body.debug label.debug {
+            display: inline-block;
+        }
         </style>
     </head>
     <body>
 
         <div id="press" style="display: none">Press your U2F key now</div>
         <div id="ajax-response"></div>
-        <label>Show debug fields: 
+        <label>Show debug fields:
             <input type="checkbox" id="debug" />
         </label>
 
-    <form method-"POST" id="register">
-        <fieldset><legend>Register</legend>
-        <label>Username: <input type="text" id="reg_username" name="username" /></label><br />
-        <label>Create PW: <input type="password" id="reg_password" name="password" /></label><br />
-        <button type="submit">Register user</button>
-        </fieldset>
-    </form>    
+        <form method-"POST" id="register">
+            <fieldset>
+                <legend>Register</legend>
+                <label>Username: <input type="text" id="reg_username" name="username" /></label><br />
+                <label>Create PW: <input type="password" id="reg_password" name="password" /></label><br />
+                <button type="submit">Register user</button>
+            </fieldset>
+        </form>
 
-
-    <form method-"POST" id="login">
-        <fieldset><legend>Log in</legend>
-        <label>Username: <input type="text" id="login_username" name="username" /></label><br />
-        <label>Password: <input type="password" id="login_password" name="password" /></label><br />
-        <button type="submit">Log in</button>
-        </fieldset>
-    </form>    
-
+        <form method-"POST" id="login">
+            <fieldset>
+                <legend>Log in</legend>
+                <label>Username: <input type="text" id="login_username" name="username" /></label><br />
+                <label>Password: <input type="password" id="login_password" name="password" /></label><br />
+                <button type="submit">Log in</button>
+            </fieldset>
+        </form>
 
         <form method="POST" id="register_token">
-        <fieldset><legend>Add a token</legend>
-            <label class="debug">request: <textarea name="request_str" id="reg_request_to_sign"></textarea></label><br />
-            <label class="debug">response: <textarea name="signature_str" id="reg_signature"></textarea></label><br />
-            <button type="submit">Add new token</button>
-        </fieldset>
+            <fieldset>
+                <legend>Add a token</legend>
+                <label class="debug">request: <textarea name="request_str" id="reg_request_to_sign"></textarea></label><br />
+                <label class="debug">response: <textarea name="signature_str" id="reg_signature"></textarea></label><br />
+                <button type="submit">Add new token</button>
+            </fieldset>
         </form>
 
         <form method="POST" id="auth_form">
-        <fieldset><legend>2FA with token</legend>
-        <label class="debug">request: <textarea name="request_str" id="auth_request_to_sign"></textarea></label><br />
+            <fieldset>
+                <legend>2FA with token</legend>
+                <label class="debug">request: <textarea name="request_str" id="auth_request_to_sign"></textarea></label><br />
                 <label class="debug">response: <textarea name="signature_str" id="auth_signature"></textarea></label><br />
-            <button type="submit">Auth with token</button>
-        </fieldset>
+                <button type="submit">Auth with token</button>
+            </fieldset>
         </form>
 
         <script src="new.js?a"></script>
