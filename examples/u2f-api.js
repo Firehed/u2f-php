@@ -1,0 +1,1 @@
+../assets/u2f-api.js
