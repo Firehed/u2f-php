@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-require_once 'common.php';
+require_once '../common.php';
 
 $user = $_SESSION['user'];
 $data = get_user_data($user);

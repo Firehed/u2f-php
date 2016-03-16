@@ -1,5 +1,5 @@
 <?php
-require_once 'common.php';
+require_once '../common.php';
 
 $username = $_POST['username'] ?? '';
 $password = $_POST['password'] ?? '';
