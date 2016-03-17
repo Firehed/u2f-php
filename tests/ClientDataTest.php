@@ -28,7 +28,7 @@ class ClientDataTest extends \PHPUnit_Framework_TestCase
         $expected_param = base64_decode('exDPjyyKbizXMAAUNLpv0QYJNyXClbUqewUWojPtp0g=');
         // Sanity check
         $this->assertSame(32,
-            strlen($expected_param),
+            mb_strlen($expected_param, '8bit'),
             'Test vector should have been 32 bytes');
 
         $goodJson = '{"typ":"navigator.id.finishEnrollment","challenge":"PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo","origin":"https://u2f.ericstern.com","cid_pubkey":""}';

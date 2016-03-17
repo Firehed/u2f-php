@@ -18,7 +18,7 @@ class RegisterResponse
         $regData = fromBase64Web($response['registrationData']);
 
         // Basic fixed length check
-        if (strlen($regData) < 67) {
+        if (mb_strlen($regData, '8bit') < 67) {
             throw new IDE(IDE::MALFORMED_DATA,
                 'registrationData is missing information');
         }
@@ -32,18 +32,21 @@ class RegisterResponse
         }
         $offset += 1;
 
-        $this->setPublicKey(substr($regData, $offset, 65));
+        $this->setPublicKey(mb_substr($regData, $offset, 65, '8bit'));
         $offset += 65;
 
         $keyHandleLength = ord($regData[$offset]);
         $offset += 1;
 
         // Dynamic length check through key handle
-        if (strlen($regData) < $offset+$keyHandleLength) {
+        if (mb_strlen($regData, '8bit') < $offset+$keyHandleLength) {
             throw new IDE(IDE::MALFORMED_DATA,
                 'key handle length');
         }
-        $this->setKeyHandle(substr($regData, $offset, $keyHandleLength));
+        $this->setKeyHandle(mb_substr($regData,
+            $offset,
+            $keyHandleLength,
+            '8bit'));
         $offset += $keyHandleLength;
 
         // (Notes are 0-indexed)
@@ -56,7 +59,7 @@ class RegisterResponse
         // are the byte count for length; <=127 then it is the length.
         //
         // https://msdn.microsoft.com/en-us/library/bb648645(v=vs.85).aspx
-        $remain = substr($regData, $offset);
+        $remain = mb_substr($regData, $offset, null, '8bit');
         $b0 = ord($remain[0]);
         if (($b0 & 0x1F) != 0x10) {
             throw new IDE(IDE::MALFORMED_DATA,
@@ -82,15 +85,18 @@ class RegisterResponse
         // Sanity check the length against the remainder of the registration
         // data, in case a malformed cert was provided to trigger an overflow
         // during parsing
-        if ($length + $offset > strlen($regData)) {
+        if ($length + $offset > mb_strlen($regData, '8bit')) {
             throw new IDE(IDE::MALFORMED_DATA,
                 'certificate and sigature length');
         }
-        $this->setAttestationCertificate(substr($regData, $offset, $length));
+        $this->setAttestationCertificate(mb_substr($regData,
+            $offset,
+            $length,
+            '8bit'));
         $offset += $length;
 
         // All remaining data is the signature
-        $this->setSignature(substr($regData, $offset));
+        $this->setSignature(mb_substr($regData, $offset, null, '8bit'));
 
         return $this;
     }

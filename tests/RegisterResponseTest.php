@@ -78,7 +78,7 @@ class RegisterResponseTest extends \PHPUnit_Framework_TestCase
         $st = "\x05".$pubkey."\x20".$handle;
         $body = random_bytes(256);
         $sig = random_bytes(4);
-        $cert = "\x30\x82".pack('n', strlen($body)).$body;
+        $cert = "\x30\x82".pack('n', mb_strlen($body, '8bit')).$body;
         $reg = toBase64Web($st.$cert.$sig);
         $json = $this->buildJson($this->validClientData, $reg);
         $response = RegisterResponse::fromJson($json);

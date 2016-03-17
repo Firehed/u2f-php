@@ -43,7 +43,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'RegisterRequest App ID was not the value from the server');
         $this->assertNotEmpty($req->getChallenge(),
             'No challenge value was set');
-        $this->assertTrue(strlen($req->getChallenge()) >= 8,
+        $this->assertTrue(mb_strlen($req->getChallenge(), '8bit') >= 8,
             'Challenge was less than 8 bytes long, violating the spec');
     }
 
@@ -63,7 +63,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'SignRequest App ID was not the value form the server');
         $this->assertNotEmpty($req->getChallenge(),
             'No challenge value was set');
-        $this->assertTrue(strlen($req->getChallenge()) >= 8,
+        $this->assertTrue(mb_strlen($req->getChallenge(), '8bit') >= 8,
             'Challenge was less than 8 bytes long, violating the spec');
     }
 
@@ -323,8 +323,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $json = file_get_contents(__DIR__.'/register_response.json');
         $data = json_decode($json, true);
         $reg = $data['registrationData'];
-        $last = str_rot13(substr($reg, -5)); // rot13 a few chars in signature
-        $data['registrationData'] = substr($reg,0,-5).$last;
+
+        // rot13 a few chars in signature
+        $last = str_rot13(mb_substr($reg, -5, null, '8bit'));
+        $data['registrationData'] = mb_substr($reg, 0, -5, '8bit').$last;
         $response = RegisterResponse::fromJson(json_encode($data));
 
         $this->expectException(SecurityException::class);
@@ -373,6 +375,27 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'A new instance of Registration should have been returned');
         $this->assertSame($response->getCounter(), $return->getCounter(),
             'The new Registration\'s counter did not match the Response');
+    }
+
+    /**
+     * Re-run testAuthenticate after ensuring that mbstring.func_overload is
+     * being used
+     *
+     * @coversNothing
+     */
+    public function testAuthenticateWithMultibyteSettings()
+    {
+        $overload = ini_get('mbstring.func_overload');
+        if ($overload != 7) {
+            $cmd = 'php -d mbstring.func_overload=7 '.
+                implode(' ', $_SERVER['argv']);
+            $this->markTestSkipped(sprintf(
+                "mbstring.func_overload cannot be changed at runtime. Re-run ".
+                "this test with the following command:\n\n%s",
+                $cmd));
+        }
+
+        $this->testAuthenticate();
     }
 
     /**
@@ -499,7 +522,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $data = json_decode(
             file_get_contents(__DIR__.'/sign_response.json'),
             true);
-        $data['signatureData'] = substr($data['signatureData'], 0, -1);
+        $data['signatureData'] = mb_substr($data['signatureData'],
+            0,
+            -1,
+            '8bit');
         $response = SignResponse::fromJson(json_encode($data));
 
         $this->expectException(SecurityException::class);
