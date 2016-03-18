@@ -11,7 +11,7 @@ namespace Firehed\U2F;
 class AttestationCertificateTraitTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers ::getAttestationCertificateRaw
+     * @covers ::getAttestationCertificateBinary
      * @covers ::setAttestationCertificate
      */
     public function testAccessors() {
@@ -21,7 +21,7 @@ class AttestationCertificateTraitTest extends \PHPUnit_Framework_TestCase
         $cert = bin2hex(random_bytes(35));
         $this->assertSame($obj, $obj->setAttestationCertificate($cert),
             'setAttestationCertificate should return $this');
-        $this->assertSame($cert, $obj->getAttestationCertificateRaw(),
+        $this->assertSame($cert, $obj->getAttestationCertificateBinary(),
             'getAttestationCertificate should return the challenge that was set');
     }
 

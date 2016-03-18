@@ -140,8 +140,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(0, $registration->getCounter(),
             'Counter should start at 0');
 
-        $this->assertSame($response->getAttestationCertificateRaw(),
-            $registration->getAttestationCertificateRaw(),
+        $this->assertSame($response->getAttestationCertificateBinary(),
+            $registration->getAttestationCertificateBinary(),
             'Attestation cert was not copied from response');
 
         $this->assertSame($response->getKeyHandleBinary(),

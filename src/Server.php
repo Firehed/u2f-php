@@ -162,7 +162,7 @@ class Server
         // again. There's no perfect way to handle this since
 
         return (new Registration())
-            ->setAttestationCertificate($registration->getAttestationCertificateRaw())
+            ->setAttestationCertificate($registration->getAttestationCertificateBinary())
             ->setKeyHandle($registration->getKeyHandleBinary())
             ->setPublicKey($registration->getPublicKey())
             ->setCounter($response->getCounter());
@@ -220,7 +220,7 @@ class Server
         }
 
         return (new Registration())
-            ->setAttestationCertificate($resp->getAttestationCertificateRaw())
+            ->setAttestationCertificate($resp->getAttestationCertificateBinary())
             ->setCounter(0) // The response does not include this
             ->setKeyHandle($resp->getKeyHandleBinary())
             ->setPublicKey($resp->getPublicKey());

@@ -10,7 +10,7 @@ trait AttestationCertificateTrait
     private $attest = '';
 
     // Binary string of attestation certificate (from device issuer)
-    public function getAttestationCertificateRaw(): string {
+    public function getAttestationCertificateBinary(): string {
         return base64_decode($this->attest);
     }
 

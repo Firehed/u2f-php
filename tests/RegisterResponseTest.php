@@ -67,7 +67,7 @@ class RegisterResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ::getAttestationCertificateRaw
+     * @covers ::getAttestationCertificateBinary
      * @covers ::getKeyHandleBinary
      * @covers ::getPublicKey
      * @covers ::getSignature
@@ -87,7 +87,7 @@ class RegisterResponseTest extends \PHPUnit_Framework_TestCase
             'Public key was not parsed correctly');
         $this->assertSame($handle, $response->getKeyHandleBinary(),
             'Key Handle was not parsed correctly');
-        $this->assertSame($cert, $response->getAttestationCertificateRaw(),
+        $this->assertSame($cert, $response->getAttestationCertificateBinary(),
             'Cert was not parsed correctly');
         $this->assertSame($sig, $response->getSignature(),
             'Signature was not parsed correctly');
