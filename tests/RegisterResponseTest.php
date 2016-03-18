@@ -67,7 +67,7 @@ class RegisterResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ::getAttestationCertificate
+     * @covers ::getAttestationCertificateRaw
      * @covers ::getKeyHandleBinary
      * @covers ::getPublicKey
      * @covers ::getSignature

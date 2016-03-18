@@ -190,7 +190,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers ::register
-     * @uses ::setTrustedCAs
      */
     public function testRegisterThrowsWithUntrustedDeviceIssuerCertificate() {
         $request = $this->getDefaultRegisterRequest();
