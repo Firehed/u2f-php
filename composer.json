@@ -6,11 +6,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Firehed\\U2F\\": ["src/", "tests/"]
+            "Firehed\\U2F\\": "src/"
         },
         "files": [
             "src/functions.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Firehed\\U2F\\": "tests/"
+        }
     },
     "authors": [
         {
