@@ -43,7 +43,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'RegisterRequest App ID was not the value from the server');
         $this->assertNotEmpty($req->getChallenge(),
             'No challenge value was set');
-        $this->assertTrue(mb_strlen($req->getChallenge(), '8bit') >= 8,
+        $this->assertTrue(strlen($req->getChallenge()) >= 8,
             'Challenge was less than 8 bytes long, violating the spec');
     }
 
@@ -63,7 +63,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'SignRequest App ID was not the value form the server');
         $this->assertNotEmpty($req->getChallenge(),
             'No challenge value was set');
-        $this->assertTrue(mb_strlen($req->getChallenge(), '8bit') >= 8,
+        $this->assertTrue(strlen($req->getChallenge()) >= 8,
             'Challenge was less than 8 bytes long, violating the spec');
     }
 
@@ -322,10 +322,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $json = file_get_contents(__DIR__.'/register_response.json');
         $data = json_decode($json, true);
         $reg = $data['registrationData'];
-
-        // rot13 a few chars in signature
-        $last = str_rot13(mb_substr($reg, -5, null, '8bit'));
-        $data['registrationData'] = mb_substr($reg, 0, -5, '8bit').$last;
+        $last = str_rot13(substr($reg, -5)); // rot13 a few chars in signature
+        $data['registrationData'] = substr($reg,0,-5).$last;
         $response = RegisterResponse::fromJson(json_encode($data));
 
         $this->expectException(SecurityException::class);
@@ -521,10 +519,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $data = json_decode(
             file_get_contents(__DIR__.'/sign_response.json'),
             true);
-        $data['signatureData'] = mb_substr($data['signatureData'],
-            0,
-            -1,
-            '8bit');
+        $data['signatureData'] = substr($data['signatureData'], 0, -1);
         $response = SignResponse::fromJson(json_encode($data));
 
         $this->expectException(SecurityException::class);

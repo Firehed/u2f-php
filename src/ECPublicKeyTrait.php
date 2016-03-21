@@ -45,7 +45,7 @@ trait ECPublicKeyTrait
             throw new IDE(IDE::MALFORMED_DATA,
                 'public key: first byte not x04 (uncompressed)');
         }
-        if (mb_strlen($key, '8bit') !== 65) {
+        if (strlen($key) !== 65) {
             throw new IDE(IDE::PUBLIC_KEY_LENGTH, '65');
         }
         $this->pubKey = base64_encode($key);

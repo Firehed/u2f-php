@@ -30,7 +30,7 @@ class SignResponse
         // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#authentication-response-message-success
         $sig_raw = fromBase64Web($response['signatureData']);
 
-        if (mb_strlen($sig_raw, '8bit') < 6) {
+        if (strlen($sig_raw) < 6) {
             throw new IDE(IDE::MALFORMED_DATA, 'signatureData');
         }
         $decoded = unpack('cpresence/Ncounter/a*signature', $sig_raw);
