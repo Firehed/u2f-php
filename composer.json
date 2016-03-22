@@ -2,6 +2,16 @@
     "name": "firehed/u2f",
     "description": "A library providing U2F authentication",
     "license": "MIT",
+    "keywords": [
+        "auth",
+        "authentication",
+        "mfa",
+        "security",
+        "u2f",
+        "yubico",
+        "yubikey"
+    ],
+    "homepage": "https://github.com/Firehed/u2f-php",
     "require": {
         "php": ">=7.0"
     },
