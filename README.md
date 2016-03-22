@@ -154,4 +154,5 @@ If you are using Arcanist, `arc unit` workflows will work as expected.
 Otherwise, all tests are in the `tests/` directory and can be run with `vendor/bin/phpunit tests/`.
 
 ## License
- (TBD)
+
+MIT
