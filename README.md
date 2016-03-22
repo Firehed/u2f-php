@@ -4,11 +4,13 @@ A PHP implementation of the FIDO U2F authentication standard
 
 ## Introduction
 
-This library is designed to allow easy integration of U2F hardware keys to an existing user authentication scheme.
+U2F, or Universal Second Factor, is a new authentication protocol designed "to augment the security of their existing password infrastructure by adding a strong second factor to user login"[1](https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-overview.html#background). It allows websites to replace the need for a companion app (such as Google Authenticator) with a single hardware token that will work across any website supporting the U2F protocol.
+
+This library is designed to allow easy integration of the U2F protocol to an existing user authentication scheme.
 It handles the parsing and validating all of the raw message formats, and translates them into standard PHP objects.
 
-Note that use of the word "key" here refers to a USB "key" or dongle; however, the device may connect with the browser over a different protocol (such as Bluetooth or NFC).
-Unless otherwise stated, "key" should be interpreted to mean "FIDO U2F Token".
+Note that use of the word "key" throughout this document should be interpreted to mean "FIDO U2F Token".
+These are often USB "keys" but can also be NFC or Bluetooth devices.
 
 There are two main operations that you will need to understand for a successful integration: registration and authentication.
 Registration is the act of associating a key that the end-user is physically in posession of with their existing account; authentication is where that key is used to cryptographically sign a message from your application to verify posession of said key.
