@@ -1,5 +1,10 @@
 {
     "name": "firehed/u2f",
+    "description": "A library providing U2F authentication",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.0"
+    },
     "require-dev": {
         "firehed/arctools": "^1",
         "phpunit/phpunit": "^5.2"
