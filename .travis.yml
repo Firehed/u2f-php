@@ -1,0 +1,9 @@
+language: php
+php:
+  - '7.0'
+
+# From PHPUnit's config
+install:
+  - travis_retry composer install --no-interaction --prefer-source
+
+script: php -d mbstring.func_overload=7 vendor/bin/phpunit --coverage-text --whitelist src/ tests/
