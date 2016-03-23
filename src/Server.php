@@ -200,12 +200,7 @@ class Server
 
         $pem = $resp->getAttestationCertificatePem();
         if ($this->verifyCA) {
-            $check = openssl_x509_checkpurpose($pem,
-                \X509_PURPOSE_ANY,
-                $this->trustedCAs);
-            if ($check !== true) {
-                throw new SE(SE::NO_TRUSTED_CA);
-            }
+            $resp->verifyIssuerAgainstTrustedCAs($this->trustedCAs);
         }
 
         // Signature must validate against device issuer's public key

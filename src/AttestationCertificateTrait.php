@@ -29,4 +29,15 @@ trait AttestationCertificateTrait
         return $this;
     }
 
+    public function verifyIssuerAgainstTrustedCAs(array $trusted_cas): bool {
+        $result = openssl_x509_checkpurpose(
+            $this->getAttestationCertificatePem(),
+            \X509_PURPOSE_ANY,
+            $trusted_cas);
+        if ($result !== true) {
+            throw new SecurityException(SecurityException::NO_TRUSTED_CA);
+        }
+        return $result;
+    }
+
 }
