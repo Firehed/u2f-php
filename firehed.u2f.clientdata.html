@@ -48,7 +48,7 @@
                 </nav>
 
                 <section id="content" class="col-sm-9 col-lg-10">
-                    <!-- @generated 2016-04-15T20:02:08+0000 -->
+                    <!-- @generated 2016-04-15T20:20:09+0000 -->
 <h1 id="class-firehedu2fclientdata">class Firehed\U2F\ClientData</h1>
 <h2 id="toc">TOC</h2>
 <ul>
@@ -58,13 +58,13 @@
 </ul>
 <h2 id="definition">Definition</h2>
 <p>Defined in /Users/firehed/dev/u2f/src/ClientData.php</p>
-<p>Implements <a href="https://php.net/JsonSerializable">JsonSerializable</a>, <a href="Firehed.U2F.ChallengeProvider.html">Firehed\U2F\ChallengeProvider</a></p>
+<p>Implements <a href="https://php.net/JsonSerializable">JsonSerializable</a>, <a href="firehed.u2f.challengeprovider.html">Firehed\U2F\ChallengeProvider</a></p>
 <h2 id="public-method-summary">Public Method Summary</h2>
 <p>static function fromJson(string $json):</p>
 <p>function getChallenge(): string</p>
 <p>function getChallengeParameter(): string</p>
 <p>function jsonSerialize():</p>
-<p>function setChallenge(string $challenge): <a href="Firehed.U2F.ClientData.html">Firehed\U2F\ClientData</a></p>
+<p>function setChallenge(string $challenge): <a href="firehed.u2f.clientdata.html">Firehed\U2F\ClientData</a></p>
 <h2 id="constants">Constants</h2>
 <p>None</p>
 <h2 id="methods">Methods</h2>
@@ -96,7 +96,7 @@
 <ul>
 <li>string $challenge</li>
 </ul>
-<p>Returns: <a href="Firehed.U2F.ClientData.html">Firehed\U2F\ClientData</a> </p>
+<p>Returns: <a href="firehed.u2f.clientdata.html">Firehed\U2F\ClientData</a> </p>
 <hr />
 <h3 id="private--function-settype">private  function setType</h3>
 <p>Checks the 'typ' field against the allowed types in the U2F spec (sec.
@@ -107,9 +107,9 @@
 </ul>
 <p>Throws :</p>
 <ul>
-<li><a href="Firehed.U2F.InvalidDataException.html">Firehed\U2F\InvalidDataException</a> -- if a non-conforming value is provided</li>
+<li><a href="firehed.u2f.invaliddataexception.html">Firehed\U2F\InvalidDataException</a> -- if a non-conforming value is provided</li>
 </ul>
-<p>Returns: <a href="Firehed.U2F.ClientData.html">Firehed\U2F\ClientData</a> </p>
+<p>Returns: <a href="firehed.u2f.clientdata.html">Firehed\U2F\ClientData</a> </p>
 <hr />
 <h3 id="private--function-validatekey">private  function validateKey</h3>
 <p>Checks for the presence of $key in $data. Returns the value if found,
@@ -123,7 +123,7 @@ throws an InvalidDataException if missing</p>
 </ul>
 <p>Throws :</p>
 <ul>
-<li><a href="Firehed.U2F.InvalidDataException.html">Firehed\U2F\InvalidDataException</a> -- if not prsent</li>
+<li><a href="firehed.u2f.invaliddataexception.html">Firehed\U2F\InvalidDataException</a> -- if not prsent</li>
 </ul>
 <p>Returns: TODO TRY TO INFER FROM DOCBLOCK The data, if present</p>
                 </section>

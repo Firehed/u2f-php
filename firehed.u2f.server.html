@@ -48,7 +48,7 @@
                 </nav>
 
                 <section id="content" class="col-sm-9 col-lg-10">
-                    <!-- @generated 2016-04-15T20:02:08+0000 -->
+                    <!-- @generated 2016-04-15T20:20:09+0000 -->
 <h1 id="class-firehedu2fserver">class Firehed\U2F\Server</h1>
 <h2 id="toc">TOC</h2>
 <ul>
@@ -59,19 +59,19 @@
 <h2 id="definition">Definition</h2>
 <p>Defined in /Users/firehed/dev/u2f/src/Server.php</p>
 <h2 id="public-method-summary">Public Method Summary</h2>
-<p>function authenticate(<a href="Firehed.U2F.SignResponse.html">Firehed\U2F\SignResponse</a> $response): <a href="Firehed.U2F.Registration.html">Firehed\U2F\Registration</a></p>
-<p>function disableCAVerification(): <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a></p>
-<p>function generateRegisterRequest(): <a href="Firehed.U2F.RegisterRequest.html">Firehed\U2F\RegisterRequest</a></p>
-<p>function generateSignRequest(<a href="Firehed.U2F.Registration.html">Firehed\U2F\Registration</a> $reg): <a href="Firehed.U2F.SignRequest.html">Firehed\U2F\SignRequest</a></p>
+<p>function authenticate(<a href="firehed.u2f.signresponse.html">Firehed\U2F\SignResponse</a> $response): <a href="firehed.u2f.registration.html">Firehed\U2F\Registration</a></p>
+<p>function disableCAVerification(): <a href="firehed.u2f.server.html">Firehed\U2F\Server</a></p>
+<p>function generateRegisterRequest(): <a href="firehed.u2f.registerrequest.html">Firehed\U2F\RegisterRequest</a></p>
+<p>function generateSignRequest(<a href="firehed.u2f.registration.html">Firehed\U2F\Registration</a> $reg): <a href="firehed.u2f.signrequest.html">Firehed\U2F\SignRequest</a></p>
 <p>function generateSignRequests(array $registrations): array</p>
 <p>function getAppId(): string</p>
 <p>function getApplicationParameter(): string</p>
-<p>function register(<a href="Firehed.U2F.RegisterResponse.html">Firehed\U2F\RegisterResponse</a> $resp): <a href="Firehed.U2F.Registration.html">Firehed\U2F\Registration</a></p>
-<p>function setAppId(string $appId): <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a></p>
-<p>function setRegisterRequest(<a href="Firehed.U2F.RegisterRequest.html">Firehed\U2F\RegisterRequest</a> $request): <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a></p>
-<p>function setRegistrations(array $registrations): <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a></p>
-<p>function setSignRequests(array $signRequests): <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a></p>
-<p>function setTrustedCAs(array $CAs): <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a></p>
+<p>function register(<a href="firehed.u2f.registerresponse.html">Firehed\U2F\RegisterResponse</a> $resp): <a href="firehed.u2f.registration.html">Firehed\U2F\Registration</a></p>
+<p>function setAppId(string $appId): <a href="firehed.u2f.server.html">Firehed\U2F\Server</a></p>
+<p>function setRegisterRequest(<a href="firehed.u2f.registerrequest.html">Firehed\U2F\RegisterRequest</a> $request): <a href="firehed.u2f.server.html">Firehed\U2F\Server</a></p>
+<p>function setRegistrations(array $registrations): <a href="firehed.u2f.server.html">Firehed\U2F\Server</a></p>
+<p>function setSignRequests(array $signRequests): <a href="firehed.u2f.server.html">Firehed\U2F\Server</a></p>
+<p>function setTrustedCAs(array $CAs): <a href="firehed.u2f.server.html">Firehed\U2F\Server</a></p>
 <h2 id="constants">Constants</h2>
 <p>None</p>
 <h2 id="methods">Methods</h2>
@@ -85,14 +85,14 @@ value, which <em>must</em> be persisted for the next authentication. If any
 verification component fails, a <code>SE</code> will be thrown.</p>
 <p>Parameters:</p>
 <ul>
-<li><a href="Firehed.U2F.SignResponse.html">Firehed\U2F\SignResponse</a> $response -- the parsed response from the user</li>
+<li><a href="firehed.u2f.signresponse.html">Firehed\U2F\SignResponse</a> $response -- the parsed response from the user</li>
 </ul>
 <p>Throws :</p>
 <ul>
 <li>SE -- if authentication fails</li>
 <li><a href="https://php.net/BadMethodCallException">BadMethodCallException</a> -- if a precondition is not met</li>
 </ul>
-<p>Returns: <a href="Firehed.U2F.Registration.html">Firehed\U2F\Registration</a> if authentication succeeds</p>
+<p>Returns: <a href="firehed.u2f.registration.html">Firehed\U2F\Registration</a> if authentication succeeds</p>
 <hr />
 <h3 id="public--function-disablecaverification">public  function disableCAVerification</h3>
 <p>Disables verification of the Attestation Certificate against the list of
@@ -102,7 +102,7 @@ able to use devices that haven't been explicitly whitelisted.</p>
 a SecurityException will always be thrown.</p>
 <p>Parameters:</p>
 <p>None</p>
-<p>Returns: <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a> </p>
+<p>Returns: <a href="firehed.u2f.server.html">Firehed\U2F\Server</a> </p>
 <hr />
 <h3 id="private--function-findobjectwithkeyhandle">private  function findObjectWithKeyHandle</h3>
 <p>Searches through the provided array of objects, and looks for a matching
@@ -128,16 +128,16 @@ null.</p>
 used by the <code>u2f.register</code> API.</p>
 <p>Parameters:</p>
 <p>None</p>
-<p>Returns: <a href="Firehed.U2F.RegisterRequest.html">Firehed\U2F\RegisterRequest</a> </p>
+<p>Returns: <a href="firehed.u2f.registerrequest.html">Firehed\U2F\RegisterRequest</a> </p>
 <hr />
 <h3 id="public--function-generatesignrequest">public  function generateSignRequest</h3>
 <p>Creates a new SignRequest for an existing Registration for an
 authenticating user, used by the <code>u2f.sign</code> API.</p>
 <p>Parameters:</p>
 <ul>
-<li><a href="Firehed.U2F.Registration.html">Firehed\U2F\Registration</a> $reg -- one of the user's existing Registrations</li>
+<li><a href="firehed.u2f.registration.html">Firehed\U2F\Registration</a> $reg -- one of the user's existing Registrations</li>
 </ul>
-<p>Returns: <a href="Firehed.U2F.SignRequest.html">Firehed\U2F\SignRequest</a> </p>
+<p>Returns: <a href="firehed.u2f.signrequest.html">Firehed\U2F\SignRequest</a> </p>
 <hr />
 <h3 id="public--function-generatesignrequests">public  function generateSignRequests</h3>
 <p>Wraps generateSignRequest for multiple Registrations</p>
@@ -164,30 +164,30 @@ returns a Registration object; if not, a SE will be
 thrown and attempt to register the key must be aborted.</p>
 <p>Parameters:</p>
 <ul>
-<li><a href="Firehed.U2F.RegisterResponse.html">Firehed\U2F\RegisterResponse</a> $resp -- response to verify</li>
+<li><a href="firehed.u2f.registerresponse.html">Firehed\U2F\RegisterResponse</a> $resp -- response to verify</li>
 </ul>
 <p>Throws :</p>
 <ul>
 <li>SE -- if the response cannot be proven authentic</li>
 <li><a href="https://php.net/BadMethodCallException">BadMethodCallException</a> -- if a precondition is not met</li>
 </ul>
-<p>Returns: <a href="Firehed.U2F.Registration.html">Firehed\U2F\Registration</a> if the response is proven authentic</p>
+<p>Returns: <a href="firehed.u2f.registration.html">Firehed\U2F\Registration</a> if the response is proven authentic</p>
 <hr />
 <h3 id="public--function-setappid">public  function setAppId</h3>
 <p>Parameters:</p>
 <ul>
 <li>string $appId</li>
 </ul>
-<p>Returns: <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a> </p>
+<p>Returns: <a href="firehed.u2f.server.html">Firehed\U2F\Server</a> </p>
 <hr />
 <h3 id="public--function-setregisterrequest">public  function setRegisterRequest</h3>
 <p>Provide the previously-generated RegisterRequest to be used when
 verifying a RegisterResponse during register()</p>
 <p>Parameters:</p>
 <ul>
-<li><a href="Firehed.U2F.RegisterRequest.html">Firehed\U2F\RegisterRequest</a> $request</li>
+<li><a href="firehed.u2f.registerrequest.html">Firehed\U2F\RegisterRequest</a> $request</li>
 </ul>
-<p>Returns: <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a> </p>
+<p>Returns: <a href="firehed.u2f.server.html">Firehed\U2F\Server</a> </p>
 <hr />
 <h3 id="public--function-setregistrations">public  function setRegistrations</h3>
 <p>Provide a user's existing Registrations to be used during authentication</p>
@@ -195,7 +195,7 @@ verifying a RegisterResponse during register()</p>
 <ul>
 <li>array $registrations</li>
 </ul>
-<p>Returns: <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a> </p>
+<p>Returns: <a href="firehed.u2f.server.html">Firehed\U2F\Server</a> </p>
 <hr />
 <h3 id="public--function-setsignrequests">public  function setSignRequests</h3>
 <p>Provide the previously-generated SignRequests, corresponing to the
@@ -205,7 +205,7 @@ verified during authenticate()</p>
 <ul>
 <li>array $signRequests</li>
 </ul>
-<p>Returns: <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a> </p>
+<p>Returns: <a href="firehed.u2f.server.html">Firehed\U2F\Server</a> </p>
 <hr />
 <h3 id="public--function-settrustedcas">public  function setTrustedCAs</h3>
 <p>Provides a list of CA certificates for device issuer verification during
@@ -216,7 +216,7 @@ a SecurityException will always be thrown.</p>
 <ul>
 <li>array $CAs -- A list of file paths to device issuer CA certs</li>
 </ul>
-<p>Returns: <a href="Firehed.U2F.Server.html">Firehed\U2F\Server</a> </p>
+<p>Returns: <a href="firehed.u2f.server.html">Firehed\U2F\Server</a> </p>
 <hr />
 <h3 id="private--function-validatechallenge">private  function validateChallenge</h3>
 <p>Compares the Challenge value from a known source against the
@@ -225,9 +225,9 @@ versions may also enforce a timing window.</p>
 <p>Parameters:</p>
 <ul>
 <li>
-<p><a href="Firehed.U2F.ChallengeProvider.html">Firehed\U2F\ChallengeProvider</a> $from -- source of known challenge</p>
+<p><a href="firehed.u2f.challengeprovider.html">Firehed\U2F\ChallengeProvider</a> $from -- source of known challenge</p>
 </li>
-<li><a href="Firehed.U2F.ChallengeProvider.html">Firehed\U2F\ChallengeProvider</a> $to -- user-provided value</li>
+<li><a href="firehed.u2f.challengeprovider.html">Firehed\U2F\ChallengeProvider</a> $to -- user-provided value</li>
 </ul>
 <p>Throws :</p>
 <ul>
