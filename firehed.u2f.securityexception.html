@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>U2F-PHP</title>
+
+        <link rel="stylesheet" href="http://as.df/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://as.df/css/font-awesome.min.css">
+        <link rel="stylesheet" href="http://as.df/css/highlight.dark.css">
+        <link rel="stylesheet" href="http://as.df/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default ">
+
+            <a class="navbar-brand" href="http://as.df/">
+                U2F-PHP
+                <small class="hidden-xs hidden-sm">
+                    Universal Second Factor Authentication
+                </small>
+            </a>
+
+                            <a href="https://github.com/firehed/u2f-php">
+                    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+                </a>
+            
+        </header>
+
+        <main class="container-fluid}">
+            <div class="row">
+                <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                    <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="/">
+                                    Home
+                                </a>
+                            </li>
+                                                    <li class="">
+                                <a href="/classes.html">
+                                    API Overview
+                                </a>
+                            </li>
+                                            </ul>
+
+                </nav>
+
+                <section id="content" class="col-sm-9 col-lg-10">
+                    <!-- @generated 2016-04-15T20:02:08+0000 -->
+<h1 id="class-firehedu2fsecurityexception">class Firehed\U2F\SecurityException</h1>
+<h2 id="toc">TOC</h2>
+<ul>
+<li><a href="#definition">Definition</a></li>
+<li><a href="#public-method-summary">Public Summary</a></li>
+<li><a href="#methods">Methods</a></li>
+</ul>
+<h2 id="definition">Definition</h2>
+<p>Defined in /Users/firehed/dev/u2f/src/SecurityException.php</p>
+<p>Extends <a href="https://php.net/Exception">Exception</a></p>
+<p>Implements <a href="https://php.net/Throwable">Throwable</a></p>
+<h2 id="public-method-summary">Public Method Summary</h2>
+<p>function __construct(int $code):</p>
+<p>function __toString():</p>
+<p>function __wakeup():</p>
+<p>function getCode():</p>
+<p>function getFile():</p>
+<p>function getLine():</p>
+<p>function getMessage():</p>
+<p>function getPrevious():</p>
+<p>function getTrace():</p>
+<p>function getTraceAsString():</p>
+<h2 id="constants">Constants</h2>
+<p><code>const SIGNATURE_INVALID = 1;</code><br />
+<code>const COUNTER_USED = 2;</code><br />
+<code>const CHALLENGE_MISMATCH = 3;</code><br />
+<code>const KEY_HANDLE_UNRECOGNIZED = 4;</code><br />
+<code>const NO_TRUSTED_CA = 5;</code><br />
+<code>const MESSAGES = [1 =&gt; 'Signature verification failed', 2 =&gt; 'Response counter value is too low, indicating a possible replay attack or cloned token. It is also possible but unlikely that the token\'s internal counter wrapped around. This token should be invalidated or flagged for review.', 3 =&gt; 'Response challenge does not match request', 4 =&gt; 'Key handle has not been registered', 5 =&gt; 'The attestation certificate was not signed by any trusted Certificate Authority'];</code>  </p>
+<h2 id="methods">Methods</h2>
+<hr />
+<h3 id="final-private--function-__clone">final private  function __clone</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+<hr />
+<h3 id="public--function-__construct">public  function __construct</h3>
+<p>Parameters:</p>
+<ul>
+<li>int $code</li>
+</ul>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+<hr />
+<h3 id="public--function-__tostring">public  function __toString</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+<hr />
+<h3 id="public--function-__wakeup">public  function __wakeup</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+<hr />
+<h3 id="final-public--function-getcode">final public  function getCode</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+<hr />
+<h3 id="final-public--function-getfile">final public  function getFile</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+<hr />
+<h3 id="final-public--function-getline">final public  function getLine</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+<hr />
+<h3 id="final-public--function-getmessage">final public  function getMessage</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+<hr />
+<h3 id="final-public--function-getprevious">final public  function getPrevious</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+<hr />
+<h3 id="final-public--function-gettrace">final public  function getTrace</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+<hr />
+<h3 id="final-public--function-gettraceasstring">final public  function getTraceAsString</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: TODO TRY TO INFER FROM DOCBLOCK </p>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container-fluid">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>

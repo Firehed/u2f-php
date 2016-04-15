@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>U2F-PHP</title>
+
+        <link rel="stylesheet" href="http://as.df/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://as.df/css/font-awesome.min.css">
+        <link rel="stylesheet" href="http://as.df/css/highlight.dark.css">
+        <link rel="stylesheet" href="http://as.df/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default ">
+
+            <a class="navbar-brand" href="http://as.df/">
+                U2F-PHP
+                <small class="hidden-xs hidden-sm">
+                    Universal Second Factor Authentication
+                </small>
+            </a>
+
+                            <a href="https://github.com/firehed/u2f-php">
+                    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+                </a>
+            
+        </header>
+
+        <main class="container-fluid}">
+            <div class="row">
+                <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                    <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="/">
+                                    Home
+                                </a>
+                            </li>
+                                                    <li class="">
+                                <a href="/classes.html">
+                                    API Overview
+                                </a>
+                            </li>
+                                            </ul>
+
+                </nav>
+
+                <section id="content" class="col-sm-9 col-lg-10">
+                    <h1 id="u2f">U2F</h1>
+<p>A PHP implementation of the FIDO U2F authentication standard</p>
+<h2 id="introduction">Introduction</h2>
+<p>U2F, or Universal Second Factor, is a new authentication protocol designed &quot;to augment the security of their existing password infrastructure by adding a strong second factor to user login&quot;<a href="https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-overview.html#background">1</a>. It allows websites to replace the need for a companion app (such as Google Authenticator) with a single hardware token that will work across any website supporting the U2F protocol.</p>
+<p>This library is designed to allow easy integration of the U2F protocol to an existing user authentication scheme.
+It handles the parsing and validating all of the raw message formats, and translates them into standard PHP objects.</p>
+<p>Note that use of the word &quot;key&quot; throughout this document should be interpreted to mean &quot;FIDO U2F Token&quot;.
+These are often USB &quot;keys&quot; but can also be NFC or Bluetooth devices.</p>
+<p>There are two main operations that you will need to understand for a successful integration: registration and authentication.
+Registration is the act of associating a key that the end-user is physically in posession of with their existing account; authentication is where that key is used to cryptographically sign a message from your application to verify posession of said key.</p>
+<p>Additional resources:</p>
+<ul>
+<li><a href="https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-overview.html">FIDO U2F Overview</a></li>
+<li><a href="https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-javascript-api.html">FIDO U2F Javascript API</a></li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p>Usage will be described in three parts: setup, registration, and authentication.
+The code in setup should be used before both registration and authentication.</p>
+<p>The API is designed to &quot;fail loudly&quot;; that is, failures will throw an exception, ensuring that return values are always the result of a successful operation.
+This reduces the need for complex error checking and handling during use, since the whole thing can be simply wrapped in a <code>try/catch</code> block and assume that everything went well if no exceptions are caught.</p>
+<h3 id="setup">Setup</h3>
+<p>All operations are performed by the U2F Server class, so it needs to be instanciated and configured:</p>
+<pre><code class="language-php">use Firehed\U2F\Server;
+$server = new Server();
+$server-&gt;setTrustedCAs(glob('path/to/certs/*.pem'))
+       -&gt;setAppId('https://u2f.example.com');</code></pre>
+<p>The trusted CAs are whitelisted vendors, and must be an array of absolute paths to PEM-formatted CA certs (as strings).
+Some provider certificates are provided in the <code>CACerts/</code> directory in the repository root; in a deployed project, these should be available via <code>$PROJECT_ROOT/vendor/firehed/u2f/CACerts/*.pem</code>.</p>
+<p>You may also choose to disable CA verification, by calling <code>-&gt;disableCAVerification()</code> instead of <code>setTrustedCAs()</code>.
+This removes trust in the hardware vendors, but ensures that as new vendors issue tokens, they will be forward-compatible with your website.</p>
+<p>The URI provided to <code>setAppId()</code> must be the HTTPS domain component of your website. See <a href="https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-appid-and-facets.html#appid-example-1">FIDO U2F AppID and Facet Specification</a> for additional information.</p>
+<p>The client needs an U2F Javascript API implementation; the example code below is based on <a href="https://github.com/google/u2f-ref-code/blob/master/u2f-gae-demo/war/js/u2f-api.js">Google's implementation</a></p>
+<h3 id="registration">Registration</h3>
+<p>Registering a token to a user's account is a two-step process: generating a challenge, and verifying the response to that challenge.</p>
+<h4 id="genrating-the-challenge">Genrating the challenge</h4>
+<p>Start by generating a challenge:</p>
+<pre><code class="language-php">$request = $server-&gt;generateRegisterRequest();</code></pre>
+<p>Store this object temporarily (probably in a session) since it is needed during verification, and send it to the user as JSON.</p>
+<p>If the user has already registered one or more keys, you must also generate sign requests for the existing registrations:</p>
+<pre><code class="language-php">$registrations = $user-&gt;getU2FRegistrations();
+$sign_requests = $server-&gt;generateSignRequests($registrations);</code></pre>
+<p>Send the sign requests to the user as JSON as well.</p>
+<p>Pass both of these values into the U2F JS API:</p>
+<pre><code class="language-js">var request = JSON.parse(register_request_from_php);
+var sign_requests = JSON.parse(sign_requests_from_php);
+u2f.register([request], sign_requests, complete_registration_callback);</code></pre>
+<p>The <code>complete_registration_callback</code> should stringify the response object and POST it to your server for verification, described below.</p>
+<h4 id="verifying-the-response">Verifying the response</h4>
+<p>When a response is received, it should be POSTed to your server and verified:</p>
+<pre><code class="language-php">use Firehed\U2F\RegisterResponse;
+$server-&gt;setRegisterRequest($previously_generated_request);
+$response = RegisterResponse::fromJson($_POST['some_form_field']);
+$registration = $server-&gt;register($response)
+// (store Registration)</code></pre>
+<p>The <code>$registration</code> should be associated with the user (typically by persisting to a database).</p>
+<p>Registrations SHOULD be persisted as a one-to-many relationship with the user, since a user may own multiple keys and may want to associate all of them with their account (e.g. a backup key is kept on a spouse's keychain). It is RECOMMENDED to use <code>(user_id, $registration-&gt;getKeyHandleWeb())</code> as a unique composite identifier.</p>
+<p>At minimum, a persisted Registration must store the Key Handle, Counter, and Public Key; implementations SHOULD also store the Attestation Certificate</p>
+<p>This is not a requirement of the specification, but leads to a better user experience.</p>
+<h3 id="authentication">Authentication</h3>
+<p>Authentication is a similar process as registration: generate challenges to sign for each of the user's registrations, and validate the response when received.</p>
+<h4 id="generating-the-challenge">Generating the challenge:</h4>
+<p>This is done identically to registration:</p>
+<pre><code class="language-php">$registrations = $user-&gt;getU2FRegistrations();
+$sign_requests = $server-&gt;generateSignRequests($registrations);</code></pre>
+<p>Store these in the session for use in the next step, JSON-encode them, and send these to the user to pass into the U2F JS API:</p>
+<pre><code class="language-js">var sign_requests = JSON.parse(sign_requests_from_php);
+u2f.sign(sign_requests, complete_auth_callback);</code></pre>
+<p>Like registration, the <code>complete_auth_callback</code> should POST the stringified response to the server for verification.</p>
+<h4 id="verifying-the-response-1">Verifying the response</h4>
+<p>This is also similar to registration:</p>
+<pre><code class="language-php">use Firehed\U2F\SignResponse;
+$server-&gt;setRegistrations($user-&gt;getU2FRegistrations()
+       -&gt;setSignRequests($previously_generated_requests);
+$response = SignResponse::fromJson($_POST['some_form_field']);
+$registration = $server-&gt;authenticate($response);
+// (update Registration in storage with above)</code></pre>
+<p>If no exception is thrown, <code>$registration</code> will be a Registration object with an updated <code>counter</code>; you MUST persist this updated counter to wherever the registrations are stored.
+Failure to do so <strong>is insecure</strong> and exposes your application to token cloning attacks.</p>
+<h2 id="demo">Demo</h2>
+<p>You may try all of this at <a href="https://u2f.ericstern.com">https://u2f.ericstern.com</a>, and see the corresponding code at <a href="https://github.com/Firehed/u2f-php-examples">https://github.com/Firehed/u2f-php-examples</a></p>
+<p>The example code is only designed to show how the APIs interact with each other, and intentionally leaves out best practices such as use of routers and dependency inversion containers to keep the examples as simple as possible.
+See its README for more information.</p>
+<h2 id="tests">Tests</h2>
+<p>If you are using Arcanist, <code>arc unit</code> workflows will work as expected.</p>
+<p>Otherwise, all tests are in the <code>tests/</code> directory and can be run with <code>vendor/bin/phpunit tests/</code>.</p>
+<h2 id="license">License</h2>
+<p>MIT</p>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container-fluid">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>

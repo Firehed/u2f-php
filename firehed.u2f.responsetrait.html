@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>U2F-PHP</title>
+
+        <link rel="stylesheet" href="http://as.df/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://as.df/css/font-awesome.min.css">
+        <link rel="stylesheet" href="http://as.df/css/highlight.dark.css">
+        <link rel="stylesheet" href="http://as.df/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default ">
+
+            <a class="navbar-brand" href="http://as.df/">
+                U2F-PHP
+                <small class="hidden-xs hidden-sm">
+                    Universal Second Factor Authentication
+                </small>
+            </a>
+
+                            <a href="https://github.com/firehed/u2f-php">
+                    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+                </a>
+            
+        </header>
+
+        <main class="container-fluid}">
+            <div class="row">
+                <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
+
+                    <ul class="nav nav-pills nav-stacked">
+                                                    <li class="">
+                                <a href="/">
+                                    Home
+                                </a>
+                            </li>
+                                                    <li class="">
+                                <a href="/classes.html">
+                                    API Overview
+                                </a>
+                            </li>
+                                            </ul>
+
+                </nav>
+
+                <section id="content" class="col-sm-9 col-lg-10">
+                    <!-- @generated 2016-04-15T20:02:08+0000 -->
+<h1 id="trait-firehedu2fresponsetrait">trait Firehed\U2F\ResponseTrait</h1>
+<h2 id="toc">TOC</h2>
+<ul>
+<li><a href="#definition">Definition</a></li>
+<li><a href="#public-method-summary">Public Summary</a></li>
+<li><a href="#methods">Methods</a></li>
+</ul>
+<h2 id="definition">Definition</h2>
+<p>Defined in /Users/firehed/dev/u2f/src/ResponseTrait.php</p>
+<h2 id="public-method-summary">Public Method Summary</h2>
+<p>static function fromJson(string $json): <a href="Firehed.U2F.ResponseTrait.html">Firehed\U2F\ResponseTrait</a></p>
+<p>function getClientData(): <a href="Firehed.U2F.ClientData.html">Firehed\U2F\ClientData</a></p>
+<p>function getKeyHandleBinary(): string</p>
+<p>function getKeyHandleWeb(): string</p>
+<p>function getSignature(): string</p>
+<p>function setKeyHandle(string $keyHandle): <a href="Firehed.U2F.ResponseTrait.html">Firehed\U2F\ResponseTrait</a></p>
+<h2 id="constants">Constants</h2>
+<p>None</p>
+<h2 id="methods">Methods</h2>
+<hr />
+<h3 id="public-static-function-fromjson">public static function fromJson</h3>
+<p>Parameters:</p>
+<ul>
+<li>string $json</li>
+</ul>
+<p>Returns: <a href="Firehed.U2F.ResponseTrait.html">Firehed\U2F\ResponseTrait</a> </p>
+<hr />
+<h3 id="public--function-getclientdata">public  function getClientData</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: <a href="Firehed.U2F.ClientData.html">Firehed\U2F\ClientData</a> </p>
+<hr />
+<h3 id="public--function-getkeyhandlebinary">public  function getKeyHandleBinary</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: string </p>
+<hr />
+<h3 id="public--function-getkeyhandleweb">public  function getKeyHandleWeb</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: string </p>
+<hr />
+<h3 id="public--function-getsignature">public  function getSignature</h3>
+<p>Parameters:</p>
+<p>None</p>
+<p>Returns: string </p>
+<hr />
+<h3 id="abstract-protected--function-parseresponse">abstract protected  function parseResponse</h3>
+<p>Parameters:</p>
+<ul>
+<li>array $response</li>
+</ul>
+<p>Returns: <a href="Firehed.U2F.ResponseTrait.html">Firehed\U2F\ResponseTrait</a> </p>
+<hr />
+<h3 id="public--function-setkeyhandle">public  function setKeyHandle</h3>
+<p>Parameters:</p>
+<ul>
+<li>string $keyHandle</li>
+</ul>
+<p>Returns: <a href="Firehed.U2F.ResponseTrait.html">Firehed\U2F\ResponseTrait</a> </p>
+<hr />
+<h3 id="protected--function-setsignature">protected  function setSignature</h3>
+<p>Parameters:</p>
+<ul>
+<li>string $signature</li>
+</ul>
+<p>Returns: <a href="Firehed.U2F.ResponseTrait.html">Firehed\U2F\ResponseTrait</a> </p>
+<hr />
+<h3 id="private--function-validatekeyinarray">private  function validateKeyInArray</h3>
+<p>Parameters:</p>
+<ul>
+<li>
+<p>string $key</p>
+</li>
+<li>array $data</li>
+</ul>
+<p>Returns: bool </p>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container-fluid">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>
