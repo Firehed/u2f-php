@@ -166,7 +166,6 @@ class Server
             ->setKeyHandle($registration->getKeyHandleBinary())
             ->setPublicKey($registration->getPublicKey())
             ->setCounter($response->getCounter());
-        return true;
     }
 
     /**
