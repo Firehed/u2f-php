@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class VersionTraitTest extends \PHPUnit_Framework_TestCase
+class VersionTraitTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

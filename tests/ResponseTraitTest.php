@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class ResponseTraitTest extends \PHPUnit_Framework_TestCase
+class ResponseTraitTest extends \PHPUnit\Framework\TestCase
 {
     private $trait;
 

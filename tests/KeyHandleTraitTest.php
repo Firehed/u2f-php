@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class KeyHandleTraitTest extends \PHPUnit_Framework_TestCase
+class KeyHandleTraitTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers ::getKeyHandleBinary

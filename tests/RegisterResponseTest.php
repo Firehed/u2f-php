@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class RegisterResponseTest extends \PHPUnit_Framework_TestCase
+class RegisterResponseTest extends \PHPUnit\Framework\TestCase
 {
 
     private $validClientData = 'eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZmluaXNoRW5yb2xsbWVudCIsImNoYWxsZW5nZSI6IkJyQWN4dGIxOWFYNTRoN0Y2T0NKWVptQ3prZHlHV0Nib3NEcHpNMUh2MkUiLCJvcmlnaW4iOiJodHRwczovL3UyZi5lcmljc3Rlcm4uY29tIiwiY2lkX3B1YmtleSI6IiJ9';

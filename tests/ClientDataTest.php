@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class ClientDataTest extends \PHPUnit_Framework_TestCase
+class ClientDataTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

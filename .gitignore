@@ -1,3 +1,5 @@
 /examples/users/*
 /examples/vendor/
 /vendor/
+# Suggested for libraries
+composer.lock

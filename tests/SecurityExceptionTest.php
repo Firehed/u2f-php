@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class SecurityExceptionTest extends \PHPUnit_Framework_TestCase
+class SecurityExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers ::__construct

@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class SignResponseTest extends \PHPUnit_Framework_TestCase
+class SignResponseTest extends \PHPUnit\Framework\TestCase
 {
 
     const JSON_FORMAT = '{"keyHandle":"%s","clientData":"%s","signatureData":"%s"}';

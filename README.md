@@ -2,6 +2,9 @@
 
 A PHP implementation of the FIDO U2F authentication standard
 
+[![Build Status](https://travis-ci.org/Firehed/u2f-php.svg?branch=master)](https://travis-ci.org/Firehed/u2f-php)
+[![Coverage Status](https://coveralls.io/repos/github/Firehed/u2f-php/badge.svg)](https://coveralls.io/github/Firehed/u2f-php)
+
 ## Introduction
 
 U2F, or Universal Second Factor, is a new authentication protocol designed "to augment the security of their existing password infrastructure by adding a strong second factor to user login"[1](https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-overview.html#background). It allows websites to replace the need for a companion app (such as Google Authenticator) with a single hardware token that will work across any website supporting the U2F protocol.

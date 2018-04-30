@@ -9,3 +9,6 @@ install:
   - travis_retry composer install --no-interaction --prefer-source
 
 script: php -d mbstring.func_overload=7 vendor/bin/phpunit --coverage-text --whitelist src/ tests/
+
+after_success:
+    - travis_retry php vendor/bin/php-coveralls
