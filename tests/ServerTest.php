@@ -12,6 +12,8 @@ use TypeError;
  */
 class ServerTest extends \PHPUnit\Framework\TestCase
 {
+    use MultibyteWarningTrait;
+
     const APP_ID = 'https://u2f.example.com';
 
     const ENCODED_KEY_HANDLE =
@@ -477,17 +479,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      */
     public function testAuthenticateWithMultibyteSettings()
     {
-        $overload = ini_get('mbstring.func_overload');
-        if ($overload != 7) {
-            $cmd = 'php -d mbstring.func_overload=7 '.
-                implode(' ', $_SERVER['argv']);
-            $this->markTestSkipped(sprintf(
-                "mbstring.func_overload cannot be changed at runtime. Re-run ".
-                "this test with the following command:\n\n%s",
-                $cmd
-            ));
-        }
-
+        $this->skipIfNotMultibyte();
         $this->testAuthenticate();
     }
 
