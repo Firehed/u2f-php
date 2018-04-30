@@ -7,5 +7,4 @@ interface ChallengeProvider
 {
 
     public function getChallenge(): string;
-
 }

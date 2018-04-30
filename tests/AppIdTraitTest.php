@@ -15,28 +15,39 @@ class AppIdTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::getAppId
      * @covers ::setAppId
      */
-    public function testAccessors() {
+    public function testAccessors()
+    {
         $obj = new class {
             use AppIdTrait;
         };
         $appId = 'https://u2f.example.com';
 
-        $this->assertSame($obj, $obj->setAppId($appId),
-            'setAppId should return $this');
-        $this->assertSame($appId, $obj->getAppId(),
-            'getAppId should return the set value');
+        $this->assertSame(
+            $obj,
+            $obj->setAppId($appId),
+            'setAppId should return $this'
+        );
+        $this->assertSame(
+            $appId,
+            $obj->getAppId(),
+            'getAppId should return the set value'
+        );
     }
 
     /**
      * @covers ::getApplicationParameter
      */
-    public function testGetApplicationParameter() {
-        $obj = new class { use AppIdTrait; };
+    public function testGetApplicationParameter()
+    {
+        $obj = new class {
+            use AppIdTrait;
+        };
         $appId = 'https://u2f.example.com';
         $obj->setAppId($appId);
-        $this->assertSame(hash('sha256', $appId, true),
+        $this->assertSame(
+            hash('sha256', $appId, true),
             $obj->getApplicationParameter(),
-            'getApplicationParamter should return the raw SHA256 hash of the application id');
+            'getApplicationParamter should return the raw SHA256 hash of the application id'
+        );
     }
-
 }

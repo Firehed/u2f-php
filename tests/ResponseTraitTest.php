@@ -12,10 +12,12 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
 {
     private $trait;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->trait = new class {
             use ResponseTrait;
-            protected function parseResponse(array $response): self {
+            protected function parseResponse(array $response): self
+            {
                 $this->setSignature($response['signature']);
                 return $this;
             }
@@ -27,10 +29,14 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::getSignature
      * @covers ::getClientData
      */
-    public function testValidJson() {
+    public function testValidJson()
+    {
         $signature = __METHOD__;
         $json = json_encode([
-            'clientData' => 'eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoid3QyemU4SXNrY1RPM25Jc08yRDJoRmpFNXRWRDA0MU5wblllc0xwSndlZyIsIm9yaWdpbiI6Imh0dHBzOi8vdTJmLmVyaWNzdGVybi5jb20iLCJjaWRfcHVia2V5IjoiIn0',
+            'clientData' => 'eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwi'.
+                'Y2hhbGxlbmdlIjoid3QyemU4SXNrY1RPM25Jc08yRDJoRmpFNXRWRDA0MU5w'.
+                'blllc0xwSndlZyIsIm9yaWdpbiI6Imh0dHBzOi8vdTJmLmVyaWNzdGVybi5j'.
+                'b20iLCJjaWRfcHVia2V5IjoiIn0',
             'signature' => $signature,
 
         ]);
@@ -38,20 +44,30 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
         // This is a little goofy because it's an anonymous class, but seems
         // preferable to declaring a one-off class in the test to implement the
         // trait instead.
-        $this->assertInstanceOf(get_class($this->trait), $response,
-            'Parsed response was the wrong type');
+        $this->assertInstanceOf(
+            get_class($this->trait),
+            $response,
+            'Parsed response was the wrong type'
+        );
 
-        $this->assertInstanceOf(ClientData::class, $response->getClientData(),
-            'ClientData was not parsed correctly');
+        $this->assertInstanceOf(
+            ClientData::class,
+            $response->getClientData(),
+            'ClientData was not parsed correctly'
+        );
 
-        $this->assertSame(__METHOD__, $response->getSignature(),
-            'Signature was not parsed correctly');
+        $this->assertSame(
+            __METHOD__,
+            $response->getSignature(),
+            'Signature was not parsed correctly'
+        );
     }
 
     /**
      * @covers ::fromJson
      */
-    public function testFromJsonWithNonJson() {
+    public function testFromJsonWithNonJson()
+    {
         $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode(InvalidDataException::MALFORMED_DATA);
         $this->trait::fromJson('this is not json');
@@ -61,7 +77,8 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::fromJson
      * @dataProvider clientErrors
      */
-    public function testErrorResponse(int $code) {
+    public function testErrorResponse(int $code)
+    {
         $json = sprintf('{"errorCode":%d}', $code);
         $this->expectException(ClientErrorException::class);
         $this->expectExceptionCode($code);
@@ -72,7 +89,8 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::fromJson
      * @dataProvider badClientData
      */
-    public function testClientDataValidation(string $json, int $code) {
+    public function testClientDataValidation(string $json, int $code)
+    {
         $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode($code);
         $this->trait::fromJson($json);
@@ -80,7 +98,8 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
 
     // -( DataProviders )------------------------------------------------------
 
-    public function clientErrors() {
+    public function clientErrors()
+    {
         return [
             [ClientError::OTHER_ERROR],
             [ClientError::BAD_REQUEST],
@@ -90,11 +109,11 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function badClientData() {
+    public function badClientData()
+    {
         return [
             ['{}', InvalidDataException::MISSING_KEY],
             ['{"clientData":25}', InvalidDataException::MALFORMED_DATA],
         ];
     }
-
 }

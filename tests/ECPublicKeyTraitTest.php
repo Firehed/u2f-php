@@ -15,21 +15,29 @@ class ECPublicKeyTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::setPublicKey
      * @covers ::getPublicKey
      */
-    public function testAccessors() {
+    public function testAccessors()
+    {
         $obj = new class {
             use ECPublicKeyTrait;
         };
         $key = "\x04".\random_bytes(64);
-        $this->assertSame($obj, $obj->setPublicKey($key),
-            'setPublicKey should return $this');
-        $this->assertSame($key, $obj->getPublicKey(),
-            'getPublicKey should return the set value');
+        $this->assertSame(
+            $obj,
+            $obj->setPublicKey($key),
+            'setPublicKey should return $this'
+        );
+        $this->assertSame(
+            $key,
+            $obj->getPublicKey(),
+            'getPublicKey should return the set value'
+        );
     }
 
     /**
      * @covers ::getPublicKeyPem
      */
-    public function testGetPublicKeyPem() {
+    public function testGetPublicKeyPem()
+    {
         $obj = new class {
             use ECPublicKeyTrait;
         };
@@ -51,7 +59,8 @@ class ECPublicKeyTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::setPublicKey
      */
-    public function testSetPublicKeyThrowsWithBadFirstByte() {
+    public function testSetPublicKeyThrowsWithBadFirstByte()
+    {
         $obj = new class {
             use ECPublicKeyTrait;
         };
@@ -65,7 +74,8 @@ class ECPublicKeyTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::setPublicKey
      */
-    public function testSetPublicKeyThrowsWhenTooShort() {
+    public function testSetPublicKeyThrowsWhenTooShort()
+    {
         $obj = new class {
             use ECPublicKeyTrait;
         };
@@ -78,7 +88,8 @@ class ECPublicKeyTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::setPublicKey
      */
-    public function testSetPublicKeyThrowsWhenTooLong() {
+    public function testSetPublicKeyThrowsWhenTooLong()
+    {
         $obj = new class {
             use ECPublicKeyTrait;
         };
@@ -87,7 +98,4 @@ class ECPublicKeyTraitTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionCode(InvalidDataException::PUBLIC_KEY_LENGTH);
         $obj->setPublicKey($key);
     }
-
-
-
 }

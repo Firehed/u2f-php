@@ -56,26 +56,31 @@ class Server
      * value, which *must* be persisted for the next authentication. If any
      * verification component fails, a `SE` will be thrown.
      *
-     * @param SignResponse the parsed response from the user
+     * @param SignResponse $response the parsed response from the user
      * @return Registration if authentication succeeds
      * @throws SE if authentication fails
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function authenticate(SignResponse $response): Registration {
+    public function authenticate(SignResponse $response): Registration
+    {
         if (!$this->registrations) {
             throw new BadMethodCallException(
                 'Before calling authenticate(), provide `Registration`s with '.
-                'setRegistrations()');
+                'setRegistrations()'
+            );
         }
         if (!$this->signRequests) {
             throw new BadMethodCallException(
                 'Before calling authenticate(), provide `SignRequest`s with '.
-                'setSignRequests()');
+                'setSignRequests()'
+            );
         }
 
         // Search for the registration to use based on the Key Handle
-        $registration = $this->findObjectWithKeyHandle($this->registrations,
-            $response->getKeyHandleBinary());
+        $registration = $this->findObjectWithKeyHandle(
+            $this->registrations,
+            $response->getKeyHandleBinary()
+        );
         if (!$registration) {
             // This would suggest either some sort of forgery attempt or
             // a hilariously-broken token responding to handles it doesn't
@@ -84,8 +89,10 @@ class Server
         }
 
         // Search for the Signing Request to use based on the Key Handle
-        $request = $this->findObjectWithKeyHandle($this->signRequests,
-            $registration->getKeyHandleBinary());
+        $request = $this->findObjectWithKeyHandle(
+            $this->signRequests,
+            $registration->getKeyHandleBinary()
+        );
         if (!$request) {
             // Similar to above, there is a bizarre mismatch between the known
             // possible sign requests and the key handle determined above. This
@@ -104,7 +111,8 @@ class Server
 
         // U2F Spec:
         // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#authentication-response-message-success
-        $to_verify = sprintf('%s%s%s%s',
+        $to_verify = sprintf(
+            '%s%s%s%s',
             $request->getApplicationParameter(),
             chr($response->getUserPresenceByte()),
             pack('N', $response->getCounter()),
@@ -174,22 +182,25 @@ class Server
      * returns a Registration object; if not, a SE will be
      * thrown and attempt to register the key must be aborted.
      *
-     * @param The response to verify
+     * @param RegisterResponse $resp The response to verify
      * @return Registration if the response is proven authentic
      * @throws SE if the response cannot be proven authentic
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function register(RegisterResponse $resp): Registration {
+    public function register(RegisterResponse $resp): Registration
+    {
         if (!$this->registerRequest) {
             throw new BadMethodCallException(
                 'Before calling register(), provide a RegisterRequest '.
-                'with setRegisterRequest()');
+                'with setRegisterRequest()'
+            );
         }
         $this->validateChallenge($resp->getClientData(), $this->registerRequest);
         // Check the Application Parameter?
 
         // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#registration-response-message-success
-        $signed_data = sprintf('%s%s%s%s%s',
+        $signed_data = sprintf(
+            '%s%s%s%s%s',
             chr(0),
             $this->registerRequest->getApplicationParameter(),
             $resp->getClientData()->getChallengeParameter(),
@@ -230,7 +241,8 @@ class Server
      *
      * @return self
      */
-    public function disableCAVerification(): self {
+    public function disableCAVerification(): self
+    {
         $this->verifyCA = false;
         return $this;
     }
@@ -242,10 +254,11 @@ class Server
      * This method or disableCAVerification must be called before register() or
      * a SecurityException will always be thrown.
      *
-     * @param array<string> A list of file paths to device issuer CA certs
+     * @param string[] $CAs A list of file paths to device issuer CA certs
      * @return self
      */
-    public function setTrustedCAs(array $CAs): self {
+    public function setTrustedCAs(array $CAs): self
+    {
         $this->verifyCA = true;
         $this->trustedCAs = $CAs;
         return $this;
@@ -255,10 +268,11 @@ class Server
      * Provide the previously-generated RegisterRequest to be used when
      * verifying a RegisterResponse during register()
      *
-     * @param RegisterRequest
+     * @param RegisterRequest $request
      * @return self
      */
-    public function setRegisterRequest(RegisterRequest $request): self {
+    public function setRegisterRequest(RegisterRequest $request): self
+    {
         $this->registerRequest = $request;
         return $this;
     }
@@ -266,11 +280,13 @@ class Server
     /**
      * Provide a user's existing Registrations to be used during authentication
      *
-     * @param array<Registration>
+     * @param Registration[] $registrations
      * @return self
      */
-    public function setRegistrations(array $registrations): self {
-        array_map(function(Registration $r){}, $registrations); // type check
+    public function setRegistrations(array $registrations): self
+    {
+        array_map(function (Registration $r) {
+        }, $registrations); // type check
         $this->registrations = $registrations;
         return $this;
     }
@@ -280,11 +296,13 @@ class Server
      * existing Registrations, of of which should be signed and will be
      * verified during authenticate()
      *
-     * @param array<SignRequest>
+     * @param SignRequest[] $signRequests
      * @return self
      */
-    public function setSignRequests(array $signRequests): self {
-        array_map(function(SignRequest $s){}, $signRequests); // type check
+    public function setSignRequests(array $signRequests): self
+    {
+        array_map(function (SignRequest $s) {
+        }, $signRequests); // type check
         $this->signRequests = $signRequests;
         return $this;
     }
@@ -295,7 +313,8 @@ class Server
      *
      * @return RegisterRequest
      */
-    public function generateRegisterRequest(): RegisterRequest {
+    public function generateRegisterRequest(): RegisterRequest
+    {
         return (new RegisterRequest())
             ->setAppId($this->getAppId())
             ->setChallenge($this->generateChallenge());
@@ -305,10 +324,11 @@ class Server
      * Creates a new SignRequest for an existing Registration for an
      * authenticating user, used by the `u2f.sign` API.
      *
-     * @param Registration one of the user's existing Registrations
+     * @param Registration $reg one of the user's existing Registrations
      * @return SignRequest
      */
-    public function generateSignRequest(Registration $reg): SignRequest {
+    public function generateSignRequest(Registration $reg): SignRequest
+    {
         return (new SignRequest())
             ->setAppId($this->getAppId())
             ->setChallenge($this->generateChallenge())
@@ -318,10 +338,11 @@ class Server
     /**
      * Wraps generateSignRequest for multiple Registrations
      *
-     * @param array<Registration>
-     * @return array<SignRequest>
+     * @param Registration[] $registrations
+     * @return SignRequest[]
      */
-    public function generateSignRequests(array $registrations): array {
+    public function generateSignRequests(array $registrations): array
+    {
         return array_values(array_map([$this, 'generateSignRequest'], $registrations));
     }
 
@@ -330,8 +351,10 @@ class Server
      * key handle value. If one is found, it is returned; if not, this returns
      * null.
      *
-     * @param array<> haystack to search
-     * @param string key handle to find in haystack
+     * TODO: create and implement a HasKeyHandle interface of sorts to type
+     * this better
+     * @param array $objects haystack to search
+     * @param string $keyHandle key handle to find in haystack
      * @return mixed element from haystack
      * @return null if no element matches
      */
@@ -352,7 +375,8 @@ class Server
      *
      * @return string
      */
-    private function generateChallenge(): string {
+    private function generateChallenge(): string
+    {
         // FIDO Alliance spec suggests a minimum of 8 random bytes
         return toBase64Web(\random_bytes(16));
     }
@@ -362,8 +386,8 @@ class Server
      * user-provided value. A mismatch will throw a SE. Future
      * versions may also enforce a timing window.
      *
-     * @param ChallengeProvider source of known challenge
-     * @param ChallengeProvider user-provided value
+     * @param ChallengeProvider $from source of known challenge
+     * @param ChallengeProvider $to user-provided value
      * @return true on success
      * @throws SE on failure
      */

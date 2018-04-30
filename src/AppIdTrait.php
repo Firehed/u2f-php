@@ -7,11 +7,13 @@ trait AppIdTrait
 {
     private $appId;
 
-    public function getAppId(): string {
+    public function getAppId(): string
+    {
         return $this->appId;
     }
 
-    public function setAppId(string $appId): self {
+    public function setAppId(string $appId): self
+    {
         $this->appId = $appId;
         return $this;
     }
@@ -19,8 +21,8 @@ trait AppIdTrait
     /**
      * @return the raw SHA-256 hash of the App ID
      */
-    public function getApplicationParameter(): string {
+    public function getApplicationParameter(): string
+    {
         return hash('sha256', $this->appId, true);
     }
-
 }

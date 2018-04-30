@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace Firehed\U2F;
+
 use Exception;
 
 class InvalidDataException extends Exception
@@ -16,11 +17,11 @@ class InvalidDataException extends Exception
         self::PUBLIC_KEY_LENGTH => 'Public key length invalid, must be %s bytes',
     ];
 
-    public function __construct(int $code, string ...$args) {
+    public function __construct(int $code, string ...$args)
+    {
         $format = self::MESSAGES[$code] ?? 'Default message';
 
         $message = sprintf($format, ...$args);
         parent::__construct($message, $code);
     }
-
 }

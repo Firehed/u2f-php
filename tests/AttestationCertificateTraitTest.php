@@ -14,21 +14,29 @@ class AttestationCertificateTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::getAttestationCertificateBinary
      * @covers ::setAttestationCertificate
      */
-    public function testAccessors() {
+    public function testAccessors()
+    {
         $obj = new class {
             use AttestationCertificateTrait;
         };
         $cert = bin2hex(random_bytes(35));
-        $this->assertSame($obj, $obj->setAttestationCertificate($cert),
-            'setAttestationCertificate should return $this');
-        $this->assertSame($cert, $obj->getAttestationCertificateBinary(),
-            'getAttestationCertificate should return the challenge that was set');
+        $this->assertSame(
+            $obj,
+            $obj->setAttestationCertificate($cert),
+            'setAttestationCertificate should return $this'
+        );
+        $this->assertSame(
+            $cert,
+            $obj->getAttestationCertificateBinary(),
+            'getAttestationCertificate should return the challenge that was set'
+        );
     }
 
     /**
      * @covers ::getAttestationCertificatePem
      */
-    public function testGetAttestationCertificatePem() {
+    public function testGetAttestationCertificatePem()
+    {
         $obj = new class {
             use AttestationCertificateTrait;
         };
@@ -37,14 +45,18 @@ class AttestationCertificateTraitTest extends \PHPUnit\Framework\TestCase
         $expected .= chunk_split(base64_encode($raw), 64);
         $expected .= "-----END CERTIFICATE-----";
         $obj->setAttestationCertificate($raw);
-        $this->assertSame($expected, $obj->getAttestationCertificatePem(),
-            'PEM-formatted certificate was incorrect');
+        $this->assertSame(
+            $expected,
+            $obj->getAttestationCertificatePem(),
+            'PEM-formatted certificate was incorrect'
+        );
     }
 
     /**
      * @covers ::verifyIssuerAgainstTrustedCAs
      */
-    public function testSuccessfulCAVerification() {
+    public function testSuccessfulCAVerification()
+    {
         $class = $this->getObjectWithYubicoCert();
         $certs = [dirname(__DIR__).'/CAcerts/yubico.pem'];
         $this->assertTrue($class->verifyIssuerAgainstTrustedCAs($certs));
@@ -53,7 +65,8 @@ class AttestationCertificateTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::verifyIssuerAgainstTrustedCAs
      */
-    public function testFailedCAVerification() {
+    public function testFailedCAVerification()
+    {
         $class = $this->getObjectWithYubicoCert();
         $certs = [__DIR__.'/verisign_only_for_unit_tests.pem'];
         $this->expectException(SecurityException::class);
@@ -64,7 +77,8 @@ class AttestationCertificateTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::verifyIssuerAgainstTrustedCAs
      */
-    public function testFailedCAVerificationFromNoCAs() {
+    public function testFailedCAVerificationFromNoCAs()
+    {
         $class = $this->getObjectWithYubicoCert();
         $certs = [];
         $this->expectException(SecurityException::class);
@@ -80,9 +94,11 @@ class AttestationCertificateTraitTest extends \PHPUnit\Framework\TestCase
      *
      * @return mixed Some class using AttestationCertificateTrait
      */
-    private function getObjectWithYubicoCert() {
+    private function getObjectWithYubicoCert()
+    {
         $response = RegisterResponse::fromJson(
-            file_get_contents(__DIR__.'/register_response.json'));
+            file_get_contents(__DIR__.'/register_response.json')
+        );
         // Sanity check that the response actually imlements this trait, rather
         // than doing all sorts of magic
         $check = AttestationCertificateTrait::class;

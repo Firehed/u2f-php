@@ -12,26 +12,34 @@ class InvalidDataExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers ::__construct
-     * @dataProvider invalidDataExceptionCodes 
+     * @dataProvider invalidDataExceptionCodes
      */
-    public function testInvalidDataException(int $code) {
+    public function testInvalidDataException(int $code)
+    {
         $ex = new InvalidDataException($code, 'Prefill');
-        $this->assertInstanceOf(InvalidDataException::class,
+        $this->assertInstanceOf(
+            InvalidDataException::class,
             $ex,
-            '__construct failed');
-        $this->assertNotEmpty($ex->getMessage(),
-            'A predefined message should have been used');
-        $this->assertRegExp('/Prefill/', $ex->getMessage(),
-            'The sprintf args were not added to the exception message');
+            '__construct failed'
+        );
+        $this->assertNotEmpty(
+            $ex->getMessage(),
+            'A predefined message should have been used'
+        );
+        $this->assertRegExp(
+            '/Prefill/',
+            $ex->getMessage(),
+            'The sprintf args were not added to the exception message'
+        );
     }
 
     // -( DataProviders )------------------------------------------------------
-    public function invalidDataExceptionCodes() {
+    public function invalidDataExceptionCodes()
+    {
         return [
             [InvalidDataException::MISSING_KEY],
             [InvalidDataException::MALFORMED_DATA],
             [InvalidDataException::PUBLIC_KEY_LENGTH],
         ];
     }
-
 }

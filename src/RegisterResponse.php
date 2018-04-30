@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace Firehed\U2F;
+
 use Firehed\U2F\InvalidDataException as IDE;
 
 class RegisterResponse
@@ -10,7 +11,8 @@ class RegisterResponse
     use ECPublicKeyTrait;
     use ResponseTrait;
 
-    protected function parseResponse(array $response): self {
+    protected function parseResponse(array $response): self
+    {
         $this->validateKeyInArray('registrationData', $response);
         // Binary string as defined by
         // U2F 1.0 Raw Message Format Sec. 4.3
@@ -19,16 +21,20 @@ class RegisterResponse
 
         // Basic fixed length check
         if (strlen($regData) < 67) {
-            throw new IDE(IDE::MALFORMED_DATA,
-                'registrationData is missing information');
+            throw new IDE(
+                IDE::MALFORMED_DATA,
+                'registrationData is missing information'
+            );
         }
 
         $offset = 0; // Number of bytes read so far (think fread/fseek)
 
         $reserved = ord($regData[$offset]);
         if ($reserved !== 5) {
-            throw new IDE(IDE::MALFORMED_DATA,
-                'reserved byte');
+            throw new IDE(
+                IDE::MALFORMED_DATA,
+                'reserved byte'
+            );
         }
         $offset += 1;
 
@@ -40,8 +46,10 @@ class RegisterResponse
 
         // Dynamic length check through key handle
         if (strlen($regData) < $offset+$keyHandleLength) {
-            throw new IDE(IDE::MALFORMED_DATA,
-                'key handle length');
+            throw new IDE(
+                IDE::MALFORMED_DATA,
+                'key handle length'
+            );
         }
         $this->setKeyHandle(substr($regData, $offset, $keyHandleLength));
         $offset += $keyHandleLength;
@@ -59,16 +67,20 @@ class RegisterResponse
         $remain = substr($regData, $offset);
         $b0 = ord($remain[0]);
         if (($b0 & 0x1F) != 0x10) {
-            throw new IDE(IDE::MALFORMED_DATA,
-                'starting byte of attestation certificate');
+            throw new IDE(
+                IDE::MALFORMED_DATA,
+                'starting byte of attestation certificate'
+            );
         }
         $length = ord($remain[1]);
         if (($length & 0x80) == 0x80) {
             $needed = $length ^ 0x80;
             if ($needed > 4) {
                 // This would be a >4GB cert, reject it out of hand
-                throw new IDE(IDE::MALFORMED_DATA,
-                    'certificate length');
+                throw new IDE(
+                    IDE::MALFORMED_DATA,
+                    'certificate length'
+                );
             }
             $bytes = 0;
             // Start 2 bytes in, for SEQUENCE and its LENGTH
@@ -83,8 +95,10 @@ class RegisterResponse
         // data, in case a malformed cert was provided to trigger an overflow
         // during parsing
         if ($length + $offset > strlen($regData)) {
-            throw new IDE(IDE::MALFORMED_DATA,
-                'certificate and sigature length');
+            throw new IDE(
+                IDE::MALFORMED_DATA,
+                'certificate and sigature length'
+            );
         }
         $this->setAttestationCertificate(substr($regData, $offset, $length));
         $offset += $length;
@@ -94,5 +108,4 @@ class RegisterResponse
 
         return $this;
     }
-
 }

@@ -14,17 +14,23 @@ class SecurityExceptionTest extends \PHPUnit\Framework\TestCase
      * @covers ::__construct
      * @dataProvider securityExceptionCodes
      */
-    public function testSecurityException(int $code) {
+    public function testSecurityException(int $code)
+    {
         $ex = new SecurityException($code);
-        $this->assertInstanceOf(SecurityException::class,
+        $this->assertInstanceOf(
+            SecurityException::class,
             $ex,
-            '__construct failed');
-        $this->assertNotEmpty($ex->getMessage(),
-            'A predefined message should have been used');
+            '__construct failed'
+        );
+        $this->assertNotEmpty(
+            $ex->getMessage(),
+            'A predefined message should have been used'
+        );
     }
 
     // -( DataProviders )------------------------------------------------------
-    public function securityExceptionCodes() {
+    public function securityExceptionCodes()
+    {
         return [
             [SecurityException::SIGNATURE_INVALID],
             [SecurityException::COUNTER_USED],
@@ -33,5 +39,4 @@ class SecurityExceptionTest extends \PHPUnit\Framework\TestCase
             [SecurityException::NO_TRUSTED_CA],
         ];
     }
-
 }

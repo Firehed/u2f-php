@@ -14,17 +14,23 @@ class ClientErrorExceptionTest extends \PHPUnit\Framework\TestCase
      * @covers ::__construct
      * @dataProvider clientErrors
      */
-    public function testClientError(int $code) {
+    public function testClientError(int $code)
+    {
         $ex = new ClientErrorException($code);
-        $this->assertInstanceOf(ClientErrorException::class,
+        $this->assertInstanceOf(
+            ClientErrorException::class,
             $ex,
-            '__construct failed');
-        $this->assertNotEmpty($ex->getMessage(),
-            'A predefined message should have been used');
+            '__construct failed'
+        );
+        $this->assertNotEmpty(
+            $ex->getMessage(),
+            'A predefined message should have been used'
+        );
     }
 
     // -( DataProviders )------------------------------------------------------
-    public function clientErrors() {
+    public function clientErrors()
+    {
         return [
             [ClientError::OTHER_ERROR],
             [ClientError::BAD_REQUEST],
@@ -33,6 +39,4 @@ class ClientErrorExceptionTest extends \PHPUnit\Framework\TestCase
             [ClientError::TIMEOUT],
         ];
     }
-
-
 }
