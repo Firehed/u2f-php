@@ -5,7 +5,7 @@ namespace Firehed\U2F;
 
 use OutOfBoundsException;
 
-class Registration
+class Registration implements RegistrationInterface
 {
     use AttestationCertificateTrait;
     use ECPublicKeyTrait;
