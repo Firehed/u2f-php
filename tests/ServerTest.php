@@ -282,7 +282,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $json = file_get_contents(__DIR__.'/register_response.json');
         $data = json_decode($json, true);
         $reg = $data['registrationData'];
-        $reg[70] = $reg[70] ^ 0xFF; // Invert a byte in the key handle
+        $reg[70] = chr(ord($reg[70]) + 1); // Change a byte in the key handle
         $data['registrationData'] = $reg;
         $response = RegisterResponse::fromJson(json_encode($data));
 
@@ -302,7 +302,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $json = file_get_contents(__DIR__.'/register_response.json');
         $data = json_decode($json, true);
         $reg = $data['registrationData'];
-        $reg[3] = $reg[3] ^ 0xFF; // Invert a byte in the public key
+        $reg[3] = chr(ord($reg[3]) + 1); // Change a byte in the public key
         $data['registrationData'] = $reg;
         $response = RegisterResponse::fromJson(json_encode($data));
 
