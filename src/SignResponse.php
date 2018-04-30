@@ -13,14 +13,17 @@ class SignResponse
     private $counter = -1;
     private $user_presence = 0;
 
-    public function getCounter(): int {
+    public function getCounter(): int
+    {
         return $this->counter;
     }
-    public function getUserPresenceByte(): int {
+    public function getUserPresenceByte(): int
+    {
         return $this->user_presence;
     }
 
-    protected function parseResponse(array $response): self {
+    protected function parseResponse(array $response): self
+    {
         $this->validateKeyInArray('keyHandle', $response);
         $this->setKeyHandle(fromBase64Web($response['keyHandle']));
 
@@ -39,5 +42,4 @@ class SignResponse
         $this->setSignature($decoded['signature']);
         return $this;
     }
-
 }

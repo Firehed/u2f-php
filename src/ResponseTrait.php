@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace Firehed\U2F;
+
 use Firehed\U2F\InvalidDataException as IDE;
 
 trait ResponseTrait
@@ -14,20 +15,24 @@ trait ResponseTrait
     private $signature = '';
 
     // Binary string of signature
-    public function getSignature(): string {
+    public function getSignature(): string
+    {
         return base64_decode($this->signature);
     }
 
-    public function getClientData(): ClientData {
+    public function getClientData(): ClientData
+    {
         return $this->clientData;
     }
 
-    protected function setSignature(string $signature): self {
+    protected function setSignature(string $signature): self
+    {
         $this->signature = base64_encode($signature);
         return $this;
     }
 
-    public static function fromJson(string $json): self {
+    public static function fromJson(string $json): self
+    {
         $data = json_decode($json, true);
         if (json_last_error() !== \JSON_ERROR_NONE) {
             throw new IDE(IDE::MALFORMED_DATA, 'JSON');
@@ -44,7 +49,8 @@ trait ResponseTrait
 
     abstract protected function parseResponse(array $response): self;
 
-    private function validateKeyInArray(string $key, array $data): bool {
+    private function validateKeyInArray(string $key, array $data): bool
+    {
         if (!isset($data[$key])) {
             throw new IDE(IDE::MISSING_KEY, $key);
         }
@@ -53,5 +59,4 @@ trait ResponseTrait
         }
         return true;
     }
-
 }

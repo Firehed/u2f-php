@@ -14,13 +14,15 @@ class VersionTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getVersion
      */
-    public function testGetVersion() {
+    public function testGetVersion()
+    {
         $obj = new class {
             use VersionTrait;
         };
-        $this->assertSame('U2F_V2', $obj->getVersion(),
-            'getVersion should always return the string "U2F_V2" per the spec');
+        $this->assertSame(
+            'U2F_V2',
+            $obj->getVersion(),
+            'getVersion should always return the string "U2F_V2" per the spec'
+        );
     }
-
-
 }

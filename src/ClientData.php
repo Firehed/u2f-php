@@ -14,7 +14,8 @@ class ClientData implements JsonSerializable, ChallengeProvider
     private $origin;
     private $typ;
 
-    public static function fromJson(string $json) {
+    public static function fromJson(string $json)
+    {
         $data = json_decode($json, true);
         if (json_last_error() !== \JSON_ERROR_NONE) {
             throw new IDE(IDE::MALFORMED_DATA, 'json');
@@ -34,13 +35,14 @@ class ClientData implements JsonSerializable, ChallengeProvider
      * @return $this
      * @throws InvalidDataException if a non-conforming value is provided
      */
-    private function setType(string $type): self {
+    private function setType(string $type): self
+    {
         switch ($type) {
-        case 'navigator.id.getAssertion': // fall through
-        case 'navigator.id.finishEnrollment':
-            break;
-        default:
-            throw new IDE(IDE::MALFORMED_DATA, 'typ');
+            case 'navigator.id.getAssertion': // fall through
+            case 'navigator.id.finishEnrollment':
+                break;
+            default:
+                throw new IDE(IDE::MALFORMED_DATA, 'typ');
         }
         $this->typ = $type;
         return $this;
@@ -54,7 +56,8 @@ class ClientData implements JsonSerializable, ChallengeProvider
      * @return mixed The data, if present
      * @throws InvalidDataException if not prsent
      */
-    private function validateKey(string $key, array $data) {
+    private function validateKey(string $key, array $data)
+    {
         if (!array_key_exists($key, $data)) {
             throw new IDE(IDE::MISSING_KEY, $key);
         }
@@ -62,12 +65,14 @@ class ClientData implements JsonSerializable, ChallengeProvider
     }
 
     // Returns the SHA256 hash of this object per the raw message formats spec
-    public function getChallengeParameter(): string {
+    public function getChallengeParameter(): string
+    {
         $json = json_encode($this, \JSON_UNESCAPED_SLASHES);
         return hash('sha256', $json, true);
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return [
             'typ' => $this->typ,
             'challenge' => $this->getChallenge(),
@@ -75,5 +80,4 @@ class ClientData implements JsonSerializable, ChallengeProvider
             'cid_pubkey' => $this->cid_pubkey,
         ];
     }
-
 }

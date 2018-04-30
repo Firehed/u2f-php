@@ -15,18 +15,26 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
      * @covers ::setCounter
      * @covers ::getCounter
      */
-    public function testCounter() {
+    public function testCounter()
+    {
         $obj = new Registration();
-        $this->assertSame($obj, $obj->setCounter(1833),
-            'setCounter should return $this');
-        $this->assertSame(1833, $obj->getCounter(),
-            'getCounter should return the set value');
+        $this->assertSame(
+            $obj,
+            $obj->setCounter(1833),
+            'setCounter should return $this'
+        );
+        $this->assertSame(
+            1833,
+            $obj->getCounter(),
+            'getCounter should return the set value'
+        );
     }
 
     /**
      * @covers ::setCounter
      */
-    public function testSetCounterRejectsNegativeNumbers() {
+    public function testSetCounterRejectsNegativeNumbers()
+    {
         $obj = new Registration();
         $this->expectException(\OutOfBoundsException::class);
         $obj->setCounter(-1);

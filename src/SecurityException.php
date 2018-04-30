@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace Firehed\U2F;
+
 use Exception;
 
 class SecurityException extends Exception
@@ -20,8 +21,8 @@ class SecurityException extends Exception
         self::NO_TRUSTED_CA => 'The attestation certificate was not signed by any trusted Certificate Authority',
     ];
 
-    public function __construct(int $code) {
+    public function __construct(int $code)
+    {
         parent::__construct(self::MESSAGES[$code] ?? '', $code);
     }
-
 }

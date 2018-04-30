@@ -26,21 +26,24 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider clientErrors
      */
-    public function testErrorResponse(int $code) {
+    public function testErrorResponse(int $code)
+    {
         $json = sprintf('{"errorCode":%d}', $code);
         $this->expectException(ClientErrorException::class);
         $this->expectExceptionCode($code);
         RegisterResponse::fromJson($json);
     }
 
-    public function testFromJsonBadJson() {
+    public function testFromJsonBadJson()
+    {
         $json = 'this is not json';
         $this->expectException(InvalidDataException::class);
         // FIXME: code
         RegisterResponse::fromJson($json);
     }
 
-    public function testFromJsonMissingClientData() {
+    public function testFromJsonMissingClientData()
+    {
         $json = sprintf('{"registrationData":"%s"}', $this->validRegistrationData);
         $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode(InvalidDataException::MISSING_KEY);
@@ -48,7 +51,8 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         RegisterResponse::fromJson($json);
     }
 
-    public function testFromJsonMissingRegistrationData() {
+    public function testFromJsonMissingRegistrationData()
+    {
         $json = sprintf('{"clientData":"%s"}', $this->validClientData);
         $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode(InvalidDataException::MISSING_KEY);
@@ -59,7 +63,8 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider invalidRegistrationData
      */
-    public function testBadRegistrationData(string $registrationData) {
+    public function testBadRegistrationData(string $registrationData)
+    {
         $json = $this->buildJson($this->validClientData, $registrationData);
         $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode(InvalidDataException::MALFORMED_DATA);
@@ -72,7 +77,8 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
      * @covers ::getPublicKey
      * @covers ::getSignature
      */
-    public function testDataAccuracyAfterSuccessfulParsing() {
+    public function testDataAccuracyAfterSuccessfulParsing()
+    {
         $pubkey = "\x04".random_bytes(64);
         $handle = random_bytes(32);
         $st = "\x05".$pubkey."\x20".$handle;
@@ -83,19 +89,32 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         $json = $this->buildJson($this->validClientData, $reg);
         $response = RegisterResponse::fromJson($json);
 
-        $this->assertSame($pubkey, $response->getPublicKey(),
-            'Public key was not parsed correctly');
-        $this->assertSame($handle, $response->getKeyHandleBinary(),
-            'Key Handle was not parsed correctly');
-        $this->assertSame($cert, $response->getAttestationCertificateBinary(),
-            'Cert was not parsed correctly');
-        $this->assertSame($sig, $response->getSignature(),
-            'Signature was not parsed correctly');
+        $this->assertSame(
+            $pubkey,
+            $response->getPublicKey(),
+            'Public key was not parsed correctly'
+        );
+        $this->assertSame(
+            $handle,
+            $response->getKeyHandleBinary(),
+            'Key Handle was not parsed correctly'
+        );
+        $this->assertSame(
+            $cert,
+            $response->getAttestationCertificateBinary(),
+            'Cert was not parsed correctly'
+        );
+        $this->assertSame(
+            $sig,
+            $response->getSignature(),
+            'Signature was not parsed correctly'
+        );
     }
 
     // -( DataProviders )------------------------------------------------------
 
-    public function clientErrors() {
+    public function clientErrors()
+    {
         return [
             [ClientError::OTHER_ERROR],
             [ClientError::BAD_REQUEST],
@@ -105,9 +124,10 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function invalidRegistrationData(): array {
-        $bad_reserved_byte = "\x01".str_repeat('a',200);
-        $bad_pubkey_start = "\x05\x99".str_repeat('a',200);
+    public function invalidRegistrationData(): array
+    {
+        $bad_reserved_byte = "\x01".str_repeat('a', 200);
+        $bad_pubkey_start = "\x05\x99".str_repeat('a', 200);
         $pubkey_too_short = "\x05\x04".random_bytes(5);
         $handle_too_short = "\x05\x04".random_bytes(64)."\x20".random_bytes(16);
         
@@ -116,8 +136,8 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         $valid_start = "\x05\x04".random_bytes(64)."\x20".random_bytes(32);
         $bad_cert_start = "\x40".str_repeat('a', 100); // Must start with bxxx10000
         $crazy_long_cert = "\x30\x85".str_repeat('a', 100);
-        $too_short_cert = "\x30\x82\x01\x00".str_repeat('a',50); // x0100 bytes long
-        return array_map(function(string $s) {
+        $too_short_cert = "\x30\x82\x01\x00".str_repeat('a', 50); // x0100 bytes long
+        return array_map(function (string $s) {
             return [toBase64Web($s)];
         }, [
             $bad_reserved_byte,
@@ -132,8 +152,10 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
 
     // -( Helpers )------------------------------------------------------------
 
-    protected function buildJson($clientData, $registrationData): string {
-        return sprintf('{"clientData":"%s","registrationData":"%s"}',
+    protected function buildJson($clientData, $registrationData): string
+    {
+        return sprintf(
+            '{"clientData":"%s","registrationData":"%s"}',
             $clientData,
             $registrationData
         );
