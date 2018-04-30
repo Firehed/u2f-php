@@ -44,7 +44,7 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers Firehed\U2F\strlen
+     * @covers Firehed\U2F\substr
      * @dataProvider substrVectors
      */
     public function testSubstr(string $string, int $start, int $length = null, string $result)
