@@ -39,7 +39,6 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
      */
     public function testStrlen(string $string, int $length)
     {
-        $this->skipIfNotMultibyte();
         $this->assertSame(strlen($string), $length, 'Wrong length returned');
     }
 
@@ -49,7 +48,6 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
      */
     public function testSubstr(string $string, int $start, int $length = null, string $result)
     {
-        $this->skipIfNotMultibyte();
         $this->assertSame(
             $result,
             substr($string, $start, $length),
@@ -80,6 +78,7 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
 
     public function strlenVectors(): array
     {
+        $this->skipIfNotMultibyte();
         // Strlen should be un-overloaded to just count bytes
         return [
             ['ascii text', 10],
@@ -93,6 +92,7 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
 
     public function substrVectors(): array
     {
+        $this->skipIfNotMultibyte();
         return [
             // Substr should be un-overloaded to just work on bytes, resulting
             // in multibyte characters potentially getting cut in half
