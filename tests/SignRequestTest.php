@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class SignRequestTest extends \PHPUnit_Framework_TestCase
+class SignRequestTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers ::jsonSerialize

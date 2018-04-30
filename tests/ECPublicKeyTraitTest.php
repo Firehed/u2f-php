@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class ECPublicKeyTraitTest extends \PHPUnit_Framework_TestCase
+class ECPublicKeyTraitTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

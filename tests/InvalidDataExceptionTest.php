@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class InvalidDataExceptionTest extends \PHPUnit_Framework_TestCase
+class InvalidDataExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers ::__construct

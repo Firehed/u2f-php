@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class AttestationCertificateTraitTest extends \PHPUnit_Framework_TestCase
+class AttestationCertificateTraitTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers ::getAttestationCertificateBinary

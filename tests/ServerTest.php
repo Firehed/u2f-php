@@ -10,7 +10,7 @@ use TypeError;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class ServerTest extends \PHPUnit_Framework_TestCase
+class ServerTest extends \PHPUnit\Framework\TestCase
 {
     const APP_ID = 'https://u2f.example.com';
     const ENCODED_KEY_HANDLE = 'JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVaxTqSetHjr22tCjmYLQ';

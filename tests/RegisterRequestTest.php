@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class RegisterRequestTest extends \PHPUnit_Framework_TestCase
+class RegisterRequestTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

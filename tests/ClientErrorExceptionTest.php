@@ -8,7 +8,7 @@ namespace Firehed\U2F;
  * @covers ::<protected>
  * @covers ::<private>
  */
-class ClientErrorExceptionTest extends \PHPUnit_Framework_TestCase
+class ClientErrorExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers ::__construct
