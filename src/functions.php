@@ -4,8 +4,8 @@ namespace Firehed\U2F;
 
 /**
  * Takes a web-safe base64 encoded string and returns the decoded version
- * @param the encoded string
- * @return the raw binary string
+ * @param string $base64 the encoded string
+ * @return string the raw binary string
  */
 function fromBase64Web(string $base64): string {
     return base64_decode(strtr($base64, '-_', '+/'));
@@ -13,8 +13,8 @@ function fromBase64Web(string $base64): string {
 
 /**
  * Encodes any string to web-safe base64
- * @param the raw binary string
- * @return the encoded string
+ * @param string $binary the raw binary string
+ * @return string the encoded string
  */
 function toBase64Web(string $binary): string {
     return rtrim(strtr(base64_encode($binary), '+/', '-_'), '=');
@@ -29,7 +29,7 @@ function toBase64Web(string $binary): string {
  * set to a multi-byte character set, in which case it retains the
  * non-overloaded behavior.
  *
- * @param string The string being measured
+ * @param string $string The string being measured
  * @return int The length of the string, in bytes
  */
 function strlen(string $string): int {
@@ -44,9 +44,9 @@ function strlen(string $string): int {
  * set to a multi-byte character set, in which case it retains the
  * non-overloaded behavior.
  *
- * @param string The input string
- * @param int The starting point, in bytes
- * @param int The length, in bytes
+ * @param string $string The input string
+ * @param int $start The starting point, in bytes
+ * @param int $length The length, in bytes
  * @return string The extracted part of the string
  */
 function substr(string $string, int $start, int $length = null): string {

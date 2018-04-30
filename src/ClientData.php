@@ -30,7 +30,7 @@ class ClientData implements JsonSerializable, ChallengeProvider
     /**
      * Checks the 'typ' field against the allowed types in the U2F spec (sec.
      * 7.1)
-     * @param $type the 'typ' value
+     * @param string $type the 'typ' value
      * @return $this
      * @throws InvalidDataException if a non-conforming value is provided
      */
@@ -49,8 +49,8 @@ class ClientData implements JsonSerializable, ChallengeProvider
     /**
      * Checks for the presence of $key in $data. Returns the value if found,
      * throws an InvalidDataException if missing
-     * @param $key The array key to check
-     * @param $data The array to check in
+     * @param string $key The array key to check
+     * @param array $data The array to check in
      * @return mixed The data, if present
      * @throws InvalidDataException if not prsent
      */

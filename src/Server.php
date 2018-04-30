@@ -56,7 +56,7 @@ class Server
      * value, which *must* be persisted for the next authentication. If any
      * verification component fails, a `SE` will be thrown.
      *
-     * @param SignResponse the parsed response from the user
+     * @param SignResponse $response the parsed response from the user
      * @return Registration if authentication succeeds
      * @throws SE if authentication fails
      * @throws BadMethodCallException if a precondition is not met
@@ -174,7 +174,7 @@ class Server
      * returns a Registration object; if not, a SE will be
      * thrown and attempt to register the key must be aborted.
      *
-     * @param The response to verify
+     * @param RegisterResponse $resp The response to verify
      * @return Registration if the response is proven authentic
      * @throws SE if the response cannot be proven authentic
      * @throws BadMethodCallException if a precondition is not met
@@ -242,7 +242,7 @@ class Server
      * This method or disableCAVerification must be called before register() or
      * a SecurityException will always be thrown.
      *
-     * @param array<string> A list of file paths to device issuer CA certs
+     * @param string[] $CAs A list of file paths to device issuer CA certs
      * @return self
      */
     public function setTrustedCAs(array $CAs): self {
@@ -255,7 +255,7 @@ class Server
      * Provide the previously-generated RegisterRequest to be used when
      * verifying a RegisterResponse during register()
      *
-     * @param RegisterRequest
+     * @param RegisterRequest $request
      * @return self
      */
     public function setRegisterRequest(RegisterRequest $request): self {
@@ -266,7 +266,7 @@ class Server
     /**
      * Provide a user's existing Registrations to be used during authentication
      *
-     * @param array<Registration>
+     * @param Registration[] $registrations
      * @return self
      */
     public function setRegistrations(array $registrations): self {
@@ -280,7 +280,7 @@ class Server
      * existing Registrations, of of which should be signed and will be
      * verified during authenticate()
      *
-     * @param array<SignRequest>
+     * @param SignRequest[] $signRequests
      * @return self
      */
     public function setSignRequests(array $signRequests): self {
@@ -305,7 +305,7 @@ class Server
      * Creates a new SignRequest for an existing Registration for an
      * authenticating user, used by the `u2f.sign` API.
      *
-     * @param Registration one of the user's existing Registrations
+     * @param Registration $reg one of the user's existing Registrations
      * @return SignRequest
      */
     public function generateSignRequest(Registration $reg): SignRequest {
@@ -318,8 +318,8 @@ class Server
     /**
      * Wraps generateSignRequest for multiple Registrations
      *
-     * @param array<Registration>
-     * @return array<SignRequest>
+     * @param Registration[] $registrations
+     * @return SignRequest[]
      */
     public function generateSignRequests(array $registrations): array {
         return array_values(array_map([$this, 'generateSignRequest'], $registrations));
@@ -330,8 +330,10 @@ class Server
      * key handle value. If one is found, it is returned; if not, this returns
      * null.
      *
-     * @param array<> haystack to search
-     * @param string key handle to find in haystack
+     * TODO: create and implement a HasKeyHandle interface of sorts to type
+     * this better
+     * @param array $objects haystack to search
+     * @param string $keyHandle key handle to find in haystack
      * @return mixed element from haystack
      * @return null if no element matches
      */
@@ -362,8 +364,8 @@ class Server
      * user-provided value. A mismatch will throw a SE. Future
      * versions may also enforce a timing window.
      *
-     * @param ChallengeProvider source of known challenge
-     * @param ChallengeProvider user-provided value
+     * @param ChallengeProvider $from source of known challenge
+     * @param ChallengeProvider $to user-provided value
      * @return true on success
      * @throws SE on failure
      */
