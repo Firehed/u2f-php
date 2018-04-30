@@ -222,7 +222,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->server->setTrustedCAs($CAs);
 
         try {
-            $this->server
+            $reg = $this->server
                 ->setRegisterRequest($request)
                 ->register($response);
         } catch (SecurityException $e) {
@@ -231,7 +231,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             }
             throw $e;
         }
-        // Implicit pass - no exceptions should be thrown at all
+        $this->assertInstanceOf(Registration::class, $reg);
     }
 
     /**
