@@ -11,14 +11,40 @@ namespace Firehed\U2F;
 class RegisterResponseTest extends \PHPUnit\Framework\TestCase
 {
 
-    private $validClientData = 'eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZmluaXNoRW5yb2xsbWVudCIsImNoYWxsZW5nZSI6IkJyQWN4dGIxOWFYNTRoN0Y2T0NKWVptQ3prZHlHV0Nib3NEcHpNMUh2MkUiLCJvcmlnaW4iOiJodHRwczovL3UyZi5lcmljc3Rlcm4uY29tIiwiY2lkX3B1YmtleSI6IiJ9';
-    private $validRegistrationData = "BQS55FfGvxbgmcNO1cpNhdr4r-CMSbMtuhiMMJbXqd_3FD8Aah2X_n4ZiyBlgBqbbe4RdyksR7ZXoqPYT47-tmeWQJhf7xs1T8ObBRpkFi_VWG5oFJe499mQYxcj9BR0G8B5fjkYbUuPCwNRiscOP8P18ep6V1OOulT3tq6kBC-94xQwggItMIIBF6ADAgECAgQFtgV5MAsGCSqGSIb3DQEBCzAuMSwwKgYDVQQDEyNZdWJpY28gVTJGIFJvb3QgQ0EgU2VyaWFsIDQ1NzIwMDYzMTAgFw0xNDA4MDEwMDAwMDBaGA8yMDUwMDkwNDAwMDAwMFowKDEmMCQGA1UEAwwdWXViaWNvIFUyRiBFRSBTZXJpYWwgOTU4MTUwMzMwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAT9uN6zoe1w62NsBm62AGmWpflw_LXbiPw7MF1B5ZZvDBtUuFL-8KCQftF_O__CnU0yG5z4qEos6qA4yr011ZjeoyYwJDAiBgkrBgEEAYLECgIEFTEuMy42LjEuNC4xLjQxNDgyLjEuMTALBgkqhkiG9w0BAQsDggEBAH7T-2zMJSAT-C8hjCo32mAx0g5_MIHa_K6xKPx_myM5FL-2TWE18XziIfp2T0U-8Sc6jOlllWRCuy8eR0g_c33LyYtYU3f-9QsnDgKJ-IQ28a3PSbJiHuXjAt9VW5q3QnLgafkYFJs97E8SIosQwPiN42r1inS7RCuFrgBTZL2mcCBY_B8th5tTARHqYOhsY_F_pZRMyD8KommEiz7jiKbAnmsFlT_LuPR-g6J-AHKmPDKtZIZOkm1xEvoZl_eDllb7syvo94idDwFFUZonr92ORrBMpCkNhUC2NLiGFh51iMhimdzdZDXRZ4o6bwp0gpxN0_cMNSTR3fFteK3SG2QwRAIgFTLJPY9_a0ZPujRfLufS-9ANCWemIWPHqs3icavMJIgCIFH5MSGDFkuY_NWhKa4mbLdbP6r7wMwspwHPG5_Xf48V";
+    private $validClientData =
+        'eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZmluaXNoRW5yb2xsbWVudCIsImNoYWxsZW5nZSI6I'.
+        'kJyQWN4dGIxOWFYNTRoN0Y2T0NKWVptQ3prZHlHV0Nib3NEcHpNMUh2MkUiLCJvcmlnaW'.
+        '4iOiJodHRwczovL3UyZi5lcmljc3Rlcm4uY29tIiwiY2lkX3B1YmtleSI6IiJ9';
+
+    private $validRegistrationData =
+        'BQS55FfGvxbgmcNO1cpNhdr4r-CMSbMtuhiMMJbXqd_3FD8Aah2X_n4ZiyBlgBqbbe4Rd'.
+        'yksR7ZXoqPYT47-tmeWQJhf7xs1T8ObBRpkFi_VWG5oFJe499mQYxcj9BR0G8B5fjkYbU'.
+        'uPCwNRiscOP8P18ep6V1OOulT3tq6kBC-94xQwggItMIIBF6ADAgECAgQFtgV5MAsGCSq'.
+        'GSIb3DQEBCzAuMSwwKgYDVQQDEyNZdWJpY28gVTJGIFJvb3QgQ0EgU2VyaWFsIDQ1NzIw'.
+        'MDYzMTAgFw0xNDA4MDEwMDAwMDBaGA8yMDUwMDkwNDAwMDAwMFowKDEmMCQGA1UEAwwdW'.
+        'XViaWNvIFUyRiBFRSBTZXJpYWwgOTU4MTUwMzMwWTATBgcqhkjOPQIBBggqhkjOPQMBBw'.
+        'NCAAT9uN6zoe1w62NsBm62AGmWpflw_LXbiPw7MF1B5ZZvDBtUuFL-8KCQftF_O__CnU0'.
+        'yG5z4qEos6qA4yr011ZjeoyYwJDAiBgkrBgEEAYLECgIEFTEuMy42LjEuNC4xLjQxNDgy'.
+        'LjEuMTALBgkqhkiG9w0BAQsDggEBAH7T-2zMJSAT-C8hjCo32mAx0g5_MIHa_K6xKPx_m'.
+        'yM5FL-2TWE18XziIfp2T0U-8Sc6jOlllWRCuy8eR0g_c33LyYtYU3f-9QsnDgKJ-IQ28a'.
+        '3PSbJiHuXjAt9VW5q3QnLgafkYFJs97E8SIosQwPiN42r1inS7RCuFrgBTZL2mcCBY_B8'.
+        'th5tTARHqYOhsY_F_pZRMyD8KommEiz7jiKbAnmsFlT_LuPR-g6J-AHKmPDKtZIZOkm1x'.
+        'EvoZl_eDllb7syvo94idDwFFUZonr92ORrBMpCkNhUC2NLiGFh51iMhimdzdZDXRZ4o6b'.
+        'wp0gpxN0_cMNSTR3fFteK3SG2QwRAIgFTLJPY9_a0ZPujRfLufS-9ANCWemIWPHqs3ica'.
+        'vMJIgCIFH5MSGDFkuY_NWhKa4mbLdbP6r7wMwspwHPG5_Xf48V';
 
     /**
      * @covers ::fromJson
      */
-    public function testFromJson() {
-        $json = sprintf('{"registrationData":"%s","version":"U2F_V2","challenge":"BrAcxtb19aX54h7F6OCJYZmCzkdyGWCbosDpzM1Hv2E","appId":"https://u2f.ericstern.com","clientData":"%s"}', $this->validRegistrationData, $this->validClientData);;
+    public function testFromJson()
+    {
+        $json = json_encode([
+            'registrationData' => $this->validRegistrationData,
+            'version' => 'U2F_V2',
+            'challenge' => 'BrAcxtb19aX54h7F6OCJYZmCzkdyGWCbosDpzM1Hv2E',
+            'appId' => 'https://u2f.ericstern.com',
+            'clientData' => $this->validClientData,
+        ]);
         $response = RegisterResponse::fromJson($json);
         $this->assertInstanceOf(RegisterResponse::class, $response);
     }

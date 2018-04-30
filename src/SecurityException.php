@@ -15,7 +15,11 @@ class SecurityException extends Exception
 
     const MESSAGES = [
         self::SIGNATURE_INVALID => 'Signature verification failed',
-        self::COUNTER_USED => 'Response counter value is too low, indicating a possible replay attack or cloned token. It is also possible but unlikely that the token\'s internal counter wrapped around. This token should be invalidated or flagged for review.',
+        self::COUNTER_USED =>
+            'Response counter value is too low, indicating a possible replay '.
+            'attack or cloned token. It is also possible but unlikely that '.
+            'the token\'s internal counter wrapped around. This token should '.
+            'be invalidated or flagged for review.',
         self::CHALLENGE_MISMATCH => 'Response challenge does not match request',
         self::KEY_HANDLE_UNRECOGNIZED => 'Key handle has not been registered',
         self::NO_TRUSTED_CA => 'The attestation certificate was not signed by any trusted Certificate Authority',

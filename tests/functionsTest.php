@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
-class functionsTest extends \PHPUnit\Framework\TestCase
+class FunctionsTest extends \PHPUnit\Framework\TestCase
 {
 
 

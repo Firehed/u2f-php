@@ -13,8 +13,14 @@ use TypeError;
 class ServerTest extends \PHPUnit\Framework\TestCase
 {
     const APP_ID = 'https://u2f.example.com';
-    const ENCODED_KEY_HANDLE = 'JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVaxTqSetHjr22tCjmYLQ';
-    const ENCODED_PUBLIC_KEY = 'BEyIn4ldTViNAgceMA/YgRX1DlJR3bSF39drG44Fx1E2LaF9Md9RUN2CHyfzSokIjjCHP8jMsTYwdt0tKe6qLzc=';
+
+    const ENCODED_KEY_HANDLE =
+        'JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVax'.
+        'TqSetHjr22tCjmYLQ';
+
+    const ENCODED_PUBLIC_KEY =
+        'BEyIn4ldTViNAgceMA/YgRX1DlJR3bSF39drG44Fx1E2LaF9Md9RUN2CHyfzSokIjjCHP'.
+        '8jMsTYwdt0tKe6qLzc=';
 
     private $server;
 

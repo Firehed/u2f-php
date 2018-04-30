@@ -12,9 +12,19 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
 {
 
     const JSON_FORMAT = '{"keyHandle":"%s","clientData":"%s","signatureData":"%s"}';
-    private $valid_key_handle = 'JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVaxTqSetHjr22tCjmYLQ';
-    private $valid_client_data = 'eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoid3QyemU4SXNrY1RPM25Jc08yRDJoRmpFNXRWRDA0MU5wblllc0xwSndlZyIsIm9yaWdpbiI6Imh0dHBzOi8vdTJmLmVyaWNzdGVybi5jb20iLCJjaWRfcHVia2V5IjoiIn0';
-    private $valid_signature_data = 'AQAAAC0wRgIhAJPy1RvD1WCw1XZX53BXydX_Kyf_XZQueFSIPigRF-D2AiEAx3bJr5ixrXGdUX1XooAfhz15ZIY8rC5H4qaW7gQspJ4';
+
+    private $valid_key_handle =
+        'JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVax'.
+        'TqSetHjr22tCjmYLQ';
+
+    private $valid_client_data =
+        'eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoid3Qye'.
+        'mU4SXNrY1RPM25Jc08yRDJoRmpFNXRWRDA0MU5wblllc0xwSndlZyIsIm9yaWdpbiI6Im'.
+        'h0dHBzOi8vdTJmLmVyaWNzdGVybi5jb20iLCJjaWRfcHVia2V5IjoiIn0';
+
+    private $valid_signature_data =
+        'AQAAAC0wRgIhAJPy1RvD1WCw1XZX53BXydX_Kyf_XZQueFSIPigRF-D2AiEAx3bJr5ixr'.
+        'XGdUX1XooAfhz15ZIY8rC5H4qaW7gQspJ4';
 
     /**
      * @covers ::fromJson

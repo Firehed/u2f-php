@@ -16,7 +16,13 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
      */
     public function testFromValidJson()
     {
-        $goodJson = '{"typ":"navigator.id.finishEnrollment","challenge":"PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo","origin":"https://u2f.ericstern.com","cid_pubkey":""}';
+        $goodData = [
+            'typ' => 'navigator.id.finishEnrollment',
+            'challenge' => 'PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo',
+            'origin' => 'https://u2f.ericstern.com',
+            'cid_pubkey' => '',
+        ];
+        $goodJson = json_encode($goodData);
         $clientData = ClientData::fromJson($goodJson);
         $this->assertInstanceOf(ClientData::class, $clientData);
     }
@@ -35,7 +41,13 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
             'Test vector should have been 32 bytes'
         );
 
-        $goodJson = '{"typ":"navigator.id.finishEnrollment","challenge":"PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo","origin":"https://u2f.ericstern.com","cid_pubkey":""}';
+        $goodData = [
+            'typ' => 'navigator.id.finishEnrollment',
+            'challenge' => 'PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo',
+            'origin' => 'https://u2f.ericstern.com',
+            'cid_pubkey' => '',
+        ];
+        $goodJson = json_encode($goodData);
         $clientData = ClientData::fromJson($goodJson);
         $this->assertTrue(
             hash_equals($expected_param, $clientData->getChallengeParameter()),

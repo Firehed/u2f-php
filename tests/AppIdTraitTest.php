@@ -37,8 +37,11 @@ class AppIdTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getApplicationParameter
      */
-    public function testGetApplicationParameter() {
-        $obj = new class { use AppIdTrait; };
+    public function testGetApplicationParameter()
+    {
+        $obj = new class {
+            use AppIdTrait;
+        };
         $appId = 'https://u2f.example.com';
         $obj->setAppId($appId);
         $this->assertSame(
