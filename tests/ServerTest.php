@@ -98,6 +98,25 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @covers ::generateSignRequests
+     */
+    public function testGenerateSignRequests()
+    {
+        $registrations = [
+            (new Registration())->setKeyHandle(\random_bytes(16)),
+            (new Registration())->setKeyHandle(\random_bytes(16)),
+        ];
+        $signRequests = $this->server->generateSignRequests($registrations);
+
+        $this->assertInternalType('array', $signRequests);
+        foreach ($signRequests as $signRequest) {
+            $this->assertInstanceOf(SignRequest::class, $signRequest);
+        }
+        // This method is a simple map operation, so testGenerateSignRequest
+        // does the heavy lifting.
+    }
+
+    /**
      * @covers ::setRegisterRequest
      */
     public function testSetRegisterRequestReturnsSelf()
