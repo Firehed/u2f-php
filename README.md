@@ -3,7 +3,7 @@
 A PHP implementation of the FIDO U2F authentication standard
 
 [![Build Status](https://travis-ci.org/Firehed/u2f-php.svg?branch=master)](https://travis-ci.org/Firehed/u2f-php)
-[![Coverage Status](https://coveralls.io/repos/github/Firehed/u2f-php/badge.svg?branch=buildstatus)](https://coveralls.io/github/Firehed/u2f-php?branch=buildstatus)
+[![Coverage Status](https://coveralls.io/repos/github/Firehed/u2f-php/badge.svg)](https://coveralls.io/github/Firehed/u2f-php)
 
 ## Introduction
 
