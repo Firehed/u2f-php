@@ -16,6 +16,7 @@
         "php": ">=7.0"
     },
     "require-dev": {
+        "php-coveralls/php-coveralls": "^2.0",
         "phpunit/phpunit": "^7.0"
     },
     "autoload": {
