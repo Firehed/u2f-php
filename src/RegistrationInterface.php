@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
-use Serializable;
-
 /**
  * A U2F registration.
  */
