@@ -223,8 +223,8 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertSame(
-            $response->getPublicKey(),
-            $registration->getPublicKey(),
+            $response->getPublicKeyBinary(),
+            $registration->getPublicKeyBinary(),
             'Public key was not copied from response'
         );
     }

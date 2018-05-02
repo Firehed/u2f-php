@@ -28,7 +28,7 @@ class ECPublicKeyTraitTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertSame(
             $key,
-            $obj->getPublicKey(),
+            $obj->getPublicKeyBinary(),
             'getPublicKey should return the set value'
         );
     }

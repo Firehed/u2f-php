@@ -172,7 +172,7 @@ class Server
         return (new Registration())
             ->setAttestationCertificate($registration->getAttestationCertificateBinary())
             ->setKeyHandle($registration->getKeyHandleBinary())
-            ->setPublicKey($registration->getPublicKey())
+            ->setPublicKey($registration->getPublicKeyBinary())
             ->setCounter($response->getCounter());
     }
 
@@ -205,7 +205,7 @@ class Server
             $this->registerRequest->getApplicationParameter(),
             $resp->getClientData()->getChallengeParameter(),
             $resp->getKeyHandleBinary(),
-            $resp->getPublicKey()
+            $resp->getPublicKeyBinary()
         );
 
         $pem = $resp->getAttestationCertificatePem();
@@ -228,7 +228,7 @@ class Server
             ->setAttestationCertificate($resp->getAttestationCertificateBinary())
             ->setCounter(0) // The response does not include this
             ->setKeyHandle($resp->getKeyHandleBinary())
-            ->setPublicKey($resp->getPublicKey());
+            ->setPublicKey($resp->getPublicKeyBinary());
     }
 
     /**
