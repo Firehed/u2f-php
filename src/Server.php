@@ -50,23 +50,23 @@ class Server
 
     /**
      * This method authenticates a `SignResponse` against outstanding
-     * `Registrations` and their corresponding `SignRequest`s. If the
-     * response's signature validates and the counter hasn't done anything
-     * strange, the Registration will be returned with an updated counter
-     * value, which *must* be persisted for the next authentication. If any
-     * verification component fails, a `SE` will be thrown.
+     * registrations and their corresponding `SignRequest`s. If the response's
+     * signature validates and the counter hasn't done anything strange, the
+     * registration will be returned with an updated counter value, which *must*
+     * be persisted for the next authentication. If any verification component
+     * fails, a `SE` will be thrown.
      *
      * @param SignResponse $response the parsed response from the user
-     * @return Registration if authentication succeeds
+     * @return RegistrationInterface if authentication succeeds
      * @throws SE if authentication fails
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function authenticate(SignResponse $response): Registration
+    public function authenticate(SignResponse $response): RegistrationInterface
     {
         if (!$this->registrations) {
             throw new BadMethodCallException(
-                'Before calling authenticate(), provide `Registration`s with '.
-                'setRegistrations()'
+                'Before calling authenticate(), provide objects implementing'.
+                'RegistrationInterface with setRegistrations()'
             );
         }
         if (!$this->signRequests) {
@@ -179,15 +179,15 @@ class Server
     /**
      * This method authenticates a RegisterResponse against its corresponding
      * RegisterRequest by verifying the certificate and signature. If valid, it
-     * returns a Registration object; if not, a SE will be
-     * thrown and attempt to register the key must be aborted.
+     * returns a registration; if not, a SE will be thrown and attempt to
+     * register the key must be aborted.
      *
      * @param RegisterResponse $resp The response to verify
-     * @return Registration if the response is proven authentic
+     * @return RegistrationInterface if the response is proven authentic
      * @throws SE if the response cannot be proven authentic
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function register(RegisterResponse $resp): Registration
+    public function register(RegisterResponse $resp): RegistrationInterface
     {
         if (!$this->registerRequest) {
             throw new BadMethodCallException(
@@ -278,9 +278,10 @@ class Server
     }
 
     /**
-     * Provide a user's existing Registrations to be used during authentication
+     * Provide a user's existing registration to be used during
+     * authentication
      *
-     * @param Registration[] $registrations
+     * @param RegistrationInterface[] $registrations
      * @return self
      */
     public function setRegistrations(array $registrations): self
@@ -321,13 +322,13 @@ class Server
     }
 
     /**
-     * Creates a new SignRequest for an existing Registration for an
+     * Creates a new SignRequest for an existing registration for an
      * authenticating user, used by the `u2f.sign` API.
      *
-     * @param Registration $reg one of the user's existing Registrations
+     * @param RegistrationInterface $reg one of the user's existing Registrations
      * @return SignRequest
      */
-    public function generateSignRequest(Registration $reg): SignRequest
+    public function generateSignRequest(RegistrationInterface $reg): SignRequest
     {
         return (new SignRequest())
             ->setAppId($this->getAppId())
@@ -336,9 +337,9 @@ class Server
     }
 
     /**
-     * Wraps generateSignRequest for multiple Registrations
+     * Wraps generateSignRequest for multiple registrations
      *
-     * @param Registration[] $registrations
+     * @param RegistrationInterface[] $registrations
      * @return SignRequest[]
      */
     public function generateSignRequests(array $registrations): array

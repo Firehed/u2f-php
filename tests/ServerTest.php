@@ -200,7 +200,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ->setRegisterRequest($request)
             ->register($response);
         $this->assertInstanceOf(
-            Registration::class,
+            RegistrationInterface::class,
             $registration,
             'Server->register did not return a registration'
         );
@@ -311,7 +311,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             }
             throw $e;
         }
-        $this->assertInstanceOf(Registration::class, $reg);
+        $this->assertInstanceOf(RegistrationInterface::class, $reg);
     }
 
     /**
@@ -455,19 +455,21 @@ class ServerTest extends \PHPUnit\Framework\TestCase
                 ->setSignRequests([$request])
                 ->authenticate($response);
         $this->assertInstanceOf(
-            Registration::class,
+            RegistrationInterface::class,
             $return,
-            'A successful authentication should have returned a Registration'
+            'A successful authentication should have returned an object '.
+            'implementing RegistrationInterface'
         );
         $this->assertNotSame(
             $registration,
             $return,
-            'A new instance of Registration should have been returned'
+            'A new object implementing RegistrationInterface should have been '.
+            'returned'
         );
         $this->assertSame(
             $response->getCounter(),
             $return->getCounter(),
-            'The new Registration\'s counter did not match the Response'
+            'The new registration\'s counter did not match the Response'
         );
     }
 
@@ -684,7 +686,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ;
     }
 
-    private function getDefaultRegistration(): Registration
+    private function getDefaultRegistration(): RegistrationInterface
     {
         // From database attached to the authenticating user
         return  (new Registration())
