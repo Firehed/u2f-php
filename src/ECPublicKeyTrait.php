@@ -16,6 +16,8 @@ trait ECPublicKeyTrait
      */
     public function getPublicKey(): string
     {
+        trigger_error('Please use getPublicKeyBinary().', E_USER_DEPRECATED);
+
         return base64_decode($this->pubKey);
     }
 
