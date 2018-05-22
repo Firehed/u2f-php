@@ -33,7 +33,7 @@ trait ECPublicKeyTrait
     // public key component
     public function getPublicKeyPem(): string
     {
-        $key = $this->getPublicKey();
+        $key = $this->getPublicKeyBinary();
 
         // Described in RFC 5480
         // Just use an OID calculator to figure out *that* encoding
