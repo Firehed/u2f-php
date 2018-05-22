@@ -10,8 +10,21 @@ trait ECPublicKeyTrait
     // Stored base64-encoded
     private $pubKey = '';
 
-    // Binary string of public key
+    /**
+     * @deprecated Methods that return binary values are suffixed with "binary".
+     * @return string Binary string of public key
+     */
     public function getPublicKey(): string
+    {
+        trigger_error('Please use getPublicKeyBinary().', E_USER_DEPRECATED);
+
+        return base64_decode($this->pubKey);
+    }
+
+    /**
+     * @return string The decoded public key.
+     */
+    public function getPublicKeyBinary(): string
     {
         return base64_decode($this->pubKey);
     }
@@ -20,7 +33,7 @@ trait ECPublicKeyTrait
     // public key component
     public function getPublicKeyPem(): string
     {
-        $key = $this->getPublicKey();
+        $key = $this->getPublicKeyBinary();
 
         // Described in RFC 5480
         // Just use an OID calculator to figure out *that* encoding
