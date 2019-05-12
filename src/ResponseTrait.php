@@ -20,12 +20,17 @@ trait ResponseTrait
         return base64_decode($this->signature);
     }
 
-    public function getClientData(): ClientData
+    public function getClientData(): ClientDataInterface
     {
         return $this->clientData;
     }
 
-    protected function setSignature(string $signature): self
+    public function setClientData(ClientDataInterface $clientData)
+    {
+        $this->clientData = $clientData;
+    }
+
+    public function setSignature(string $signature): self
     {
         $this->signature = base64_encode($signature);
         return $this;
