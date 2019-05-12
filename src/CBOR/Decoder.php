@@ -5,6 +5,7 @@ namespace Firehed\U2F\CBOR;
 
 use Exception;
 use Psr\Log\LoggerInterface;
+use OutOfBoundsException;
 
 class Decoder
 {
@@ -57,9 +58,16 @@ class Decoder
         return $this->i;
     }
 
+    /**
+     * Reads out of the CBOR string and returns the next decoded value
+     * @return mixed
+     */
     private function decodeItem()
     {
         $item = ord($this->read(1));
+        if ($item === 0xff) {
+            throw new Stop();
+        }
         $majorType = ($item & 0b11100000) >> 5;
         $addtlInfo = ($item & 0b00011111);
         $tn = self::NAME_MAP[$majorType];
@@ -110,7 +118,7 @@ class Decoder
             return $data;
         } else {
             $this->logger->error("DUI {$info}");
-            throw new OutOfBoundsException();
+            throw new OutOfBoundsException((string)$info);
         }
     }
 
@@ -124,6 +132,16 @@ class Decoder
 
     private function decodeBinaryString(int $addtlInfo): string
     {
+        if ($addtlInfo === 31) {
+            $ret = '';
+            while (true) {
+                try {
+                    $ret .= $this->decodeItem();
+                } catch (Stop $e) {
+                    return $ret;
+                }
+            }
+        }
         $length = $this->decodeUnsignedInteger($addtlInfo);
         $str = $this->read($length);
         $this->logger->debug("Bin string ($length) '(omitted)'");
@@ -132,6 +150,16 @@ class Decoder
 
     private function decodeText(int $addtlInfo): string
     {
+        if ($addtlInfo === 31) {
+            $ret = '';
+            while (true) {
+                try {
+                    $ret .= $this->decodeItem();
+                } catch (Stop $e) {
+                    return $ret;
+                }
+            }
+        }
         $length = $this->decodeUnsignedInteger($addtlInfo);
         $str = $this->read($length);
         $this->logger->debug("UTF8 string ($length) '$str'");
@@ -140,9 +168,19 @@ class Decoder
 
     private function decodeArray(int $addtlInfo): array
     {
+        $ret = [];
+        if ($addtlInfo === 31) {
+            $this->logger->debug("varlen array");
+            while (true) {
+                try {
+                    $ret[] = $this->decodeItem();
+                } catch (Stop $e) {
+                    return $ret;
+                }
+            }
+        }
         $numItems = $this->decodeUnsignedInteger($addtlInfo);
         $this->logger->debug("Array of length $numItems");
-        $ret = [];
         for ($i = 0; $i < $numItems; $i++) {
             $this->logger->debug("Getting array #$i");
             $ret[] = $this->decodeItem();
@@ -154,9 +192,20 @@ class Decoder
 
     private function decodeMap(int $addtlInfo): array
     {
+        $ret = [];
+        if ($addtlInfo === 31) {
+            $this->logger->debug("varlen map");
+            while (true) {
+                try {
+                    $key = $this->decodeItem();
+                    $ret[$key] = $this->decodeItem();
+                } catch (Stop $e) {
+                    return $ret;
+                }
+            }
+        }
         $numItems = $this->decodeUnsignedInteger($addtlInfo);
         $this->logger->debug("Map of length $numItems");
-        $ret = [];
         for ($i = 0; $i < $numItems; $i++) {
             $this->logger->debug("Get key $i");
             $key = $this->decodeItem();
@@ -201,15 +250,61 @@ class Decoder
             case 24:
                 throw new \Exception('idk');
             case 25:
-                return read_two_half_precisoin_float;
+                return $this->readHalfPrecisionFloat();
             case 26:
-                return read_four_single_float;
+                return $this->readSinglePrecisionFloat();
             case 27:
-                return read_eight_double;
+                return $this->readDoublePrecisionFloat();
             case 28: case 29: case 30:
                 return unassigned;
             case 31:
                 return break_code;
         }
     }
+
+    // Adapted from RFC7049 Appendix D
+    private function readHalfPrecisionFloat(): float
+    {
+        $bytes = $this->read(2);
+        $half = (ord($bytes[0]) << 8) + ord($bytes[1]);
+        $exp = ($half >> 10) & 0x1f;
+        $mant = $half & 0x3ff;
+
+        $val = 0;
+        if ($exp === 0) {
+            $val = self::ldexp($mant, -24);
+        } elseif ($exp !== 31) {
+            $val = self::ldexp($mant + 1024, $exp - 25);
+        } elseif ($mant === 0) {
+            $val = \INF;
+        } else {
+            $val = \NAN;
+        }
+
+        return ($half & 0x8000) ? -$val : $val;
+    }
+
+    // Adapted from C
+    private static function ldexp(float $x, int $exponent): float
+    {
+        return $x * pow(2, $exponent);
+    }
+
+    private function readSinglePrecisionFloat()
+    {
+        $bytes = $this->read(4);
+        $data = unpack('G', $bytes);
+        return $data[1];
+    }
+
+
+
+    private function readDoublePrecisionFloat()
+    {
+        $bytes = $this->read(8);
+        $data = unpack('E', $bytes);
+        return $data[1];
+    }
+
+
 }
