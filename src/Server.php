@@ -198,16 +198,7 @@ class Server
         $this->validateChallenge($resp->getClientData(), $this->registerRequest);
         // Check the Application Parameter?
 
-        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#registration-response-message-success
-        $signed_data = sprintf(
-            '%s%s%s%s%s',
-            chr(0),
-            $this->registerRequest->getApplicationParameter(),
-            $resp->getClientData()->getChallengeParameter(),
-            $resp->getKeyHandleBinary(),
-            $resp->getPublicKeyBinary()
-        );
-
+        $signed_data = $resp->getSignedData();
         $pem = $resp->getAttestationCertificatePem();
         if ($this->verifyCA) {
             $resp->verifyIssuerAgainstTrustedCAs($this->trustedCAs);

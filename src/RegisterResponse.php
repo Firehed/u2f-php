@@ -108,4 +108,17 @@ class RegisterResponse
 
         return $this;
     }
+
+    public function getSignedData(): string
+    {
+        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#registration-response-message-success
+        return sprintf(
+            '%s%s%s%s%s',
+            chr(0),
+            $this->getClientData()->getApplicationParameter(),
+            $this->getClientData()->getChallengeParameter(),
+            $this->getKeyHandleBinary(),
+            $this->getPublicKeyBinary()
+        );
+    }
 }

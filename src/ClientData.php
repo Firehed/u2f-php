@@ -3,16 +3,20 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
-use JsonSerializable;
 use Firehed\U2F\InvalidDataException as IDE;
 
-class ClientData implements JsonSerializable, ChallengeProvider
+class ClientData implements ClientDataInterface
 {
     use ChallengeTrait;
 
     private $cid_pubkey;
     private $origin;
     private $typ;
+
+    public function getApplicationParameter(): string
+    {
+        return hash('sha256', $this->origin, true);
+    }
 
     public static function fromJson(string $json)
     {
