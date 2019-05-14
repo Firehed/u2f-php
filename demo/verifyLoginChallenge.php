@@ -33,19 +33,10 @@ $cdj = unbyte($data['response']['clientDataJSON']);
 $sig = unbyte($data['response']['signature']);
 $rawAd = unbyte($data['response']['authenticatorData']);
 
-assert(strlen($rawAd) >= 37);
-$rpidHash = substr($rawAd, 0, 32);
-log(bin2hex($rpidHash), 'rpid hash');
-$flags = ord(substr($rawAd, 32, 1));
-$UP = ($flags & 0x01) === 0x01;
-$UV = ($flags & 0x04) === 0x04;
-$AT = ($flags & 0x40) === 0x40;
-$ED = ($flags & 0x80) === 0x80;
-$signCounter = unpack('N', substr($rawAd, 33, 4))[1];
-
+$ad = AuthenticatorData::parse($rawAd);
 $response->setKeyHandle(unbyte($data['rawId']));
-$response->setCounter($signCounter);
-$response->setUserPresenceByte($UP ? 1 : 0);
+$response->setCounter($ad->getSignCount());
+$response->setUserPresenceByte($ad->isUserPresent() ? 1 : 0);
 $response->setClientData(WebAuthnClientData::fromJson($cdj));
 $response->setSignature($sig);
 
