@@ -8,6 +8,9 @@
         "mfa",
         "security",
         "u2f",
+        "webauthn",
+        "web authentication",
+        "webauthentication",
         "yubico",
         "yubikey"
     ],
