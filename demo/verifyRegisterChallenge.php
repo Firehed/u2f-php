@@ -2,7 +2,7 @@
 
 namespace Firehed\U2F;
 
-use Firehed\U2F\CBOR\Decoder;
+use Firehed\CBOR\Decoder;
 
 $server = require 'bootstrap.php';
 

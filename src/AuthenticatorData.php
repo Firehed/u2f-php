@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
+use Firehed\CBOR\Decoder;
+
 class AuthenticatorData
 {
     /** @var bool */
@@ -56,7 +58,7 @@ class AuthenticatorData
 
             $rawCredentialPublicKey = substr($restOfBytes, 18 + $credentialIdLength);
 
-            $decoder = new CBOR\Decoder();
+            $decoder = new Decoder();
             $credentialPublicKey = $decoder->decode($rawCredentialPublicKey);
 
             $authData->ACD = [
