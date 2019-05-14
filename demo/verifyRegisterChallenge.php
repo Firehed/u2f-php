@@ -1,6 +1,6 @@
 <?php
 
-namespace X;
+namespace Firehed\U2F;
 
 $server = require 'bootstrap.php';
 
@@ -124,11 +124,3 @@ echo json_encode([
     'pk_pem' => $registration->getPublicKeyPem(),
     'ac_pem' => $registration->getAttestationCertificatePem(),
 ]);
-
-function log($data, string $label = '')
-{
-    if ($label) {
-        error_log($label);
-    }
-    error_log(print_r($data, true));
-}
