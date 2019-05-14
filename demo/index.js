@@ -8,17 +8,41 @@ const log = (str) => {
 
 }
 
-const getChallenge = async () => {
+const POST = async (url, data) => {
+  return fetch(url, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'no-cors',
+    body: JSON.stringify(data)
+  })
+}
+
+const fromBase64Web = s => atob(s.replace(/\-/g,'+').replace(/_/g,'/'))
+
+const sleep = async (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
+const getRegistrationChallenge = async () => {
   const response = await fetch('/getRegisterChallenge.php')
   const challenge = await response.json()
-  log("Challenge from server")
+  log("Registration challenge from server")
+  log(challenge)
+  return challenge
+}
+
+const getLoginChallenge = async () => {
+  const response = await fetch('/getLoginChallenge.php')
+  const challenge = await response.json()
+  log("Login challenge from server")
   log(challenge)
   return challenge
 }
 
 const getCreationOptions = async () => {
   const userId = "UZSL85T9AFC"
-  const challenge = await getChallenge()
+  const challenge = await getRegistrationChallenge()
 
   return {
     rp: {
@@ -44,61 +68,59 @@ const getCreationOptions = async () => {
   }
 }
 
-const arrayBuffertoBinaryString = (arrayBuffer) => {
-  const bytes = new Uint8Array(arrayBuffer)
-  let bin = ''
-  const len = bytes.byteLength
-  for (let i = 0; i < len; i++) {
-    bin += String.fromCharCode(bytes[i])
+
+const getLoginOptions = async () => {
+  const challenges = await getLoginChallenge()
+  return {
+    // FIXME: reintegrate this with single-challenge format
+    challenge: Uint8Array.from(challenges[0].challenge, c => c.charCodeAt(0)),
+    allowCredentials: challenges.map(ch => ({
+      id: Uint8Array.from(fromBase64Web(ch.keyHandle), c => c.charCodeAt(0)),
+      type: 'public-key',
+      transports: ['usb', 'ble', 'nfc'],
+    })),
+    timeout: 60000,
   }
-  return bin
 }
 
-
 const sendRegistration = async (publicKeyCredential) => {
-  const utf8Decoder = new TextDecoder('utf-8');
-  const decodedClientData = utf8Decoder.decode(publicKeyCredential.response.clientDataJSON)
-  // log("client data json")
-  // log(decodedClientData)
-
-  // const decodedAttestationObj = utf8Decoder.decode(publicKeyCredential.response.attestationObject)
-  const decodedAttestationObj = new Uint8Array(publicKeyCredential.response.attestationObject)
-  log("attestationObject CBOR")
-  log(CBOR.decode(publicKeyCredential.response.attestationObject))
-  // log(decodedAttestationObj)
-  // function buf2hex(buffer) { // buffer is an ArrayBuffer
-  //   return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
-  // }
-  // log(buf2hex(publicKeyCredential.response.attestationObject))
-
+  // turn ArrayBuffers to int arrays
   const dataToSend = {
     id: publicKeyCredential.id,
     rawId: new Uint8Array(publicKeyCredential.rawId),
     type: publicKeyCredential.type,
-    clientDataJson: decodedClientData,
-    attestationObjectByteArray: new Uint8Array(publicKeyCredential.response.attestationObject),
-    // attestationObjectCbor: cborBlob,
+    response: {
+      attestationObject: new Uint8Array(publicKeyCredential.response.attestationObject),
+      clientDataJSON: new Uint8Array(publicKeyCredential.response.clientDataJSON),
+    },
   }
   log("will POST dataToSend")
   log(dataToSend)
 
-  const response = await fetch('/verifyRegisterChallenge.php', {
-    method: 'POST',
-    credentials: 'same-origin',
-    headers: {
-      'Content-Type': 'application/json',
+  const response = await POST('/verifyRegisterChallenge.php', dataToSend)
+  const responseJson = await response.json()
+  return responseJson
+
+}
+
+const sendLogin = async (assertion) => {
+  const dataToSend = {
+    id: assertion.id,
+    rawId: new Uint8Array(assertion.rawId),
+    type: assertion.type,
+    response: {
+      authenticatorData: new Uint8Array(assertion.response.authenticatorData),
+      clientDataJSON: new Uint8Array(assertion.response.clientDataJSON),
+      signature: new Uint8Array(assertion.response.signature),
+      // userHandle: 
     },
-    mode: 'no-cors',
-    body: JSON.stringify(dataToSend),
-  })
+  }
+  log('login dts')
+  log(dataToSend)
 
-  const respJson = await response.json()
-
-  log(respJson)
-  // const clientDataObj = JSON.parse(decodedClientData);
-  // log("Client data obj")
-  // log(clientDataObj)
-
+  const response = await POST('/verifyLoginChallenge.php', dataToSend)
+  const responseJson = await response.json()
+  return responseJson
 }
 
 const register = async () => {
@@ -115,6 +137,21 @@ const register = async () => {
 
   let serverRes = await sendRegistration(credential)
 
+  await sleep(500)
+
+  const publicKeyCredentialRequestOptions = await getLoginOptions()
+  log("Login options")
+  log(publicKeyCredentialRequestOptions)
+
+  const assertion = await navigator.credentials.get({
+    publicKey: publicKeyCredentialRequestOptions
+  });
+  log("assertion")
+  log(assertion)
+
+  const loginResponse = await sendLogin(assertion)
+  log("login response")
+  log(loginResponse)
 }
 
 

@@ -2,6 +2,8 @@
 
 namespace Firehed\U2F;
 
+use Firehed\U2F\CBOR\Decoder;
+
 $server = require 'bootstrap.php';
 
 session_start();
@@ -10,11 +12,14 @@ if (!isset($_SESSION['register_challenge'])) {
 }
 
 $registerRequest = $_SESSION['register_challenge'];
+unset($_SESSION['register_challenge']); // force fresh every time
 
 $server->setRegisterRequest($registerRequest);
 
 
-$data = json_decode(trim(file_get_contents('php://input')), true);
+$input = trim(file_get_contents('php://input'));
+log($input, 'raw json');
+$data = json_decode($input, true, 512, JSON_THROW_ON_ERROR);
 // log($data, 'decoded POST');
 // {
 //   id: string  (b64-web?)
@@ -39,10 +44,11 @@ $data = json_decode(trim(file_get_contents('php://input')), true);
 
 assert($data['type'] === 'public-key');
 
-$aoCBOR = $data['attestationObjectByteArray'];
+// $aoCBOR = $data['attestationObjectByteArray'];
 // log(bin2hex($aoCBOR), 'cbor bin');
-$ao = (new \Firehed\U2F\CBOR\Decoder())->decodeFromByteArray($aoCBOR);
-log($ao, 'attestion object decoded');
+// $ao = (new \Firehed\U2F\CBOR\Decoder())->decodeFromByteArray($aoCBOR);
+// log($ao, 'attestion object decoded');
+$ao = (new Decoder())->decode(unbyte($data['response']['attestationObject']));
 
 // webAuthn 6.1
 function decodeAuthenticatorData(string $bytes)
@@ -103,9 +109,9 @@ $x5c = $ao['attStmt']['x5c'][0];
 log($x5c);
 $response->setAttestationCertificate($x5c);
 
-$decClientData = json_decode($data['clientDataJson'], true, 512, \JSON_THROW_ON_ERROR);
+// $decClientData = json_decode($data['clientDataJson'], true, 512, \JSON_THROW_ON_ERROR);
 
-$clientData = \Firehed\U2F\WebAuthnClientData::fromJson($data['clientDataJson']);
+$clientData = WebAuthnClientData::fromJson(unbyte($data['response']['clientDataJSON']));
 // $clientData = new \Firehed\U2F\ClientData();
 // $base64WebEncodedChallenge = $decClientData['challenge'];
 // $clientData->setChallenge(\Firehed\U2F\fromBase64Web($base64WebEncodedChallenge));
@@ -117,6 +123,9 @@ log($response, 'register response');
 
 
 $registration = $server->register($response);
+// this would be save to db
+$_SESSION['user_registrations'] = [$registration];
+
 header('Content-type: application/json');
 echo json_encode([
     'counter' => $registration->getCounter(),
