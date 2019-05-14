@@ -113,7 +113,12 @@ class Decoder
             $this->logger->debug("uint32 $data");
             return $data;
         } elseif ($info === 27) { // 64-bit int
-            $data = unpack('J', $this->read(8))[1];
+            // return $this->decodeBigint($this->read(8));
+            $bytes = $this->read(8);
+            if (ord($bytes[0]) & 0xF0) {
+                throw new \OverflowException();
+            }
+            $data = unpack('J', $bytes)[1];
             $this->logger->debug("uint64 $data");
             return $data;
         } else {
@@ -124,10 +129,14 @@ class Decoder
 
     private function decodeNegativeInteger(int $addtlInfo): int
     {
-        $uint = $this->decodeUnsignedInteger($addtlInfo);
-        $negative = -1 - $uint;
-        $this->logger->debug("negative int $negative");
-        return $negative;
+        try {
+            $uint = $this->decodeUnsignedInteger($addtlInfo);
+            $negative = -1 - $uint;
+            $this->logger->debug("negative int $negative");
+            return $negative;
+        } catch (\OverflowException $e) {
+            throw new \UnderflowException();
+        }
     }
 
     private function decodeBinaryString(int $addtlInfo): string
