@@ -183,7 +183,14 @@ class Server
             );
         }
         $this->validateChallenge($resp->getClientData(), $this->registerRequest);
+
         // Check the Application Parameter?
+        if (!hash_equals(
+            $this->registerRequest->getApplicationParameter(),
+            $resp->getClientData()->getApplicationParameter()
+        )) {
+            throw new SE(SE::SIGNATURE_INVALID);
+        }
 
         $signed_data = $resp->getSignedData();
         $pem = $resp->getAttestationCertificatePem();
