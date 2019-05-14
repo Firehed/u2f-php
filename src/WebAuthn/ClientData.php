@@ -1,11 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace Firehed\U2F;
+namespace Firehed\U2F\WebAuthn;
 
-use JsonSerializable;
+use Firehed\U2F\ChallengeTrait;
+use Firehed\U2F\ClientDataInterface;
 
-class WebAuthnClientData implements ClientDataInterface
+use function Firehed\U2F\fromBase64Web;
+use function hash;
+use function json_decode;
+use function parse_url;
+
+class ClientData implements ClientDataInterface
 {
     use ChallengeTrait;
 
@@ -16,7 +22,7 @@ class WebAuthnClientData implements ClientDataInterface
     {
     }
 
-    public static function fromJson(string $json): WebAuthnClientData
+    public static function fromJson(string $json): ClientData
     {
         $wacd = new self;
         $wacd->json = $json;

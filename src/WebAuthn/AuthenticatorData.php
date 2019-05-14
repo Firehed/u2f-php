@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Firehed\U2F;
+namespace Firehed\U2F\WebAuthn;
 
 use Firehed\CBOR\Decoder;
 

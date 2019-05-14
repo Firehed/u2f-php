@@ -35,11 +35,11 @@ $cdj = unbyte($data['response']['clientDataJSON']);
 $sig = unbyte($data['response']['signature']);
 $rawAd = unbyte($data['response']['authenticatorData']);
 
-$ad = AuthenticatorData::parse($rawAd);
+$ad = WebAuthn\AuthenticatorData::parse($rawAd);
 $response->setKeyHandle(unbyte($data['rawId']));
 $response->setCounter($ad->getSignCount());
 $response->setUserPresenceByte($ad->isUserPresent() ? 1 : 0);
-$response->setClientData(WebAuthnClientData::fromJson($cdj));
+$response->setClientData(WebAuthn\ClientData::fromJson($cdj));
 $response->setSignature($sig);
 
 log($response);

@@ -52,7 +52,7 @@ $response->setAttestationCertificate($statement['x5c'][0]);
 // FIXME: Somewhere in here, we need to sanity check that $ad['rpIdHash']
 // actually is valid for the server origin
 //
-$ad = AuthenticatorData::parse($attestationObject['authData']);
+$ad = WebAuthn\AuthenticatorData::parse($attestationObject['authData']);
 $acd = $ad->getAttestedCredentialData();
 assert($acd !== null);
 $response->setKeyHandle($acd['credentialId']);
@@ -66,7 +66,7 @@ $response->setPublicKey(sprintf(
 ));
 
 $cdj = unbyte($data['response']['clientDataJSON']);
-$response->setClientData(WebAuthnClientData::fromJson($cdj));
+$response->setClientData(WebAuthn\ClientData::fromJson($cdj));
 
 
 log($response, 'register response');
