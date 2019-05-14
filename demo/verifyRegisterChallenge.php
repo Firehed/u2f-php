@@ -17,110 +17,59 @@ unset($_SESSION['register_challenge']); // force fresh every time
 $server->setRegisterRequest($registerRequest);
 
 
+// This expects a (roughly) straight JSONified PublicKeyCredential
 $input = trim(file_get_contents('php://input'));
 log($input, 'raw json');
 $data = json_decode($input, true, 512, JSON_THROW_ON_ERROR);
-// log($data, 'decoded POST');
-// {
-//   id: string  (b64-web?)
-//   rawId: byteArray
-//   type: "public-key"
-//   clientDataJson: jsonString: {
-//     challenge: string
-//     clientExtensions: {},
-//     hashAlgorithm: "SHA-256",
-//     origin: "http://localhost:8080"
-//     type: "webauthn.create"
-//  }
-//  attestationObjectByteArray: cbor-byte-array: {
-//    authData: binString
-//    fmt: "fido-u2f",
-//    attStmt: {
-//      sig: binString
-//      x5c: binString
-//    }
-//  }
-// }
 
 assert($data['type'] === 'public-key');
 
-// $aoCBOR = $data['attestationObjectByteArray'];
-// log(bin2hex($aoCBOR), 'cbor bin');
-// $ao = (new \Firehed\U2F\CBOR\Decoder())->decodeFromByteArray($aoCBOR);
-// log($ao, 'attestion object decoded');
-$ao = (new Decoder())->decode(unbyte($data['response']['attestationObject']));
+// parse response
+$response = new \Firehed\U2F\RegisterResponse();
 
-// webAuthn 6.1
-function decodeAuthenticatorData(string $bytes)
-{
-    $i = 0;
-    $read = function ($count) use (&$i, $bytes) {
-        $ret = substr($bytes, $i, $count);
-        $i += $count;
-        return $ret;
-    };
-    assert(strlen($bytes) >= 37);
-    $rpidHash = $read(32);
-    // FIXME: validate this hash_equals origin
-    log(bin2hex($rpidHash), 'rpid hash hex');
-    $flags = ord($read(1));
-    $signCount = $read(4); // todo: unpack(N)
-    log($flags, 'flags');
-    $includedAT = ($flags & 0b01000000) > 0;
-    $includedED = ($flags & 0b10000000) > 0;
+// attestationObject is a CBOR
+// @see https://w3c.github.io/webauthn/#sctn-attestation (6.4)
+$attestationObject = (new Decoder())->decode(unbyte($data['response']['attestationObject']));
 
-    if ($includedAT) {
-        log('AT included');
-        $aaguid = $read(16);
-        $credentialIdLength = $read(2);
-        $credentialIdLength = (ord($credentialIdLength[0]) << 8) + ord($credentialIdLength[1]);
-        $credentialId = $read($credentialIdLength); // FIXME: overflow risk
-        log($credentialId, 'credentialId');
+// 6.4.4 general format conformance
+assert(isset($attestationObject['authData']));
+assert(isset($attestationObject['fmt']));
+assert(isset($attestationObject['attStmt']));
+// u2f-specific 8.6 (fmt defines the attStmt body, defined all over the spec,
+// search for "$$attStmtType")
+assert($attestationObject['fmt'] === 'fido-u2f');
+$statement = $attestationObject['attStmt'];
+assert(isset($statement['x5c']) && is_array($statement['x5c']));
+assert(count($statement['x5c']) === 1);
+assert(isset($statement['sig']));
 
-        $restOfData = $read(strlen($bytes) - $i);
-        $publicKey = (new \Firehed\U2F\CBOR\Decoder())->decode($restOfData);
-        log($publicKey, 'pk');
-/*
-    [attest:Firehed\U2F\RegisterResponse:private] =>
-    [pubKey:Firehed\U2F\RegisterResponse:private] =>
-    [clientData:Firehed\U2F\RegisterResponse:private] =>
-    [signature:Firehed\U2F\RegisterResponse:private] =>
-    [keyHandle:Firehed\U2F\RegisterResponse:private] =>
- */
-    }
-    $response = new \Firehed\U2F\RegisterResponse();
-    $response->setKeyHandle($credentialId);
-    $response->setPublicKey(sprintf('%s%s%s', "\x04", $publicKey[-2], $publicKey[-3]));
 
-    return $response;
-}
+$response->setSignature($statement['sig']);
+$response->setAttestationCertificate($statement['x5c'][0]);
 
-// log($authData, 'auth data');
-$authData = $ao['authData'];
-$response = decodeAuthenticatorData($authData);
-log($ao['attStmt'], 'attestation statement');
-$response->setSignature($ao['attStmt']['sig']);
+// -( Parse Authenticator Data )------
+//
+// FIXME: Somewhere in here, we need to sanity check that $ad['rpIdHash']
+// actually is valid for the server origin
+//
+$ad = AuthenticatorData::parse($attestationObject['authData']);
+$acd = $ad->getAttestedCredentialData();
+assert($acd !== null);
+$response->setKeyHandle($acd['credentialId']);
+// Maybe check [1] === 2 (kty === signing)
+assert($acd['credentialPublicKey'][3] === -7, 'Not ES256');
+$response->setPublicKey(sprintf(
+    '%s%s%s',
+    "\x04",
+    $acd['credentialPublicKey'][-2],
+    $acd['credentialPublicKey'][-3]
+));
 
-// $keyHandle = implode('', array_map('chr', $data['rawId']));
-// $response->setKeyHandle($keyHandle);
-
-assert(count($ao['attStmt']['x5c']) === 1); // 8.6 verification
-$x5c = $ao['attStmt']['x5c'][0];
-log($x5c);
-$response->setAttestationCertificate($x5c);
-
-// $decClientData = json_decode($data['clientDataJson'], true, 512, \JSON_THROW_ON_ERROR);
-
-$clientData = WebAuthnClientData::fromJson(unbyte($data['response']['clientDataJSON']));
-// $clientData = new \Firehed\U2F\ClientData();
-// $base64WebEncodedChallenge = $decClientData['challenge'];
-// $clientData->setChallenge(\Firehed\U2F\fromBase64Web($base64WebEncodedChallenge));
-$response->setClientData($clientData);
+$cdj = unbyte($data['response']['clientDataJSON']);
+$response->setClientData(WebAuthnClientData::fromJson($cdj));
 
 
 log($response, 'register response');
-
-
 
 $registration = $server->register($response);
 // this would be save to db

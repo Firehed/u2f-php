@@ -26,6 +26,8 @@ $input = trim(file_get_contents('php://input'));
 log($input, 'raw json');
 $data = json_decode($input, true, 512, JSON_THROW_ON_ERROR);
 
+assert($data['type'] === 'public-key');
+
 // parse response
 $response = new \Firehed\U2F\SignResponse();
 
@@ -45,4 +47,4 @@ log($response);
 
 $updatedRegistration = $server->authenticate($response);
 header('Content-type: application/json');
-echo '"not done"';
+echo '"all good?"';
