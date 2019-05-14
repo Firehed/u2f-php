@@ -109,20 +109,7 @@ class Server
 
         $pem = $registration->getPublicKeyPem();
 
-        // U2F Spec:
-        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#authentication-response-message-success
-        $to_verify = sprintf(
-            '%s%s%s%s',
-            $request->getApplicationParameter(),
-            chr($response->getUserPresenceByte()),
-            pack('N', $response->getCounter()),
-            // Note: Spec says this should be from the request, but that's not
-            // actually available via the JS API. Because we assert the
-            // challenge *value* from the Client Data matches the trusted one
-            // from the SignRequest and that value is included in the Challenge
-            // Parameter, this is safe unless/until SHA-256 is broken.
-            $response->getClientData()->getChallengeParameter()
-        );
+        $to_verify = $response->getSignedData();
 
         // Signature must validate against
         $sig_check = openssl_verify(
