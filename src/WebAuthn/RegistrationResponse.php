@@ -121,6 +121,7 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
         );
         $response->keyHandleBinary = $credentialData['credentialId'];
         $response->publicKeyBinary = $publicKeyU2F;
+        $response->setAttestationCertificate($aoAttStmt['x5c'][0]);
         return $response;
         // 7.1.14 (perform verification of attestation statement) is done in
         //   the server
