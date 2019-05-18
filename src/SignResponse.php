@@ -5,7 +5,7 @@ namespace Firehed\U2F;
 
 use Firehed\U2F\InvalidDataException as IDE;
 
-class SignResponse
+class SignResponse implements LoginResponseInterface
 {
     use ResponseTrait;
 
@@ -71,5 +71,10 @@ class SignResponse
             pack('N', $this->getCounter()),
             $this->getClientData()->getChallengeParameter()
         );
+    }
+
+    public function getChallengeProvider(): ChallengeProvider
+    {
+        return $this->getClientData();
     }
 }

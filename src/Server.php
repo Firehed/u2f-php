@@ -49,19 +49,19 @@ class Server
     private $signRequests = [];
 
     /**
-     * This method authenticates a `SignResponse` against outstanding
+     * This method authenticates a `LoginResponseInterface` against outstanding
      * registrations and their corresponding `SignRequest`s. If the response's
      * signature validates and the counter hasn't done anything strange, the
      * registration will be returned with an updated counter value, which *must*
      * be persisted for the next authentication. If any verification component
      * fails, a `SE` will be thrown.
      *
-     * @param SignResponse $response the parsed response from the user
+     * @param LoginResponseInterface $response the parsed response from the user
      * @return RegistrationInterface if authentication succeeds
      * @throws SE if authentication fails
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function authenticate(SignResponse $response): RegistrationInterface
+    public function authenticate(LoginResponseInterface $response): RegistrationInterface
     {
         if (!$this->registrations) {
             throw new BadMethodCallException(
@@ -105,7 +105,7 @@ class Server
         // match the one in the signing request, the client signed the
         // wrong thing. This could possibly be an attempt at a replay
         // attack.
-        $this->validateChallenge($response->getClientData(), $request);
+        $this->validateChallenge($response->getChallengeProvider(), $request);
 
         $pem = $registration->getPublicKeyPem();
 
