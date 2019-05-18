@@ -5,7 +5,7 @@ namespace Firehed\U2F;
 
 use Firehed\U2F\InvalidDataException as IDE;
 
-class RegisterResponse
+class RegisterResponse implements RegistrationResponseInterface
 {
     use AttestationCertificateTrait;
     use ECPublicKeyTrait;
@@ -120,5 +120,10 @@ class RegisterResponse
             $this->getKeyHandleBinary(),
             $this->getPublicKeyBinary()
         );
+    }
+
+    public function getChallengeProvider(): ChallengeProvider
+    {
+        return $this->getClientData();
     }
 }

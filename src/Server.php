@@ -164,17 +164,17 @@ class Server
     }
 
     /**
-     * This method authenticates a RegisterResponse against its corresponding
+     * This method authenticates a RegistrationResponseInterface against its corresponding
      * RegisterRequest by verifying the certificate and signature. If valid, it
      * returns a registration; if not, a SE will be thrown and attempt to
      * register the key must be aborted.
      *
-     * @param RegisterResponse $resp The response to verify
+     * @param RegistrationResponseInterface $resp The response to verify
      * @return RegistrationInterface if the response is proven authentic
      * @throws SE if the response cannot be proven authentic
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function register(RegisterResponse $resp): RegistrationInterface
+    public function register(RegistrationResponseInterface $resp): RegistrationInterface
     {
         if (!$this->registerRequest) {
             throw new BadMethodCallException(
@@ -182,7 +182,7 @@ class Server
                 'with setRegisterRequest()'
             );
         }
-        $this->validateChallenge($resp->getClientData(), $this->registerRequest);
+        $this->validateChallenge($resp->getChallengeProvider(), $this->registerRequest);
 
         // Check the Application Parameter?
         if (!hash_equals(
