@@ -26,22 +26,7 @@ $input = trim(file_get_contents('php://input'));
 log($input, 'raw json');
 $data = json_decode($input, true, 512, JSON_THROW_ON_ERROR);
 
-assert($data['type'] === 'public-key');
-
-// parse response
-$response = new \Firehed\U2F\SignResponse();
-
-$cdj = unbyte($data['response']['clientDataJSON']);
-$sig = unbyte($data['response']['signature']);
-$rawAd = unbyte($data['response']['authenticatorData']);
-
-$ad = WebAuthn\AuthenticatorData::parse($rawAd);
-$response->setKeyHandle(unbyte($data['rawId']));
-$response->setCounter($ad->getSignCount());
-$response->setUserPresenceByte($ad->isUserPresent() ? 1 : 0);
-$response->setClientData(WebAuthn\ClientData::fromJson($cdj));
-$response->setSignature($sig);
-
+$response = WebAuthn\LoginResponse::fromDecodedJson($data);
 log($response);
 
 
