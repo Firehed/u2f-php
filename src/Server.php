@@ -187,7 +187,7 @@ class Server
         // Check the Application Parameter?
         if (!hash_equals(
             $this->registerRequest->getApplicationParameter(),
-            $resp->getClientData()->getApplicationParameter()
+            $resp->getRpIdHash()
         )) {
             throw new SE(SE::SIGNATURE_INVALID);
         }

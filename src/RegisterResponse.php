@@ -122,6 +122,11 @@ class RegisterResponse implements RegistrationResponseInterface
         );
     }
 
+    public function getRpIdHash(): string
+    {
+        return $this->getClientData()->getApplicationParameter();
+    }
+
     public function getChallengeProvider(): ChallengeProvider
     {
         return $this->getClientData();

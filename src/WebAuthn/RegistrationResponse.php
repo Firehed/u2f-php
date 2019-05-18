@@ -27,6 +27,9 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
     private $publicKeyBinary;
 
     /** @var string (binary) */
+    private $rpIdHash;
+
+    /** @var string (binary) */
     private $signature;
 
     /** @var string (binary) */
@@ -106,6 +109,7 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
         $response = new RegistrationResponse();
         $response->challenge = fromBase64Web($clientData['challenge']);
         $response->clientDataJson = $jsonText;
+        $response->rpIdHash = $authData->getRpIdHash();
         $response->signature = $aoAttStmt['sig'];
         $response->signedData = sprintf(
             '%s%s%s%s%s',
@@ -154,5 +158,9 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
     private static function byteArrayToBinaryString(array $bytes): string
     {
         return implode('', array_map('chr', $bytes));
+    }
+    public function getRpIdHash(): string
+    {
+        return $this->rpIdHash;
     }
 }
