@@ -54,6 +54,7 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
      */
     public static function fromDecodedJson(array $data): RegistrationResponse
     {
+        assert(isset($data['type']) && $data['type'] === 'public-key');
         assert(isset($data['response']['clientDataJSON']));
         assert(isset($data['response']['attestationObject']));
 
@@ -80,31 +81,30 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
         $aoAttStmt = $attestationObject['attStmt'];
 
         $authData = AuthenticatorData::parse($aoAuthData);
-        // TODO: 7.1.9 validate rpidHash = sha256(rpid)
-        $credentialData = $authData->getAttestedCredentialData();
-        // print_r($credentialData);
-
+        // 7.1.9 (validate rpIdHash) happens in server
         // 7.1.10
         assert($authData->isUserPresent());
         // 7.1.11 skip? TODO
         // 7.1.12 skip? TODO
-
         // 7.1.13
         // For now, we're only going to support the FIDO-U2F format. In the
         // future this can become switching logic based on the format to get
         // the relevant data
         assert($aoFmt === 'fido-u2f');
+        assert(isset($aoAttStmt['sig']));
+        assert(isset($aoAttStmt['x5c']));
+        assert(is_array($aoAttStmt['x5c']) && count($aoAttStmt['x5c']) === 1);
 
+        $credentialData = $authData->getAttestedCredentialData();
         $publicKey = $credentialData['credentialPublicKey'];
-        assert($publicKey[3] === -7); // ES256
-
+        assert($publicKey[3] === -7); // ES256 (8.6.2)
 
         $publicKeyU2F = sprintf(
             '%s%s%s',
             "\x04",
             $publicKey[-2],
             $publicKey[-3]
-        );
+        ); // 8.6.4
 
         $response = new RegistrationResponse();
         $response->challenge = fromBase64Web($clientData['challenge']);
@@ -118,7 +118,7 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
             $clientDataHash,
             $credentialData['credentialId'],
             $publicKeyU2F
-        );
+        ); // 8.6.5
         $response->keyHandleBinary = $credentialData['credentialId'];
         $response->publicKeyBinary = $publicKeyU2F;
         $response->setAttestationCertificate($aoAttStmt['x5c'][0]);

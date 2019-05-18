@@ -66,11 +66,15 @@ class LoginResponse implements ChallengeProvider, LoginResponseInterface
 
         $authDataBytes = self::byteArrayToBinaryString($data['response']['authenticatorData']);
         $authData = AuthenticatorData::parse($authDataBytes);
+        // 7.2.12
         assert($authData->isUserPresent());
 
+        // 7.2.5
         $jsonText = self::byteArrayToBinaryString($data['response']['clientDataJSON']);
+        // 7.2.6
         $clientData = json_decode($jsonText, true);
         assert(is_array($clientData));
+        // 7.2.7
         assert($clientData['type'] === 'webauthn.get');
 
         $response = new LoginResponse();
