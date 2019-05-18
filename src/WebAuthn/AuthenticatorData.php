@@ -92,6 +92,11 @@ class AuthenticatorData
         return $this->signCount;
     }
 
+    public function getRpIdHash(): string
+    {
+        return $this->rpIdHash;
+    }
+
     public function __debugInfo(): array
     {
         $hex = function ($str) {
