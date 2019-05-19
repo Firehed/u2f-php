@@ -15,6 +15,7 @@ class LoginResponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers ::fromDecodedJson
+     * @covers ::getChallenge
      * @covers ::getCounter
      * @covers ::getSignature
      * @covers ::getKeyHandleBinary

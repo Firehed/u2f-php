@@ -12,8 +12,10 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers ::fromDecodedJson
+     * @covers ::getRpIdHash
      * @covers ::getKeyHandleBinary
      * @covers ::getPublicKeyBinary
+     * @covers ::getSignature
      * @covers ::getSignedData
      */
     public function testFromDecodedJson()
@@ -52,6 +54,12 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
               'acb4d70da1504f2376361e0fb331ad41793e9698fa046945f51352820e7c2b78' .
               '35c628978409d8c97ef0bb464a5989a0274b24d91bf48901de8dd0450e265680'
         ), $response->getSignedData(), 'Signed data');
+
+        $this->assertSame(hex2bin(
+            '3046022100cd65252185e1f46b3566918c5129fa5ef2093f1c9672f58ac1b244a'.
+            '28d5069f00221009a56c4465a0d2907dacdfcd8472954dad6f65fca52a159eeac'.
+            '5c4fed9bdbfd9d'
+        ), $response->getSignature(), 'Signature');
 
         $this->assertSame(hex2bin(
             '49960de5880e8c687434170f6476605b8fe4aeb9a28632c7995cf3ba831d9763'
