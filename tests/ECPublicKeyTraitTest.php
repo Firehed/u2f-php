@@ -13,7 +13,7 @@ class ECPublicKeyTraitTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @covers ::setPublicKey
-     * @covers ::getPublicKey
+     * @covers ::getPublicKeyBinary
      */
     public function testAccessors()
     {
