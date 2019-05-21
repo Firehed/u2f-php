@@ -124,6 +124,10 @@ const sendLogin = async (assertion) => {
 }
 
 const register = async () => {
+  if (navigator.credentials === undefined) {
+    log("WebAuthn not supported in this browser :(")
+    return
+  }
   const publicKeyCredentialCreationOptions = await getCreationOptions()
   log("PK Creation Options")
   log(publicKeyCredentialCreationOptions)

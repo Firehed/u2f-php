@@ -26,7 +26,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     private $server;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->server = (new Server())
             ->disableCAVerification()
@@ -110,7 +110,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         ];
         $signRequests = $this->server->generateSignRequests($registrations);
 
-        $this->assertInternalType('array', $signRequests);
+        $this->assertIsArray($signRequests);
         foreach ($signRequests as $signRequest) {
             $this->assertInstanceOf(SignRequest::class, $signRequest);
         }
