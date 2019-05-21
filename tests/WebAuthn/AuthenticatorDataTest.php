@@ -28,6 +28,7 @@ class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
             '7822582035c628978409d8c97ef0bb464a5989a0274b24d91bf48901de8dd045'.
             '0e265680'
         );
+        assert($data !== false);
 
         $authData = AuthenticatorData::parse($data);
 
@@ -46,7 +47,7 @@ class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(hex2bin(
             '89d8daecf079d5e11e4d3f27f8d6636df14f048d21ce2893623a7c4d3cec8624'.
-            '40332960e33055f7c01242de0a5717b081b2ba0af4a0293b21753f0dd97f11f4',
+            '40332960e33055f7c01242de0a5717b081b2ba0af4a0293b21753f0dd97f11f4'
         ), $data['credentialId'], 'Credential ID');
 
         $pk = $data['credentialPublicKey'];
@@ -74,6 +75,7 @@ class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
             '8fe4aeb9a28632c7995cf3ba831d9763'.
             '0100000079'
         );
+        assert($data !== false);
         $authData = AuthenticatorData::parse($data);
 
         $this->assertTrue($authData->isUserPresent(), 'User is present');
