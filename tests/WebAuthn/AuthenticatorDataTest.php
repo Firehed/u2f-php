@@ -54,7 +54,7 @@ class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(-7, $pk[3]); // alg=-7=ES256
         $this->assertSame(1, $pk[-1]); // crv
         $this->assertSame(hex2bin(
-            'acb4d70da1504f2376361e0fb331ad41793e9698fa046945f51352820e7c2b78',
+            'acb4d70da1504f2376361e0fb331ad41793e9698fa046945f51352820e7c2b78'
         ), $pk[-2], 'Key curve x-coordinate');
         $this->assertSame(hex2bin(
             '35c628978409d8c97ef0bb464a5989a0274b24d91bf48901de8dd0450e265680'
