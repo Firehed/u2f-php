@@ -17,7 +17,9 @@ trait ResponseTrait
     // Binary string of signature
     public function getSignature(): string
     {
-        return base64_decode($this->signature);
+        $decoded = base64_decode($this->signature);
+        assert($decoded !== false);
+        return $decoded;
     }
 
     public function getClientData(): ClientDataInterface

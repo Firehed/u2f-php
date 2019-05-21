@@ -9,7 +9,9 @@ namespace Firehed\U2F;
  */
 function fromBase64Web(string $base64): string
 {
-    return base64_decode(strtr($base64, '-_', '+/'));
+    $decoded = base64_decode(strtr($base64, '-_', '+/'));
+    assert($decoded !== false);
+    return $decoded;
 }
 
 /**

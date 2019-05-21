@@ -4,7 +4,7 @@ namespace Firehed\U2F;
 
 trait KeyHandleTrait
 {
-    /** @var striing */
+    /** @var string */
     private $keyHandle;
 
     // Binary string of key handle

@@ -96,9 +96,9 @@ class AttestationCertificateTraitTest extends \PHPUnit\Framework\TestCase
      */
     private function getObjectWithYubicoCert()
     {
-        $response = RegisterResponse::fromJson(
-            file_get_contents(__DIR__.'/register_response.json')
-        );
+        $json = file_get_contents(__DIR__.'/register_response.json');
+        assert($json !== false);
+        $response = RegisterResponse::fromJson($json);
         // Sanity check that the response actually imlements this trait, rather
         // than doing all sorts of magic
         $check = AttestationCertificateTrait::class;
