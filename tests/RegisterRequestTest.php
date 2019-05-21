@@ -24,6 +24,7 @@ class RegisterRequestTest extends \PHPUnit\Framework\TestCase
             ->setAppId($appId)
             ->setChallenge($challenge);
         $json = json_encode($request);
+        assert($json !== false);
         $decoded = json_decode($json, true);
         $this->assertSame(
             $appId,

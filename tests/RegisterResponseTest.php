@@ -45,6 +45,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
             'appId' => 'https://u2f.ericstern.com',
             'clientData' => $this->validClientData,
         ]);
+        assert($json !== false);
         $response = RegisterResponse::fromJson($json);
         $this->assertInstanceOf(RegisterResponse::class, $response);
     }
