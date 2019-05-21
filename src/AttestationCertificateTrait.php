@@ -12,7 +12,9 @@ trait AttestationCertificateTrait
     // Binary string of attestation certificate (from device issuer)
     public function getAttestationCertificateBinary(): string
     {
-        return base64_decode($this->attest);
+        $decoded = base64_decode($this->attest);
+        assert($decoded !== false);
+        return $decoded;
     }
 
     // PEM formatted cert
