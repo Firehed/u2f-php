@@ -339,8 +339,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: challenge parameter
-        $json = file_get_contents(__DIR__.'/register_response.json');
-        $data = json_decode($json, true);
+        $data = $this->readJsonFile('register_response.json');
         $cli = fromBase64Web($data['clientData']);
         $obj = json_decode($cli, true);
         $obj['origin'] = 'https://not.my.u2f.example.com';
@@ -362,8 +361,8 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: key handle
-        $json = file_get_contents(__DIR__.'/register_response.json');
-        $data = json_decode($json, true);
+        $data = $this->readJsonFile('register_response.json');
+        $cli = fromBase64Web($data['clientData']);
         $reg = $data['registrationData'];
         $reg[70] = chr(ord($reg[70]) + 1); // Change a byte in the key handle
         $data['registrationData'] = $reg;
@@ -383,8 +382,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: public key
-        $json = file_get_contents(__DIR__.'/register_response.json');
-        $data = json_decode($json, true);
+        $data = $this->readJsonFile('register_response.json');
         $reg = $data['registrationData'];
         $reg[3] = chr(ord($reg[3]) + 1); // Change a byte in the public key
         $data['registrationData'] = $reg;
@@ -404,8 +402,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: signature
-        $json = file_get_contents(__DIR__.'/register_response.json');
-        $data = json_decode($json, true);
+        $data = $this->readJsonFile('register_response.json');
         $reg = $data['registrationData'];
         $last = str_rot13(substr($reg, -5)); // rot13 a few chars in signature
         $data['registrationData'] = substr($reg, 0, -5).$last;
@@ -612,10 +609,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $registration = $this->getDefaultRegistration();
         $request = $this->getDefaultSignRequest();
         // Trimming a byte off the signature to cause a mismatch
-        $data = json_decode(
-            file_get_contents(__DIR__.'/sign_response.json'),
-            true
-        );
+        $data = $this->readJsonFile('sign_response.json');
         $data['signatureData'] = substr($data['signatureData'], 0, -1);
         $response = SignResponse::fromJson(json_encode($data));
 
@@ -702,5 +696,14 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return SignResponse::fromJson(
             file_get_contents(__DIR__.'/sign_response.json')
         );
+    }
+
+    private function readJsonFile(string $file): array
+    {
+        $json = file_get_contents(__DIR__.'/'.$file);
+        assert($json !== false);
+        $data = json_decode($json, true);
+        assert($data !== false);
+        return $data;
     }
 }
