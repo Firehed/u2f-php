@@ -5,8 +5,6 @@ namespace Firehed\U2F;
 
 class FunctionsTest extends \PHPUnit\Framework\TestCase
 {
-    use MultibyteWarningTrait;
-
     /**
      * @covers Firehed\U2F\fromBase64Web
      * @dataProvider vectors
@@ -33,32 +31,6 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers Firehed\U2F\strlen
-     * @dataProvider strlenVectors
-     */
-    public function testStrlen(string $string, int $length)
-    {
-        $this->assertSame(strlen($string), $length, 'Wrong length returned');
-    }
-
-    /**
-     * @covers Firehed\U2F\substr
-     * @dataProvider substrVectors
-     */
-    public function testSubstr(string $string, int $start, int $length = null, string $result)
-    {
-        $this->assertSame(
-            $result,
-            substr($string, $start, $length),
-            sprintf(
-                'Wrong substring returned: got bytes %s instead of %s',
-                bin2hex(substr($string, $start, $length)),
-                bin2hex($result)
-            )
-        );
-    }
-
     public function vectors(): array
     {
         return [
@@ -73,40 +45,6 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
             ["foobar", "Zm9vYmFy"],
             // Added to ensure the -_ <--> +/ conversion is handled
             [hex2bin('000fc107e71c'), "AA_BB-cc"],
-        ];
-    }
-
-    public function strlenVectors(): array
-    {
-        $this->skipIfNotMultibyte();
-        // Strlen should be un-overloaded to just count bytes
-        return [
-            ['ascii text', 10],
-            ['texte français', 15],
-            ['русский текст', 25],
-            ['日本語テキスト', 21],
-            ['✨emoji❤️text🐰', 22],
-            ['🐰', 4],
-        ];
-    }
-
-    public function substrVectors(): array
-    {
-        $this->skipIfNotMultibyte();
-        return [
-            // Substr should be un-overloaded to just work on bytes, resulting
-            // in multibyte characters potentially getting cut in half
-            ['ascii text', 5, null, ' text'],
-            ['ascii text', 0, 5, 'ascii'],
-            ['texte français', 5, null, ' français'],
-            ['texte français', 0, 5, 'texte'],
-            ['русский текст', 5, null, chr(0x81).'ский текст'],
-            ['русский текст', 0, 5, 'ру'.chr(0xD1)],
-            ['日本語テキスト', 5, null, chr(0xAC).'語テキスト'],
-            ['日本語テキスト', 0, 5, '日'.chr(0xE6).chr(0x9C)],
-            ['✨emoji❤️text🐰', 5, null, 'oji❤️text🐰'],
-            ['✨emoji❤️text🐰', 0, 5, '✨em'],
-            ['🐰', 1, 2, chr(0x9F).chr(0x90)],
         ];
     }
 }
