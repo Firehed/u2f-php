@@ -26,7 +26,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     private $server;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->server = (new Server())
             ->disableCAVerification()
