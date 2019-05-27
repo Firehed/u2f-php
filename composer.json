@@ -44,5 +44,17 @@
             "name": "Eric Stern",
             "email": "eric@ericstern.com"
         }
-    ]
+    ],
+    "scripts": {
+        "test": [
+            "@phpunit",
+            "@phpstan",
+            "@phpcs"
+        ],
+        "coverage": "phpunit --coverage-html build; open build/index.html",
+        "autofix": "phpcbf src lib tests db",
+        "phpunit": "phpunit",
+        "phpstan": "phpstan analyse --no-progress .",
+        "phpcs": "phpcs ."
+    }
 }
