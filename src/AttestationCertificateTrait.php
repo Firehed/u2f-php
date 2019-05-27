@@ -5,21 +5,21 @@ namespace Firehed\U2F;
 
 trait AttestationCertificateTrait
 {
-
-    // Stored base64-encoded
+    /** @var string (binary) */
     private $attest = '';
 
     // Binary string of attestation certificate (from device issuer)
     public function getAttestationCertificateBinary(): string
     {
-        return base64_decode($this->attest);
+        return $this->attest;
     }
 
     // PEM formatted cert
     public function getAttestationCertificatePem(): string
     {
+        $data = base64_encode($this->getAttestationCertificateBinary());
         $pem  = "-----BEGIN CERTIFICATE-----\r\n";
-        $pem .= chunk_split($this->attest, 64);
+        $pem .= chunk_split($data, 64);
         $pem .= "-----END CERTIFICATE-----";
         return $pem;
     }
@@ -28,7 +28,7 @@ trait AttestationCertificateTrait
     {
         // In the future, this may make assertions about the cert formatting;
         // right now, we're going to leave it be.
-        $this->attest = base64_encode($cert);
+        $this->attest = $cert;
         return $this;
     }
 

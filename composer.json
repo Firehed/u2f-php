@@ -13,7 +13,7 @@
     ],
     "homepage": "https://github.com/Firehed/u2f-php",
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.2"
     },
     "require-dev": {
         "php-coveralls/php-coveralls": "^2.0",

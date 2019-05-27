@@ -7,7 +7,7 @@ use Firehed\U2F\InvalidDataException as IDE;
 
 trait ECPublicKeyTrait
 {
-    // Stored base64-encoded
+    /** @var string (binary) */
     private $pubKey = '';
 
     /**
@@ -18,7 +18,7 @@ trait ECPublicKeyTrait
     {
         trigger_error('Please use getPublicKeyBinary().', E_USER_DEPRECATED);
 
-        return base64_decode($this->pubKey);
+        return $this->getPublicKeyBinary();
     }
 
     /**
@@ -26,7 +26,7 @@ trait ECPublicKeyTrait
      */
     public function getPublicKeyBinary(): string
     {
-        return base64_decode($this->pubKey);
+        return $this->pubKey;
     }
 
     // Prepends the pubkey format headers and builds a pem file from the raw
@@ -67,7 +67,7 @@ trait ECPublicKeyTrait
         if (strlen($key) !== 65) {
             throw new IDE(IDE::PUBLIC_KEY_LENGTH, '65');
         }
-        $this->pubKey = base64_encode($key);
+        $this->pubKey = $key;
         return $this;
     }
 }

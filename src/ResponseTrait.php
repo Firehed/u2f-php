@@ -7,17 +7,16 @@ use Firehed\U2F\InvalidDataException as IDE;
 
 trait ResponseTrait
 {
-
     use KeyHandleTrait;
 
     private $clientData;
-    // Stored base64-encoded
+
+    /** @var string (binary) */
     private $signature = '';
 
-    // Binary string of signature
     public function getSignature(): string
     {
-        return base64_decode($this->signature);
+        return $this->signature;
     }
 
     public function getClientData(): ClientData
@@ -27,7 +26,7 @@ trait ResponseTrait
 
     protected function setSignature(string $signature): self
     {
-        $this->signature = base64_encode($signature);
+        $this->signature = $signature;
         return $this;
     }
 
