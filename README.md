@@ -23,6 +23,13 @@ Additional resources:
 * [FIDO U2F Overview](https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-overview.html)
 * [FIDO U2F Javascript API](https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-javascript-api.html)
 
+## Installation
+
+`composer require firehed/u2f`
+
+Note: you **must not** be using the deprecated `mbstring.func_overload` functionality, which can completely break working on binary data.
+The library will immediately throw an exception if you have it enabled.
+
 ## Usage
 
 Usage will be described in three parts: setup, registration, and authentication.
