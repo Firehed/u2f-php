@@ -15,8 +15,8 @@ class Server
     /**
      * Holds a list of paths to PEM-formatted CA certificates. Unless
      * verification has been explicitly disabled with `disableCAVerification()`,
-     * the Attestation Certificate in the `RegisterResponse` will be validated
-     * against the provided CAs.
+     * the Attestation Certificate in the `RegistrationResponseInterface` will
+     * be validated against the provided CAs.
      *
      * This means that you *must* either a) provide a list of trusted
      * certificates, or b) explicitly disable verifiation. By default, it will
@@ -176,17 +176,17 @@ class Server
     }
 
     /**
-     * This method authenticates a RegisterResponse against its corresponding
-     * RegisterRequest by verifying the certificate and signature. If valid, it
-     * returns a registration; if not, a SE will be thrown and attempt to
-     * register the key must be aborted.
+     * This method authenticates a RegistrationResponseInterface against its
+     * corresponding RegisterRequest by verifying the certificate and signature.
+     * If valid, it returns a registration; if not, a SE will be thrown and
+     * attempt to register the key must be aborted.
      *
-     * @param RegisterResponse $resp The response to verify
+     * @param RegistrationResponseInterface $response The response to verify
      * @return RegistrationInterface if the response is proven authentic
      * @throws SE if the response cannot be proven authentic
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function register(RegisterResponse $resp): RegistrationInterface
+    public function register(RegistrationResponseInterface $response): RegistrationInterface
     {
         if (!$this->registerRequest) {
             throw new BadMethodCallException(
@@ -194,28 +194,27 @@ class Server
                 'with setRegisterRequest()'
             );
         }
-        $this->validateChallenge($resp->getClientData(), $this->registerRequest);
-        // Check the Application Parameter?
-
-        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#registration-response-message-success
-        $signed_data = sprintf(
-            '%s%s%s%s%s',
-            chr(0),
+        $this->validateChallenge($response->getChallengeProvider(), $this->registerRequest);
+        // Check the Application Parameter
+        // Note: this is a bit delicate at the moment, since different
+        // protocols have different rules around the handling of Relying Party
+        // verification. Expect this to be revised.
+        if (!hash_equals(
             $this->registerRequest->getApplicationParameter(),
-            $resp->getClientData()->getChallengeParameter(),
-            $resp->getKeyHandleBinary(),
-            $resp->getPublicKeyBinary()
-        );
+            $response->getRpIdHash()
+        )) {
+            throw new SE(SE::SIGNATURE_INVALID);
+        }
 
-        $pem = $resp->getAttestationCertificatePem();
+        $pem = $response->getAttestationCertificatePem();
         if ($this->verifyCA) {
-            $resp->verifyIssuerAgainstTrustedCAs($this->trustedCAs);
+            $response->verifyIssuerAgainstTrustedCAs($this->trustedCAs);
         }
 
         // Signature must validate against device issuer's public key
         $sig_check = openssl_verify(
-            $signed_data,
-            $resp->getSignature(),
+            $response->getSignedData(),
+            $response->getSignature(),
             $pem,
             \OPENSSL_ALGO_SHA256
         );
@@ -224,10 +223,10 @@ class Server
         }
 
         return (new Registration())
-            ->setAttestationCertificate($resp->getAttestationCertificateBinary())
+            ->setAttestationCertificate($response->getAttestationCertificateBinary())
             ->setCounter(0) // The response does not include this
-            ->setKeyHandle($resp->getKeyHandleBinary())
-            ->setPublicKey($resp->getPublicKeyBinary());
+            ->setKeyHandle($response->getKeyHandleBinary())
+            ->setPublicKey($response->getPublicKeyBinary());
     }
 
     /**

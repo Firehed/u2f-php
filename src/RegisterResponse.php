@@ -5,7 +5,7 @@ namespace Firehed\U2F;
 
 use Firehed\U2F\InvalidDataException as IDE;
 
-class RegisterResponse
+class RegisterResponse implements RegistrationResponseInterface
 {
     use AttestationCertificateTrait;
     use ECPublicKeyTrait;
@@ -107,5 +107,23 @@ class RegisterResponse
         $this->setSignature(substr($regData, $offset));
 
         return $this;
+    }
+
+    public function getSignedData(): string
+    {
+        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#fig-authentication-request-message
+        return sprintf(
+            '%s%s%s%s%s',
+            chr(0),
+            $this->getClientData()->getApplicationParameter(),
+            $this->getClientData()->getChallengeParameter(),
+            $this->getKeyHandleBinary(),
+            $this->getPublicKeyBinary()
+        );
+    }
+
+    public function getRpIdHash(): string
+    {
+        return $this->getClientData()->getApplicationParameter();
     }
 }
