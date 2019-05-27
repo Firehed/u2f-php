@@ -108,7 +108,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         ];
         $signRequests = $this->server->generateSignRequests($registrations);
 
-        $this->assertInternalType('array', $signRequests);
+        $this->assertIsArray($signRequests);
         foreach ($signRequests as $signRequest) {
             $this->assertInstanceOf(SignRequest::class, $signRequest);
         }
