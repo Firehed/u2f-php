@@ -11,7 +11,7 @@ install:
 script:
   - php vendor/bin/phpunit --coverage-text --whitelist src/ tests/
   - vendor/bin/phpcs src tests
-  - vendor/bin/phpstan analyse --no-progress -l7 src tests
+  - vendor/bin/phpstan analyse .
 
 after_success:
     - travis_retry php vendor/bin/php-coveralls

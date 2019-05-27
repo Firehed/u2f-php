@@ -92,6 +92,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
             'cid_pubkey' => '',
         ];
         $json = json_encode($all);
+        assert($json !== false);
         if (!$allowed) {
             $this->expectException(InvalidDataException::class);
             $this->expectExceptionCode(InvalidDataException::MALFORMED_DATA);

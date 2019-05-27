@@ -3,3 +3,4 @@
 /vendor/
 # Suggested for libraries
 composer.lock
+.phpunit.result.cache

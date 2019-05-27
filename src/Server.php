@@ -5,6 +5,7 @@ namespace Firehed\U2F;
 
 use BadMethodCallException;
 use Firehed\U2F\SecurityException as SE;
+use RuntimeException;
 
 class Server
 {
@@ -48,6 +49,17 @@ class Server
      */
     private $signRequests = [];
 
+    public function __construct()
+    {
+        $overload = ini_get('mbstring.func_overload');
+        // @codeCoverageIgnoreStart
+        if ($overload > 0) {
+            throw new RuntimeException(
+                'The deprecated "mbstring.func_overload" directive must be disabled'
+            );
+        }
+        // @codeCoverageIgnoreEnd
+    }
     /**
      * This method authenticates a `LoginResponseInterface` against outstanding
      * registrations and their corresponding `SignRequest`s. If the response's

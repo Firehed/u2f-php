@@ -32,6 +32,15 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @covers ::__construct
+     */
+    public function testConstruct()
+    {
+        $server = new Server();
+        $this->assertInstanceOf(Server::class, $server);
+    }
+
+    /**
      * @covers ::disableCAVerification
      */
     public function testDisableCAVerificationReturnsSelf()
@@ -360,7 +369,6 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: key handle
         $data = $this->readJsonFile('register_response.json');
-        $cli = fromBase64Web($data['clientData']);
         $reg = $data['registrationData'];
         $reg[70] = chr(ord($reg[70]) + 1); // Change a byte in the key handle
         $data['registrationData'] = $reg;
@@ -620,6 +628,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      */
     public function testAuthenticateThrowsIfRequestIsSignedWithWrongKey()
     {
+        $pk = base64_decode(
+            'BCXk9bGiuzLRJaX6pFONm+twgIrDkOSNDdXgltt+KhOD'.
+            '9OxeRv2zYiz7SrVa8eb4LbGR9IDUE7gJySiiuQYWt1w='
+        );
+        assert($pk !== false);
         // This was a different key genearated with:
         // $ openssl ecparam -name prime256v1 -genkey -out private.pem
         // $ openssl ec -in private.pem -pubout -out public.pem
