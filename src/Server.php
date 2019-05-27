@@ -61,19 +61,19 @@ class Server
         // @codeCoverageIgnoreEnd
     }
     /**
-     * This method authenticates a `SignResponse` against outstanding
+     * This method authenticates a `LoginResponseInterface` against outstanding
      * registrations and their corresponding `SignRequest`s. If the response's
      * signature validates and the counter hasn't done anything strange, the
      * registration will be returned with an updated counter value, which *must*
      * be persisted for the next authentication. If any verification component
      * fails, a `SE` will be thrown.
      *
-     * @param SignResponse $response the parsed response from the user
+     * @param LoginResponseInterface $response the parsed response from the user
      * @return RegistrationInterface if authentication succeeds
      * @throws SE if authentication fails
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function authenticate(SignResponse $response): RegistrationInterface
+    public function authenticate(LoginResponseInterface $response): RegistrationInterface
     {
         if (!$this->registrations) {
             throw new BadMethodCallException(
@@ -117,28 +117,15 @@ class Server
         // match the one in the signing request, the client signed the
         // wrong thing. This could possibly be an attempt at a replay
         // attack.
-        $this->validateChallenge($response->getClientData(), $request);
+        $this->validateChallenge($response->getChallengeProvider(), $request);
 
         $pem = $registration->getPublicKeyPem();
 
-        // U2F Spec:
-        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#authentication-response-message-success
-        $to_verify = sprintf(
-            '%s%s%s%s',
-            $request->getApplicationParameter(),
-            chr($response->getUserPresenceByte()),
-            pack('N', $response->getCounter()),
-            // Note: Spec says this should be from the request, but that's not
-            // actually available via the JS API. Because we assert the
-            // challenge *value* from the Client Data matches the trusted one
-            // from the SignRequest and that value is included in the Challenge
-            // Parameter, this is safe unless/until SHA-256 is broken.
-            $response->getClientData()->getChallengeParameter()
-        );
+        $toVerify = $response->getSignedData();
 
         // Signature must validate against
         $sig_check = openssl_verify(
-            $to_verify,
+            $toVerify,
             $response->getSignature(),
             $pem,
             \OPENSSL_ALGO_SHA256
