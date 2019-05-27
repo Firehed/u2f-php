@@ -206,12 +206,12 @@ class Server
             throw new SE(SE::SIGNATURE_INVALID);
         }
 
-        $pem = $response->getAttestationCertificatePem();
         if ($this->verifyCA) {
-            $response->verifyIssuerAgainstTrustedCAs($this->trustedCAs);
+            $this->verifyAttestationCertAgainstTrustedCAs($response);
         }
 
         // Signature must validate against device issuer's public key
+        $pem = $response->getAttestationCertificatePem();
         $sig_check = openssl_verify(
             $response->getSignedData(),
             $response->getSignature(),
@@ -403,5 +403,27 @@ class Server
         }
         // TOOD: generate and compare timestamps
         return true;
+    }
+
+    /**
+     * Asserts that the attestation cert provided by the registration is issued
+     * by the set of trusted CAs.
+     *
+     * @param RegistrationResponseInterface $response The response to validate
+     * @throws SecurityException upon failure
+     * @return void
+     */
+    private function verifyAttestationCertAgainstTrustedCAs(RegistrationResponseInterface $response): void
+    {
+        $pem = $response->getAttestationCertificatePem();
+
+        $result = openssl_x509_checkpurpose(
+            $pem,
+            \X509_PURPOSE_ANY,
+            $this->trustedCAs
+        );
+        if ($result !== true) {
+            throw new SE(SE::NO_TRUSTED_CA);
+        }
     }
 }

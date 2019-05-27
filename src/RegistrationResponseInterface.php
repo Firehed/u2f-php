@@ -20,6 +20,4 @@ interface RegistrationResponseInterface
     public function getSignature(): string;
 
     public function getSignedData(): string;
-
-    public function verifyIssuerAgainstTrustedCAs(array $trustedCAs): bool;
 }
