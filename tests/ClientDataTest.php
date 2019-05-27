@@ -23,6 +23,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
             'cid_pubkey' => '',
         ];
         $goodJson = json_encode($goodData);
+        assert($goodJson !== false);
         $clientData = ClientData::fromJson($goodJson);
         $this->assertInstanceOf(ClientData::class, $clientData);
     }
@@ -34,6 +35,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
     public function testGetChallengeParameter()
     {
         $expected_param = base64_decode('exDPjyyKbizXMAAUNLpv0QYJNyXClbUqewUWojPtp0g=');
+        assert($expected_param !== false);
         // Sanity check
         $this->assertSame(
             32,
@@ -48,6 +50,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
             'cid_pubkey' => '',
         ];
         $goodJson = json_encode($goodData);
+        assert($goodJson !== false);
         $clientData = ClientData::fromJson($goodJson);
         $this->assertTrue(
             hash_equals($expected_param, $clientData->getChallengeParameter()),
@@ -89,6 +92,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
             'cid_pubkey' => '',
         ];
         $json = json_encode($all);
+        assert($json !== false);
         if (!$allowed) {
             $this->expectException(InvalidDataException::class);
             $this->expectExceptionCode(InvalidDataException::MALFORMED_DATA);

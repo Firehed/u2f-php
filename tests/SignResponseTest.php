@@ -55,12 +55,14 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         $challenge = toBase64Web(random_bytes(32));
         $key_handle = toBase64Web(random_bytes(16));
 
-        $client_data = toBase64Web(json_encode([
+        $json = json_encode([
             "typ" => "navigator.id.getAssertion",
             "challenge" => $challenge,
             "origin" => "https://u2f.example.com",
             "cid_pubkey" => ""
-        ]));
+        ]);
+        assert($json !== false);
+        $client_data = toBase64Web($json);
 
         $json = sprintf(
             self::JSON_FORMAT,

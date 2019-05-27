@@ -25,6 +25,7 @@ class SignRequestTest extends \PHPUnit\Framework\TestCase
             ->setChallenge($challenge)
             ->setKeyHandle($keyHandle);
         $json = json_encode($request);
+        assert($json !== false);
         $decoded = json_decode($json, true);
         $this->assertSame(
             $appId,
