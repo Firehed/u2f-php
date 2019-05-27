@@ -12,8 +12,6 @@ use TypeError;
  */
 class ServerTest extends \PHPUnit\Framework\TestCase
 {
-    use MultibyteWarningTrait;
-
     const APP_ID = 'https://u2f.example.com';
 
     const ENCODED_KEY_HANDLE =
@@ -467,18 +465,6 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             $return->getCounter(),
             'The new registration\'s counter did not match the Response'
         );
-    }
-
-    /**
-     * Re-run testAuthenticate after ensuring that mbstring.func_overload is
-     * being used
-     *
-     * @coversNothing
-     */
-    public function testAuthenticateWithMultibyteSettings()
-    {
-        $this->skipIfNotMultibyte();
-        $this->testAuthenticate();
     }
 
     /**
