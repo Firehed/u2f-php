@@ -13,7 +13,7 @@ class ECPublicKeyTraitTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @covers ::setPublicKey
-     * @covers ::getPublicKey
+     * @covers ::getPublicKeyBinary
      */
     public function testAccessors()
     {
@@ -46,6 +46,7 @@ class ECPublicKeyTraitTest extends \PHPUnit\Framework\TestCase
             '04b4960ae0fa301033fbedc85c33ac30408dffd6098bc8580d8b66159959d89b9'.
             '31daf1d43a1949b07b7d47eea25efcac478bb5cd6ead0a3c3f7b7cb2a7bc1e3be'
         );
+        assert($key !== false);
         $pem =
             "-----BEGIN PUBLIC KEY-----\r\n".
             "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEtJYK4PowEDP77chcM6wwQI3/1gmL\r\n".

@@ -12,8 +12,6 @@ use TypeError;
  */
 class ServerTest extends \PHPUnit\Framework\TestCase
 {
-    use MultibyteWarningTrait;
-
     const APP_ID = 'https://u2f.example.com';
 
     const ENCODED_KEY_HANDLE =
@@ -26,11 +24,20 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     private $server;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->server = (new Server())
             ->disableCAVerification()
             ->setAppId(self::APP_ID);
+    }
+
+    /**
+     * @covers ::__construct
+     */
+    public function testConstruct()
+    {
+        $server = new Server();
+        $this->assertInstanceOf(Server::class, $server);
     }
 
     /**
@@ -110,7 +117,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         ];
         $signRequests = $this->server->generateSignRequests($registrations);
 
-        $this->assertInternalType('array', $signRequests);
+        $this->assertIsArray($signRequests);
         foreach ($signRequests as $signRequest) {
             $this->assertInstanceOf(SignRequest::class, $signRequest);
         }
@@ -339,14 +346,13 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: challenge parameter
-        $json = file_get_contents(__DIR__.'/register_response.json');
-        $data = json_decode($json, true);
+        $data = $this->readJsonFile('register_response.json');
         $cli = fromBase64Web($data['clientData']);
         $obj = json_decode($cli, true);
         $obj['origin'] = 'https://not.my.u2f.example.com';
-        $cli = toBase64Web(json_encode($obj));
+        $cli = toBase64Web($this->safeEncode($obj));
         $data['clientData'] = $cli;
-        $response = RegisterResponse::fromJson(json_encode($data));
+        $response = RegisterResponse::fromJson($this->safeEncode($data));
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
@@ -362,12 +368,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: key handle
-        $json = file_get_contents(__DIR__.'/register_response.json');
-        $data = json_decode($json, true);
+        $data = $this->readJsonFile('register_response.json');
         $reg = $data['registrationData'];
         $reg[70] = chr(ord($reg[70]) + 1); // Change a byte in the key handle
         $data['registrationData'] = $reg;
-        $response = RegisterResponse::fromJson(json_encode($data));
+        $response = RegisterResponse::fromJson($this->safeEncode($data));
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
@@ -383,12 +388,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: public key
-        $json = file_get_contents(__DIR__.'/register_response.json');
-        $data = json_decode($json, true);
+        $data = $this->readJsonFile('register_response.json');
         $reg = $data['registrationData'];
         $reg[3] = chr(ord($reg[3]) + 1); // Change a byte in the public key
         $data['registrationData'] = $reg;
-        $response = RegisterResponse::fromJson(json_encode($data));
+        $response = RegisterResponse::fromJson($this->safeEncode($data));
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
@@ -404,12 +408,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: signature
-        $json = file_get_contents(__DIR__.'/register_response.json');
-        $data = json_decode($json, true);
+        $data = $this->readJsonFile('register_response.json');
         $reg = $data['registrationData'];
         $last = str_rot13(substr($reg, -5)); // rot13 a few chars in signature
         $data['registrationData'] = substr($reg, 0, -5).$last;
-        $response = RegisterResponse::fromJson(json_encode($data));
+        $response = RegisterResponse::fromJson($this->safeEncode($data));
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
@@ -474,18 +477,6 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Re-run testAuthenticate after ensuring that mbstring.func_overload is
-     * being used
-     *
-     * @coversNothing
-     */
-    public function testAuthenticateWithMultibyteSettings()
-    {
-        $this->skipIfNotMultibyte();
-        $this->testAuthenticate();
-    }
-
-    /**
      * This tries to authenticate with a used response immediately following
      * its successful use.
      *
@@ -521,10 +512,12 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      */
     public function testAuthenticateThrowsWhenCounterGoesBackwards()
     {
+        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
+        assert($pk !== false);
         // Counter from "DB" bumped, suggesting response was cloned
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey(base64_decode(self::ENCODED_PUBLIC_KEY))
+            ->setPublicKey($pk)
             ->setCounter(82)
             ;
         $request = $this->getDefaultSignRequest();
@@ -565,10 +558,12 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      */
     public function testAuthenticateThrowsIfNoRegistrationMatchesKeyHandle()
     {
+        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
+        assert($pk !== false);
         // Change registration KH
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web('some-other-key-handle'))
-            ->setPublicKey(base64_decode(self::ENCODED_PUBLIC_KEY))
+            ->setPublicKey($pk)
             ->setCounter(2)
             ;
         $request = $this->getDefaultSignRequest();
@@ -612,12 +607,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $registration = $this->getDefaultRegistration();
         $request = $this->getDefaultSignRequest();
         // Trimming a byte off the signature to cause a mismatch
-        $data = json_decode(
-            file_get_contents(__DIR__.'/sign_response.json'),
-            true
-        );
+        $data = $this->readJsonFile('sign_response.json');
         $data['signatureData'] = substr($data['signatureData'], 0, -1);
-        $response = SignResponse::fromJson(json_encode($data));
+        $response = SignResponse::fromJson($this->safeEncode($data));
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
@@ -636,6 +628,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      */
     public function testAuthenticateThrowsIfRequestIsSignedWithWrongKey()
     {
+        $pk = base64_decode(
+            'BCXk9bGiuzLRJaX6pFONm+twgIrDkOSNDdXgltt+KhOD'.
+            '9OxeRv2zYiz7SrVa8eb4LbGR9IDUE7gJySiiuQYWt1w='
+        );
+        assert($pk !== false);
         // This was a different key genearated with:
         // $ openssl ecparam -name prime256v1 -genkey -out private.pem
         // $ openssl ec -in private.pem -pubout -out public.pem
@@ -643,10 +640,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // leading bytes are formatting; see ECPublicKeyTrait)
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey(base64_decode(
-                'BCXk9bGiuzLRJaX6pFONm+twgIrDkOSNDdXgltt+KhOD'.
-                '9OxeRv2zYiz7SrVa8eb4LbGR9IDUE7gJySiiuQYWt1w='
-            ))
+            ->setPublicKey($pk)
             ->setCounter(2)
             ;
         $request = $this->getDefaultSignRequest();
@@ -671,9 +665,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     private function getDefaultRegisterResponse(): RegisterResponse
     {
-        return RegisterResponse::fromJson(
-            file_get_contents(__DIR__.'/register_response.json')
-        );
+        return RegisterResponse::fromJson($this->safeReadFile('register_response.json'));
     }
 
     private function getDefaultSignRequest(): SignRequest
@@ -688,10 +680,12 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     private function getDefaultRegistration(): RegistrationInterface
     {
+        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
+        assert($pk !== false);
         // From database attached to the authenticating user
         return  (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey(base64_decode(self::ENCODED_PUBLIC_KEY))
+            ->setPublicKey($pk)
             ->setCounter(2)
             ;
     }
@@ -699,8 +693,32 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     private function getDefaultSignResponse(): SignResponse
     {
         // Value from user
-        return SignResponse::fromJson(
-            file_get_contents(__DIR__.'/sign_response.json')
-        );
+        return SignResponse::fromJson($this->safeReadFile('sign_response.json'));
+    }
+
+    private function readJsonFile(string $file): array
+    {
+        return $this->safeDecode($this->safeReadFile($file));
+    }
+
+    private function safeReadFile(string $file): string
+    {
+        $body = file_get_contents(__DIR__.'/'.$file);
+        assert($body !== false);
+        return $body;
+    }
+
+    private function safeDecode(string $json): array
+    {
+        $data = json_decode($json, true);
+        assert($data !== false);
+        return $data;
+    }
+
+    private function safeEncode(array $data): string
+    {
+        $json = json_encode($data);
+        assert($json !== false);
+        return $json;
     }
 }

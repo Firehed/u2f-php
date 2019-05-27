@@ -19,7 +19,7 @@ trait AppIdTrait
     }
 
     /**
-     * @return the raw SHA-256 hash of the App ID
+     * @return string The raw SHA-256 hash of the App ID
      */
     public function getApplicationParameter(): string
     {

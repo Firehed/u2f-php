@@ -4,12 +4,13 @@ namespace Firehed\U2F;
 
 trait KeyHandleTrait
 {
+    /** @var string (binary) */
     private $keyHandle;
 
     // Binary string of key handle
     public function getKeyHandleBinary(): string
     {
-        return base64_decode($this->keyHandle);
+        return $this->keyHandle;
     }
     // B64-websafe value
     public function getKeyHandleWeb(): string
@@ -20,7 +21,7 @@ trait KeyHandleTrait
     public function setKeyHandle(string $keyHandle): self
     {
         // TODO: make immutable
-        $this->keyHandle = base64_encode($keyHandle);
+        $this->keyHandle = $keyHandle;
         return $this;
     }
 }

@@ -13,13 +13,14 @@
     ],
     "homepage": "https://github.com/Firehed/u2f-php",
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.2"
     },
     "require-dev": {
         "php-coveralls/php-coveralls": "^2.0",
-        "phpstan/phpstan": "^0.9.2",
-        "phpunit/phpunit": "^6.0 || ^7.0",
-        "squizlabs/php_codesniffer": "^3.2"
+        "phpstan/phpstan": "^0.11",
+        "phpunit/phpunit": "^8.0",
+        "squizlabs/php_codesniffer": "^3.2",
+        "spatie/phpunit-watcher": "^1.8"
     },
     "autoload": {
         "psr-4": {
@@ -39,5 +40,17 @@
             "name": "Eric Stern",
             "email": "eric@ericstern.com"
         }
-    ]
+    ],
+    "scripts": {
+        "test": [
+            "@phpunit",
+            "@phpstan",
+            "@phpcs"
+        ],
+        "coverage": "phpunit --coverage-html build; open build/index.html",
+        "autofix": "phpcbf src lib tests db",
+        "phpunit": "phpunit",
+        "phpstan": "phpstan analyse --no-progress .",
+        "phpcs": "phpcs ."
+    }
 }

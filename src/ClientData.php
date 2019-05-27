@@ -68,6 +68,7 @@ class ClientData implements JsonSerializable, ChallengeProvider
     public function getChallengeParameter(): string
     {
         $json = json_encode($this, \JSON_UNESCAPED_SLASHES);
+        assert($json !== false);
         return hash('sha256', $json, true);
     }
 
