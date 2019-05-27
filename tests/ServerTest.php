@@ -32,6 +32,15 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @covers ::__construct
+     */
+    public function testConstruct()
+    {
+        $server = new Server();
+        $this->assertInstanceOf(Server::class, $server);
+    }
+
+    /**
      * @covers ::disableCAVerification
      */
     public function testDisableCAVerificationReturnsSelf()

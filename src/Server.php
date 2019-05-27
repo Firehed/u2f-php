@@ -52,11 +52,13 @@ class Server
     public function __construct()
     {
         $overload = ini_get('mbstring.func_overload');
+        // @codeCoverageIgnoreStart
         if ($overload > 0) {
             throw new RuntimeException(
                 'The deprecated "mbstring.func_overload" directive must be disabled'
             );
         }
+        // @codeCoverageIgnoreEnd
     }
     /**
      * This method authenticates a `SignResponse` against outstanding
