@@ -10,7 +10,6 @@ namespace Firehed\U2F;
  */
 class ClientDataTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * @covers ::fromJson
      */

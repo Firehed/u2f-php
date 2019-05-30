@@ -12,7 +12,7 @@ use TypeError;
  */
 class ServerTest extends \PHPUnit\Framework\TestCase
 {
-    const APP_ID = 'https://u2f.example.com';
+    const APP_ID = 'https://u2f.ericstern.com';
 
     const ENCODED_KEY_HANDLE =
         'JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVax'.
@@ -326,14 +326,19 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      */
     public function testRegisterThrowsWithChangedApplicationParameter()
     {
-        $request = (new RegisterRequest())
-            ->setAppId('https://not.my.u2f.example.com')
-            ->setChallenge('PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo');
+        $request = $this->getDefaultRegisterRequest();
 
-        $response = $this->getDefaultRegisterResponse();
+        $challengeProvider = $this->createMock(ChallengeProvider::class);
+        $challengeProvider->method('getChallenge')
+            ->willReturn($request->getChallenge());
+        $response = $this->createMock(RegistrationResponseInterface::class);
+        $response->method('getChallengeProvider')
+            ->willReturn($challengeProvider);
+        $response->method('getRpIdHash')
+            ->willReturn(hash('sha256', 'https://some.otherdomain.com', true));
 
         $this->expectException(SecurityException::class);
-        $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
+        $this->expectExceptionCode(SecurityException::WRONG_RELYING_PARTY);
         $this->server
             ->setRegisterRequest($request)
             ->register($response);
@@ -349,7 +354,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $data = $this->readJsonFile('register_response.json');
         $cli = fromBase64Web($data['clientData']);
         $obj = json_decode($cli, true);
-        $obj['origin'] = 'https://not.my.u2f.example.com';
+        $obj['cid_pubkey'] = 'nonsense';
         $cli = toBase64Web($this->safeEncode($obj));
         $data['clientData'] = $cli;
         $response = RegisterResponse::fromJson($this->safeEncode($data));

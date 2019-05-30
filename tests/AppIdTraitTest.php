@@ -50,4 +50,21 @@ class AppIdTraitTest extends \PHPUnit\Framework\TestCase
             'getApplicationParamter should return the raw SHA256 hash of the application id'
         );
     }
+
+    /**
+     * @covers ::getRpIdHash
+     */
+    public function testGetRpIdHash()
+    {
+        $obj = new class {
+            use AppIdTrait;
+        };
+        $appId = 'https://u2f.example.com';
+        $obj->setAppId($appId);
+        $this->assertSame(
+            hash('sha256', $appId, true),
+            $obj->getRpIdHash(),
+            'getRpIdHash should return the raw SHA256 hash of the application id'
+        );
+    }
 }

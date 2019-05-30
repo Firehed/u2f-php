@@ -196,15 +196,7 @@ class Server
         }
         $this->validateChallenge($response->getChallengeProvider(), $this->registerRequest);
         // Check the Application Parameter
-        // Note: this is a bit delicate at the moment, since different
-        // protocols have different rules around the handling of Relying Party
-        // verification. Expect this to be revised.
-        if (!hash_equals(
-            $this->registerRequest->getApplicationParameter(),
-            $response->getRpIdHash()
-        )) {
-            throw new SE(SE::SIGNATURE_INVALID);
-        }
+        $this->validateRelyingParty($response->getRpIdHash());
 
         if ($this->verifyCA) {
             $this->verifyAttestationCertAgainstTrustedCAs($response);
@@ -380,6 +372,15 @@ class Server
         return toBase64Web(\random_bytes(16));
     }
 
+    private function validateRelyingParty(string $rpIdHash): void
+    {
+        // Note: this is a bit delicate at the moment, since different
+        // protocols have different rules around the handling of Relying Party
+        // verification. Expect this to be revised.
+        if (!hash_equals($this->getRpIdHash(), $rpIdHash)) {
+            throw new SE(SE::WRONG_RELYING_PARTY);
+        }
+    }
     /**
      * Compares the Challenge value from a known source against the
      * user-provided value. A mismatch will throw a SE. Future

@@ -25,4 +25,12 @@ trait AppIdTrait
     {
         return hash('sha256', $this->appId, true);
     }
+
+    /**
+     * @return string The raw SHA-256 hash of the Relying Party ID
+     */
+    public function getRpIdHash(): string
+    {
+        return hash('sha256', $this->appId, true);
+    }
 }
