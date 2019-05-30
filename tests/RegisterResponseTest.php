@@ -138,6 +138,55 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @covers ::getSignedData
+     */
+    public function testGetSignedData()
+    {
+        $json = file_get_contents(__DIR__ . '/register_response.json');
+        assert($json !== false);
+        $response = RegisterResponse::fromJson($json);
+
+        $expectedSignedData = sprintf(
+            '%s%s%s%s%s',
+            "\x00",
+            hash('sha256', 'https://u2f.ericstern.com', true),
+            hash(
+                'sha256',
+                '{'.
+                '"typ":"navigator.id.finishEnrollment",'.
+                '"challenge":"PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo",'.
+                '"origin":"https://u2f.ericstern.com",'.
+                '"cid_pubkey":""'.
+                '}',
+                true
+            ),
+            $response->getKeyHandleBinary(),
+            $response->getPublicKeyBinary()
+        );
+
+        $this->assertSame(
+            $expectedSignedData,
+            $response->getSignedData(),
+            'Wrong signed data'
+        );
+    }
+
+    /**
+     * @covers ::getRpIdHash
+     */
+    public function testGetRpIdHash()
+    {
+        $json = file_get_contents(__DIR__ . '/register_response.json');
+        assert($json !== false);
+        $response = RegisterResponse::fromJson($json);
+
+        $this->assertSame(
+            hash('sha256', 'https://u2f.ericstern.com', true),
+            $response->getRpIdHash()
+        );
+    }
+
     // -( DataProviders )------------------------------------------------------
 
     public function clientErrors()

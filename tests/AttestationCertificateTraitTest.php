@@ -52,40 +52,6 @@ class AttestationCertificateTraitTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::verifyIssuerAgainstTrustedCAs
-     */
-    public function testSuccessfulCAVerification()
-    {
-        $class = $this->getObjectWithYubicoCert();
-        $certs = [dirname(__DIR__).'/CAcerts/yubico.pem'];
-        $this->assertTrue($class->verifyIssuerAgainstTrustedCAs($certs));
-    }
-
-    /**
-     * @covers ::verifyIssuerAgainstTrustedCAs
-     */
-    public function testFailedCAVerification()
-    {
-        $class = $this->getObjectWithYubicoCert();
-        $certs = [__DIR__.'/verisign_only_for_unit_tests.pem'];
-        $this->expectException(SecurityException::class);
-        $this->expectExceptionCode(SecurityException::NO_TRUSTED_CA);
-        $class->verifyIssuerAgainstTrustedCAs($certs);
-    }
-
-    /**
-     * @covers ::verifyIssuerAgainstTrustedCAs
-     */
-    public function testFailedCAVerificationFromNoCAs()
-    {
-        $class = $this->getObjectWithYubicoCert();
-        $certs = [];
-        $this->expectException(SecurityException::class);
-        $this->expectExceptionCode(SecurityException::NO_TRUSTED_CA);
-        $class->verifyIssuerAgainstTrustedCAs($certs);
-    }
-
     // -(Helper methods)-------------------------------------------------------
 
     /**

@@ -28,6 +28,11 @@ class ClientData implements JsonSerializable, ChallengeProvider
         return $ret;
     }
 
+    public function getApplicationParameter(): string
+    {
+        return hash('sha256', $this->origin, true);
+    }
+
     /**
      * Checks the 'typ' field against the allowed types in the U2F spec (sec.
      * 7.1)

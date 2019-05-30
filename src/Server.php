@@ -15,8 +15,8 @@ class Server
     /**
      * Holds a list of paths to PEM-formatted CA certificates. Unless
      * verification has been explicitly disabled with `disableCAVerification()`,
-     * the Attestation Certificate in the `RegisterResponse` will be validated
-     * against the provided CAs.
+     * the Attestation Certificate in the `RegistrationResponseInterface` will
+     * be validated against the provided CAs.
      *
      * This means that you *must* either a) provide a list of trusted
      * certificates, or b) explicitly disable verifiation. By default, it will
@@ -61,19 +61,19 @@ class Server
         // @codeCoverageIgnoreEnd
     }
     /**
-     * This method authenticates a `SignResponse` against outstanding
+     * This method authenticates a `LoginResponseInterface` against outstanding
      * registrations and their corresponding `SignRequest`s. If the response's
      * signature validates and the counter hasn't done anything strange, the
      * registration will be returned with an updated counter value, which *must*
      * be persisted for the next authentication. If any verification component
      * fails, a `SE` will be thrown.
      *
-     * @param SignResponse $response the parsed response from the user
+     * @param LoginResponseInterface $response the parsed response from the user
      * @return RegistrationInterface if authentication succeeds
      * @throws SE if authentication fails
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function authenticate(SignResponse $response): RegistrationInterface
+    public function authenticate(LoginResponseInterface $response): RegistrationInterface
     {
         if (!$this->registrations) {
             throw new BadMethodCallException(
@@ -117,28 +117,15 @@ class Server
         // match the one in the signing request, the client signed the
         // wrong thing. This could possibly be an attempt at a replay
         // attack.
-        $this->validateChallenge($response->getClientData(), $request);
+        $this->validateChallenge($response->getChallengeProvider(), $request);
 
         $pem = $registration->getPublicKeyPem();
 
-        // U2F Spec:
-        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#authentication-response-message-success
-        $to_verify = sprintf(
-            '%s%s%s%s',
-            $request->getApplicationParameter(),
-            chr($response->getUserPresenceByte()),
-            pack('N', $response->getCounter()),
-            // Note: Spec says this should be from the request, but that's not
-            // actually available via the JS API. Because we assert the
-            // challenge *value* from the Client Data matches the trusted one
-            // from the SignRequest and that value is included in the Challenge
-            // Parameter, this is safe unless/until SHA-256 is broken.
-            $response->getClientData()->getChallengeParameter()
-        );
+        $toVerify = $response->getSignedData();
 
         // Signature must validate against
         $sig_check = openssl_verify(
-            $to_verify,
+            $toVerify,
             $response->getSignature(),
             $pem,
             \OPENSSL_ALGO_SHA256
@@ -189,17 +176,17 @@ class Server
     }
 
     /**
-     * This method authenticates a RegisterResponse against its corresponding
-     * RegisterRequest by verifying the certificate and signature. If valid, it
-     * returns a registration; if not, a SE will be thrown and attempt to
-     * register the key must be aborted.
+     * This method authenticates a RegistrationResponseInterface against its
+     * corresponding RegisterRequest by verifying the certificate and signature.
+     * If valid, it returns a registration; if not, a SE will be thrown and
+     * attempt to register the key must be aborted.
      *
-     * @param RegisterResponse $resp The response to verify
+     * @param RegistrationResponseInterface $response The response to verify
      * @return RegistrationInterface if the response is proven authentic
      * @throws SE if the response cannot be proven authentic
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function register(RegisterResponse $resp): RegistrationInterface
+    public function register(RegistrationResponseInterface $response): RegistrationInterface
     {
         if (!$this->registerRequest) {
             throw new BadMethodCallException(
@@ -207,28 +194,19 @@ class Server
                 'with setRegisterRequest()'
             );
         }
-        $this->validateChallenge($resp->getClientData(), $this->registerRequest);
-        // Check the Application Parameter?
+        $this->validateChallenge($response->getChallengeProvider(), $this->registerRequest);
+        // Check the Application Parameter
+        $this->validateRelyingParty($response->getRpIdHash());
 
-        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#registration-response-message-success
-        $signed_data = sprintf(
-            '%s%s%s%s%s',
-            chr(0),
-            $this->registerRequest->getApplicationParameter(),
-            $resp->getClientData()->getChallengeParameter(),
-            $resp->getKeyHandleBinary(),
-            $resp->getPublicKeyBinary()
-        );
-
-        $pem = $resp->getAttestationCertificatePem();
         if ($this->verifyCA) {
-            $resp->verifyIssuerAgainstTrustedCAs($this->trustedCAs);
+            $this->verifyAttestationCertAgainstTrustedCAs($response);
         }
 
         // Signature must validate against device issuer's public key
+        $pem = $response->getAttestationCertificatePem();
         $sig_check = openssl_verify(
-            $signed_data,
-            $resp->getSignature(),
+            $response->getSignedData(),
+            $response->getSignature(),
             $pem,
             \OPENSSL_ALGO_SHA256
         );
@@ -237,10 +215,10 @@ class Server
         }
 
         return (new Registration())
-            ->setAttestationCertificate($resp->getAttestationCertificateBinary())
+            ->setAttestationCertificate($response->getAttestationCertificateBinary())
             ->setCounter(0) // The response does not include this
-            ->setKeyHandle($resp->getKeyHandleBinary())
-            ->setPublicKey($resp->getPublicKeyBinary());
+            ->setKeyHandle($response->getKeyHandleBinary())
+            ->setPublicKey($response->getPublicKeyBinary());
     }
 
     /**
@@ -394,6 +372,15 @@ class Server
         return toBase64Web(\random_bytes(16));
     }
 
+    private function validateRelyingParty(string $rpIdHash): void
+    {
+        // Note: this is a bit delicate at the moment, since different
+        // protocols have different rules around the handling of Relying Party
+        // verification. Expect this to be revised.
+        if (!hash_equals($this->getRpIdHash(), $rpIdHash)) {
+            throw new SE(SE::WRONG_RELYING_PARTY);
+        }
+    }
     /**
      * Compares the Challenge value from a known source against the
      * user-provided value. A mismatch will throw a SE. Future
@@ -417,5 +404,27 @@ class Server
         }
         // TOOD: generate and compare timestamps
         return true;
+    }
+
+    /**
+     * Asserts that the attestation cert provided by the registration is issued
+     * by the set of trusted CAs.
+     *
+     * @param RegistrationResponseInterface $response The response to validate
+     * @throws SecurityException upon failure
+     * @return void
+     */
+    private function verifyAttestationCertAgainstTrustedCAs(RegistrationResponseInterface $response): void
+    {
+        $pem = $response->getAttestationCertificatePem();
+
+        $result = openssl_x509_checkpurpose(
+            $pem,
+            \X509_PURPOSE_ANY,
+            $this->trustedCAs
+        );
+        if ($result !== true) {
+            throw new SE(SE::NO_TRUSTED_CA);
+        }
     }
 }

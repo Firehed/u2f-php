@@ -5,7 +5,7 @@ namespace Firehed\U2F;
 
 use Firehed\U2F\InvalidDataException as IDE;
 
-class SignResponse
+class SignResponse implements LoginResponseInterface
 {
     use ResponseTrait;
 
@@ -17,9 +17,28 @@ class SignResponse
     {
         return $this->counter;
     }
+
     public function getUserPresenceByte(): int
     {
         return $this->user_presence;
+    }
+
+    public function getSignedData(): string
+    {
+        // U2F Spec:
+        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#authentication-response-message-success
+        return sprintf(
+            '%s%s%s%s',
+            $this->getClientData()->getApplicationParameter(),
+            chr($this->getUserPresenceByte()),
+            pack('N', $this->getCounter()),
+            // Note: Spec says this should be from the request, but that's not
+            // actually available via the JS API. Because we assert the
+            // challenge *value* from the Client Data matches the trusted one
+            // from the SignRequest and that value is included in the Challenge
+            // Parameter, this is safe unless/until SHA-256 is broken.
+            $this->getClientData()->getChallengeParameter()
+        );
     }
 
     protected function parseResponse(array $response): self
