@@ -27,7 +27,6 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::fromJson
      * @covers ::getSignature
-     * @covers ::getChallengeProvider
      */
     public function testValidJson()
     {
@@ -48,12 +47,6 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
             get_class($this->trait),
             $response,
             'Parsed response was the wrong type'
-        );
-
-        $this->assertInstanceOf(
-            ChallengeProvider::class,
-            $response->getChallengeProvider(),
-            'Did not get a challenge provider'
         );
 
         $this->assertSame(

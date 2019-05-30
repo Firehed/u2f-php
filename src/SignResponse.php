@@ -61,4 +61,9 @@ class SignResponse implements LoginResponseInterface
         $this->setSignature($decoded['signature']);
         return $this;
     }
+
+    public function getChallenge(): string
+    {
+        return $this->clientData->getChallenge();
+    }
 }

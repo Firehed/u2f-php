@@ -214,6 +214,21 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @covers ::getChallenge
+     */
+    public function testGetChallenge()
+    {
+        $json = file_get_contents(__DIR__ . '/sign_response.json');
+        assert($json !== false);
+        $response = SignResponse::fromJson($json);
+
+        $this->assertSame(
+            'wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg',
+            $response->getChallenge()
+        );
+    }
+
+    /**
      * @dataProvider clientErrors
      */
     public function testErrorResponse(int $code)
