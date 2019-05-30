@@ -9,7 +9,7 @@ class Registration implements RegistrationInterface
 {
     use KeyHandleTrait;
 
-    /** @var AttestationCertificate */
+    /** @var AttestationCertificateInterface */
     private $cert;
 
     /** @var int */
@@ -18,7 +18,7 @@ class Registration implements RegistrationInterface
     /** @var PublicKeyInterface */
     private $pubKey;
 
-    public function getAttestationCertificate(): AttestationCertificate
+    public function getAttestationCertificate(): AttestationCertificateInterface
     {
         return $this->cert;
     }
@@ -28,7 +28,7 @@ class Registration implements RegistrationInterface
         return $this->counter;
     }
 
-    public function setAttestationCertificate(AttestationCertificate $cert): self
+    public function setAttestationCertificate(AttestationCertificateInterface $cert): self
     {
         $this->cert = $cert;
         return $this;

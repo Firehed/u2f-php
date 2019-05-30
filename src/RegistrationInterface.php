@@ -10,9 +10,9 @@ namespace Firehed\U2F;
 interface RegistrationInterface
 {
     /**
-     * @return AttestationCertificate The decoded attestation of the U2F token.
+     * @return AttestationCertificateInterface The decoded attestation of the U2F token.
      */
-    public function getAttestationCertificate(): AttestationCertificate;
+    public function getAttestationCertificate(): AttestationCertificateInterface;
 
     /**
      * @return int The counter of the U2F registration.

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
-class AttestationCertificate
+class AttestationCertificate implements AttestationCertificateInterface
 {
     /** @var string (binary) */
     private $binary;
