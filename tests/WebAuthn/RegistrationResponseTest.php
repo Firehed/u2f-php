@@ -12,9 +12,10 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers ::fromDecodedJson
-     * @covers ::getRpIdHash
+     * @covers ::getAttestationCertificate
      * @covers ::getKeyHandleBinary
-     * @covers ::getPublicKeyBinary
+     * @covers ::getPublicKey
+     * @covers ::getRpIdHash
      * @covers ::getSignature
      * @covers ::getSignedData
      */
@@ -37,7 +38,7 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
             '04' . // fixed
             'acb4d70da1504f2376361e0fb331ad41793e9698fa046945f51352820e7c2b78' . // x
             '35c628978409d8c97ef0bb464a5989a0274b24d91bf48901de8dd0450e265680' // y
-        ), $response->getPublicKeyBinary(), 'Public key');
+        ), $response->getPublicKey()->getBinary(), 'Public key');
 
         $this->assertSame(hex2bin(
             // \x00
@@ -84,6 +85,6 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
             '26d7112fa1997f7839656fbb32be8f7889d0f0145519a27afdd8e46b04ca4290d'.
             '8540b634b886161e7588c86299dcdd6435d1678a3a6f0a74829c4dd3f70c3524d'.
             '1ddf16d78add21b64'
-        ), $response->getAttestationCertificateBinary(), 'Attestation cert');
+        ), $response->getAttestationCertificate()->getBinary(), 'Attestation cert');
     }
 }

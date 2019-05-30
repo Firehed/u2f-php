@@ -4,15 +4,19 @@ declare(strict_types=1);
 namespace Firehed\U2F\WebAuthn;
 
 use Firehed\CBOR\Decoder;
-use Firehed\U2F\AttestationCertificateTrait;
+use Firehed\U2F\AttestationCertificate;
+use Firehed\U2F\AttestationCertificateInterface;
 use Firehed\U2F\ChallengeProvider;
+use Firehed\U2F\ECPublicKey;
+use Firehed\U2F\PublicKeyInterface;
 use Firehed\U2F\RegistrationResponseInterface;
 
 use function Firehed\U2F\fromBase64Web;
 
 class RegistrationResponse implements RegistrationResponseInterface, ChallengeProvider
 {
-    use AttestationCertificateTrait;
+    /** @var AttestationCertificateInterface */
+    private $attestationCert;
 
     /** @var string */
     private $clientDataJson;
@@ -23,8 +27,8 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
     /** @var string (binary) */
     private $keyHandleBinary;
 
-    /** @var string (binary) */
-    private $publicKeyBinary;
+    /** @var PublicKeyInterface */
+    private $publicKey;
 
     /** @var string (binary) */
     private $rpIdHash;
@@ -94,6 +98,7 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
         assert(isset($aoAttStmt['sig']));
         assert(isset($aoAttStmt['x5c']));
         assert(is_array($aoAttStmt['x5c']) && count($aoAttStmt['x5c']) === 1);
+        $attestationCert = new AttestationCertificate($aoAttStmt['x5c'][0]);
 
         $credentialData = $authData->getAttestedCredentialData();
         $publicKey = $credentialData['credentialPublicKey'];
@@ -105,6 +110,7 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
             $publicKey[-2],
             $publicKey[-3]
         ); // 8.6.4
+        $publicKey = new ECPublicKey($publicKeyU2F);
 
         $response = new RegistrationResponse();
         $response->challenge = fromBase64Web($clientData['challenge']);
@@ -120,14 +126,19 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
             $publicKeyU2F
         ); // 8.6.5
         $response->keyHandleBinary = $credentialData['credentialId'];
-        $response->publicKeyBinary = $publicKeyU2F;
-        $response->setAttestationCertificate($aoAttStmt['x5c'][0]);
+        $response->publicKey = $publicKey;
+        $response->attestationCert = $attestationCert;
         return $response;
         // 7.1.14 (perform verification of attestation statement) is done in
         //   the server
         // 7.1.15 (get valid roots) is done in the server
         // 7.1.16 (cehck attestation cert) is done in the server
         // 7.1.17 (check credentialId is unregistered) is done in the app
+    }
+
+    public function getAttestationCertificate(): AttestationCertificateInterface
+    {
+        return $this->attestationCert;
     }
 
     public function getChallengeProvider(): ChallengeProvider
@@ -148,9 +159,9 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
     {
         return $this->signature;
     }
-    public function getPublicKeyBinary(): string
+    public function getPublicKey(): PublicKeyInterface
     {
-        return $this->publicKeyBinary;
+        return $this->publicKey;
     }
     public function getKeyHandleBinary(): string
     {
