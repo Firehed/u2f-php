@@ -99,7 +99,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers ::getAttestationCertificateBinary
+     * @covers ::getAttestationCertificate
      * @covers ::getKeyHandleBinary
      * @covers ::getPublicKey
      * @covers ::getRpIdHash
@@ -119,7 +119,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(
             $pubkey,
-            $response->getPublicKeyBinary(),
+            $response->getPublicKey()->getBinary(),
             'Public key was not parsed correctly'
         );
         $this->assertSame(
@@ -129,7 +129,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertSame(
             $cert,
-            $response->getAttestationCertificateBinary(),
+            $response->getAttestationCertificate()->getBinary(),
             'Cert was not parsed correctly'
         );
         $this->assertSame(
@@ -168,7 +168,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
                 true
             ),
             $response->getKeyHandleBinary(),
-            $response->getPublicKeyBinary()
+            $response->getPublicKey()->getBinary()
         );
 
         $this->assertSame(

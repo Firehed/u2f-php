@@ -89,6 +89,7 @@ class Server
         }
 
         // Search for the registration to use based on the Key Handle
+        /** @var ?Registration */
         $registration = $this->findObjectWithKeyHandle(
             $this->registrations,
             $response->getKeyHandleBinary()
@@ -119,7 +120,7 @@ class Server
         // attack.
         $this->validateChallenge($response->getChallengeProvider(), $request);
 
-        $pem = $registration->getPublicKeyPem();
+        $pem = $registration->getPublicKey()->getPemFormatted();
 
         $toVerify = $response->getSignedData();
 
@@ -169,9 +170,9 @@ class Server
         // again. There's no perfect way to handle this since
 
         return (new Registration())
-            ->setAttestationCertificate($registration->getAttestationCertificateBinary())
+            ->setAttestationCertificate($registration->getAttestationCertificate())
             ->setKeyHandle($registration->getKeyHandleBinary())
-            ->setPublicKey($registration->getPublicKeyBinary())
+            ->setPublicKey($registration->getPublicKey())
             ->setCounter($response->getCounter());
     }
 
@@ -203,7 +204,7 @@ class Server
         }
 
         // Signature must validate against device issuer's public key
-        $pem = $response->getAttestationCertificatePem();
+        $pem = $response->getAttestationCertificate()->getPemFormatted();
         $sig_check = openssl_verify(
             $response->getSignedData(),
             $response->getSignature(),
@@ -215,10 +216,10 @@ class Server
         }
 
         return (new Registration())
-            ->setAttestationCertificate($response->getAttestationCertificateBinary())
+            ->setAttestationCertificate($response->getAttestationCertificate())
             ->setCounter(0) // The response does not include this
             ->setKeyHandle($response->getKeyHandleBinary())
-            ->setPublicKey($response->getPublicKeyBinary());
+            ->setPublicKey($response->getPublicKey());
     }
 
     /**
@@ -416,7 +417,7 @@ class Server
      */
     private function verifyAttestationCertAgainstTrustedCAs(RegistrationResponseInterface $response): void
     {
-        $pem = $response->getAttestationCertificatePem();
+        $pem = $response->getAttestationCertificate()->getPemFormatted();
 
         $result = openssl_x509_checkpurpose(
             $pem,
