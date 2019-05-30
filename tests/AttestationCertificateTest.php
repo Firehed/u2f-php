@@ -15,9 +15,9 @@ class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
      */
     public function testConstruct()
     {
-        // Note: a future, stricter implementation which actually parses an
+        // Note: a future, stricter implementation which actually parses and
         // examines the ASN.1 format should fail on this. For now it's just
-        // a dumb data bag.
+        // a simple bag of bytes.
         $raw = random_bytes(128);
         $cert = new AttestationCertificate($raw);
         $this->assertInstanceOf(AttestationCertificateInterface::class, $cert);
