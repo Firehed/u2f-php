@@ -57,4 +57,12 @@ class ECPublicKey implements PublicKeyInterface
         $pem .= "-----END PUBLIC KEY-----";
         return $pem;
     }
+
+    public function __debugInfo(): array
+    {
+        return [
+            'x' => '0x' . bin2hex(substr($this->binary, 1, 32)),
+            'y' => '0x' . bin2hex(substr($this->binary, 33)),
+        ];
+    }
 }

@@ -11,6 +11,19 @@ namespace Firehed\U2F;
 class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * @covers ::__construct
+     */
+    public function testConstruct()
+    {
+        // Note: a future, stricter implementation which actually parses an
+        // examines the ASN.1 format should fail on this. For now it's just
+        // a dumb data bag.
+        $raw = random_bytes(128);
+        $cert = new AttestationCertificate($raw);
+        $this->assertInstanceOf(AttestationCertificateInterface::class, $cert);
+    }
+
+    /**
      * @covers ::getBinary
      */
     public function testGetBinary()
@@ -39,5 +52,16 @@ class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
             $cert->getPemFormatted(),
             'PEM-formatted certificate was incorrect'
         );
+    }
+
+    /**
+     * @covers ::__debugInfo
+     */
+    public function testDebugInfoEncodesBinary()
+    {
+        $cert = new AttestationCertificate(random_bytes(128));
+        $debugInfo = $cert->__debugInfo();
+        $this->assertArrayHasKey('binary', $debugInfo);
+        $this->assertRegExp('/^0x[0-9a-f]{256}$/', $debugInfo['binary']);
     }
 }

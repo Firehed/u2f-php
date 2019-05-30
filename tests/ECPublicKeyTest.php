@@ -87,4 +87,18 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($pem, $obj->getPemFormatted());
     }
+
+    /**
+     * @covers ::__debugInfo
+     */
+    public function testDebugInfoEncodesBinary()
+    {
+        $x = random_bytes(32);
+        $y = random_bytes(32);
+        $pk = new ECPublicKey("\x04$x$y");
+        $debugInfo = $pk->__debugInfo();
+        $this->assertArrayHasKey('x', $debugInfo);
+        $this->assertSame('0x'.bin2hex($x), $debugInfo['x'], 'x-coordinate wrong');
+        $this->assertSame('0x'.bin2hex($y), $debugInfo['y'], 'y-coordinate wrong');
+    }
 }
