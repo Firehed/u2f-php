@@ -111,7 +111,7 @@ class RegisterResponse implements RegistrationResponseInterface
 
     public function getSignedData(): string
     {
-        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#registration-response-message-success
+        // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#fig-authentication-request-message
         return sprintf(
             '%s%s%s%s%s',
             chr(0),

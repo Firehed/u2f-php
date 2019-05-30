@@ -15,8 +15,8 @@ class Server
     /**
      * Holds a list of paths to PEM-formatted CA certificates. Unless
      * verification has been explicitly disabled with `disableCAVerification()`,
-     * the Attestation Certificate in the `RegisterResponse` will be validated
-     * against the provided CAs.
+     * the Attestation Certificate in the `RegistrationResponseInterface` will
+     * be validated against the provided CAs.
      *
      * This means that you *must* either a) provide a list of trusted
      * certificates, or b) explicitly disable verifiation. By default, it will
@@ -121,11 +121,11 @@ class Server
 
         $pem = $registration->getPublicKeyPem();
 
-        $to_verify = $response->getSignedData();
+        $toVerify = $response->getSignedData();
 
         // Signature must validate against
         $sig_check = openssl_verify(
-            $to_verify,
+            $toVerify,
             $response->getSignature(),
             $pem,
             \OPENSSL_ALGO_SHA256
@@ -176,17 +176,17 @@ class Server
     }
 
     /**
-     * This method authenticates a RegistrationResponseInterface against its corresponding
-     * RegisterRequest by verifying the certificate and signature. If valid, it
-     * returns a registration; if not, a SE will be thrown and attempt to
-     * register the key must be aborted.
+     * This method authenticates a RegistrationResponseInterface against its
+     * corresponding RegisterRequest by verifying the certificate and signature.
+     * If valid, it returns a registration; if not, a SE will be thrown and
+     * attempt to register the key must be aborted.
      *
-     * @param RegistrationResponseInterface $resp The response to verify
+     * @param RegistrationResponseInterface $response The response to verify
      * @return RegistrationInterface if the response is proven authentic
      * @throws SE if the response cannot be proven authentic
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function register(RegistrationResponseInterface $resp): RegistrationInterface
+    public function register(RegistrationResponseInterface $response): RegistrationInterface
     {
         if (!$this->registerRequest) {
             throw new BadMethodCallException(
@@ -194,26 +194,19 @@ class Server
                 'with setRegisterRequest()'
             );
         }
-        $this->validateChallenge($resp->getChallengeProvider(), $this->registerRequest);
+        $this->validateChallenge($response->getChallengeProvider(), $this->registerRequest);
+        // Check the Application Parameter
+        $this->validateRelyingParty($response->getRpIdHash());
 
-        // Check the Application Parameter?
-        if (!hash_equals(
-            $this->registerRequest->getApplicationParameter(),
-            $resp->getRpIdHash()
-        )) {
-            throw new SE(SE::SIGNATURE_INVALID);
-        }
-
-        $signed_data = $resp->getSignedData();
-        $pem = $resp->getAttestationCertificatePem();
         if ($this->verifyCA) {
-            $resp->verifyIssuerAgainstTrustedCAs($this->trustedCAs);
+            $this->verifyAttestationCertAgainstTrustedCAs($response);
         }
 
         // Signature must validate against device issuer's public key
+        $pem = $response->getAttestationCertificatePem();
         $sig_check = openssl_verify(
-            $signed_data,
-            $resp->getSignature(),
+            $response->getSignedData(),
+            $response->getSignature(),
             $pem,
             \OPENSSL_ALGO_SHA256
         );
@@ -222,10 +215,10 @@ class Server
         }
 
         return (new Registration())
-            ->setAttestationCertificate($resp->getAttestationCertificateBinary())
+            ->setAttestationCertificate($response->getAttestationCertificateBinary())
             ->setCounter(0) // The response does not include this
-            ->setKeyHandle($resp->getKeyHandleBinary())
-            ->setPublicKey($resp->getPublicKeyBinary());
+            ->setKeyHandle($response->getKeyHandleBinary())
+            ->setPublicKey($response->getPublicKeyBinary());
     }
 
     /**
@@ -379,6 +372,15 @@ class Server
         return toBase64Web(\random_bytes(16));
     }
 
+    private function validateRelyingParty(string $rpIdHash): void
+    {
+        // Note: this is a bit delicate at the moment, since different
+        // protocols have different rules around the handling of Relying Party
+        // verification. Expect this to be revised.
+        if (!hash_equals($this->getRpIdHash(), $rpIdHash)) {
+            throw new SE(SE::WRONG_RELYING_PARTY);
+        }
+    }
     /**
      * Compares the Challenge value from a known source against the
      * user-provided value. A mismatch will throw a SE. Future
@@ -402,5 +404,27 @@ class Server
         }
         // TOOD: generate and compare timestamps
         return true;
+    }
+
+    /**
+     * Asserts that the attestation cert provided by the registration is issued
+     * by the set of trusted CAs.
+     *
+     * @param RegistrationResponseInterface $response The response to validate
+     * @throws SecurityException upon failure
+     * @return void
+     */
+    private function verifyAttestationCertAgainstTrustedCAs(RegistrationResponseInterface $response): void
+    {
+        $pem = $response->getAttestationCertificatePem();
+
+        $result = openssl_x509_checkpurpose(
+            $pem,
+            \X509_PURPOSE_ANY,
+            $this->trustedCAs
+        );
+        if ($result !== true) {
+            throw new SE(SE::NO_TRUSTED_CA);
+        }
     }
 }

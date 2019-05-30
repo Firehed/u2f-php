@@ -13,11 +13,6 @@ class ClientData implements ClientDataInterface
     private $origin;
     private $typ;
 
-    public function getApplicationParameter(): string
-    {
-        return hash('sha256', $this->origin, true);
-    }
-
     public static function fromJson(string $json)
     {
         $data = json_decode($json, true);
@@ -30,6 +25,11 @@ class ClientData implements ClientDataInterface
         $ret->origin = $ret->validateKey('origin', $data);
         $ret->cid_pubkey = $ret->validateKey('cid_pubkey', $data);
         return $ret;
+    }
+
+    public function getApplicationParameter(): string
+    {
+        return hash('sha256', $this->origin, true);
     }
 
     /**

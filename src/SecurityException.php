@@ -12,6 +12,7 @@ class SecurityException extends Exception
     const CHALLENGE_MISMATCH = 3;
     const KEY_HANDLE_UNRECOGNIZED = 4;
     const NO_TRUSTED_CA = 5;
+    const WRONG_RELYING_PARTY = 6;
 
     const MESSAGES = [
         self::SIGNATURE_INVALID => 'Signature verification failed',
@@ -23,6 +24,7 @@ class SecurityException extends Exception
         self::CHALLENGE_MISMATCH => 'Response challenge does not match request',
         self::KEY_HANDLE_UNRECOGNIZED => 'Key handle has not been registered',
         self::NO_TRUSTED_CA => 'The attestation certificate was not signed by any trusted Certificate Authority',
+        self::WRONG_RELYING_PARTY => 'Relying party invalid for this server',
     ];
 
     public function __construct(int $code)

@@ -5,6 +5,5 @@ namespace Firehed\U2F;
 
 interface ChallengeProvider
 {
-
     public function getChallenge(): string;
 }
