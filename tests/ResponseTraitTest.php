@@ -28,7 +28,6 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::fromJson
      * @covers ::getSignature
      * @covers ::getChallengeProvider
-     * @covers ::getClientData
      */
     public function testValidJson()
     {
@@ -51,11 +50,6 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
             'Parsed response was the wrong type'
         );
 
-        $this->assertInstanceOf(
-            ClientData::class,
-            $response->getClientData(),
-            'ClientData was not parsed correctly'
-        );
         $this->assertInstanceOf(
             ChallengeProvider::class,
             $response->getChallengeProvider(),

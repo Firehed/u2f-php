@@ -9,7 +9,8 @@ trait ResponseTrait
 {
     use KeyHandleTrait;
 
-    private $clientData;
+    /** @var ClientData */
+    protected $clientData;
 
     /** @var string (binary) */
     private $signature = '';
@@ -17,11 +18,6 @@ trait ResponseTrait
     public function getSignature(): string
     {
         return $this->signature;
-    }
-
-    public function getClientData(): ClientData
-    {
-        return $this->clientData;
     }
 
     public function getChallengeProvider(): ChallengeProvider
