@@ -188,7 +188,6 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         $json = file_get_contents(__DIR__ . '/sign_response.json');
         assert($json !== false);
         $response = SignResponse::fromJson($json);
-        print_r($response);
 
         $expectedSignedData = sprintf(
             '%s%s%s%s',
