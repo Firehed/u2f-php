@@ -18,21 +18,10 @@ class SignResponse implements LoginResponseInterface
         return $this->counter;
     }
 
-    public function setCounter(int $counter): void
-    {
-        $this->counter = $counter;
-    }
-
     public function getUserPresenceByte(): int
     {
         return $this->user_presence;
     }
-
-    public function setUserPresenceByte(int $byte): void
-    {
-        $this->user_presence = $byte;
-    }
-
 
     public function getSignedData(): string
     {
