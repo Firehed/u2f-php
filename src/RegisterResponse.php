@@ -115,8 +115,8 @@ class RegisterResponse implements RegistrationResponseInterface
         return sprintf(
             '%s%s%s%s%s',
             chr(0),
-            $this->getClientData()->getApplicationParameter(),
-            $this->getClientData()->getChallengeParameter(),
+            $this->clientData->getApplicationParameter(),
+            $this->clientData->getChallengeParameter(),
             $this->getKeyHandleBinary(),
             $this->getPublicKeyBinary()
         );
@@ -124,6 +124,6 @@ class RegisterResponse implements RegistrationResponseInterface
 
     public function getRpIdHash(): string
     {
-        return $this->getClientData()->getApplicationParameter();
+        return $this->clientData->getApplicationParameter();
     }
 }

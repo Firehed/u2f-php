@@ -29,7 +29,7 @@ class SignResponse implements LoginResponseInterface
         // https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-raw-message-formats.html#authentication-response-message-success
         return sprintf(
             '%s%s%s%s',
-            $this->getClientData()->getApplicationParameter(),
+            $this->clientData->getApplicationParameter(),
             chr($this->getUserPresenceByte()),
             pack('N', $this->getCounter()),
             // Note: Spec says this should be from the request, but that's not
@@ -37,7 +37,7 @@ class SignResponse implements LoginResponseInterface
             // challenge *value* from the Client Data matches the trusted one
             // from the SignRequest and that value is included in the Challenge
             // Parameter, this is safe unless/until SHA-256 is broken.
-            $this->getClientData()->getChallengeParameter()
+            $this->clientData->getChallengeParameter()
         );
     }
 
