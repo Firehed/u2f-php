@@ -172,6 +172,21 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @covers ::getRpIdHash
+     */
+    public function testGetRpIdHash()
+    {
+        $json = file_get_contents(__DIR__ . '/register_response.json');
+        assert($json !== false);
+        $response = RegisterResponse::fromJson($json);
+
+        $this->assertSame(
+            hash('sha256', 'https://u2f.ericstern.com', true),
+            $response->getRpIdHash()
+        );
+    }
+
     // -( DataProviders )------------------------------------------------------
 
     public function clientErrors()
