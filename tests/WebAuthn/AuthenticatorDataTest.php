@@ -90,4 +90,30 @@ class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
 
         $this->assertNull($authData->getAttestedCredentialData(), 'Attested credentials');
     }
+
+    /**
+     * @covers ::__debugInfo
+     */
+    public function testDebugInfoDoesntPrintBinary()
+    {
+        $data = hex2bin(
+            '49960de5880e8c687434170f6476605b8fe4aeb9a28632c7995cf3ba831d9763'.
+            '410000000000000000000000000000000000000000004089d8daecf079d5e11e'.
+            '4d3f27f8d6636df14f048d21ce2893623a7c4d3cec862440332960e33055f7c0'.
+            '1242de0a5717b081b2ba0af4a0293b21753f0dd97f11f4a50102032620012158'.
+            '20acb4d70da1504f2376361e0fb331ad41793e9698fa046945f51352820e7c2b'.
+            '7822582035c628978409d8c97ef0bb464a5989a0274b24d91bf48901de8dd045'.
+            '0e265680'
+        );
+        assert($data !== false);
+
+        $authData = AuthenticatorData::parse($data);
+
+        $debug = print_r($authData, true);
+        $this->assertRegExp(
+            '/[^\x20-\x7f]/',
+            $debug,
+            'Debug output contained non-ascii'
+        );
+    }
 }

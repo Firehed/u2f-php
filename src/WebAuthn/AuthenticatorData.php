@@ -71,7 +71,9 @@ class AuthenticatorData
             // cut rest of bytes down based on that ^ ?
         }
         if ($ED) {
+            // @codeCoverageIgnoreStart
             throw new BadMethodCallException('Not implemented yet');
+            // @codeCoverageIgnoreEnd
         }
 
         return $authData;
@@ -102,17 +104,38 @@ class AuthenticatorData
         $hex = function ($str) {
             return '0x' . bin2hex($str);
         };
-        return [
+        $data = [
             'isUserPresent' => $this->isUserPresent,
             'isUserVerified' => $this->isUserVerified,
             'rpIdHash' => $hex($this->rpIdHash),
             'signCount' => $this->signCount,
-            'ACD' => $this->ACD ? [
+        ];
+
+        if ($this->ACD) {
+            // See RFC8152 section 7 (COSE key parameters
+            $pk = [
+                'kty' => $this->ACD['credentialPublicKey'][1], // MUST be 'EC2'; sec 13 tbl 21)
+                // kid = 2
+                'alg' => $this->ACD['credentialPublicKey'][3] ?? null,
+                // key_ops = 4 // must include sign (1)/verify(2) if present, depending on usage
+                // Base IV = 5
+
+                // this would be 'k' if 'kty'===4(Symmetric)
+                'crv' => $this->ACD['credentialPublicKey'][-1], // (13.1 tbl 22)
+                'x' => $hex($this->ACD['credentialPublicKey'][-2] ?? ''), // (13.1.1 tbl 23/13.2 tbl 24)
+                'y' => $hex($this->ACD['credentialPublicKey'][-3] ?? ''), // (13.1.1 tbl 23)
+                'd' => $hex($this->ACD['credentialPublicKey'][-4] ?? ''), // (13.2 tbl 24)
+
+            ];
+            $acd = [
                 'aaguid' => $hex($this->ACD['aaguid']),
                 'credentialId' => $hex($this->ACD['credentialId']),
-                'credentialPublicKey' => $this->ACD['credentialPublicKey'],
-            ] : null,
-            'EXT' => $this->EXT,
-        ];
+                'credentialPublicKey' => $pk,
+            ];
+            $data['ACD'] = $acd;
+        }
+        // Future?
+        // $this->EXT
+        return $data;
     }
 }
