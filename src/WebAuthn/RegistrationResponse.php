@@ -13,7 +13,7 @@ use Firehed\U2F\RegistrationResponseInterface;
 
 use function Firehed\U2F\fromBase64Web;
 
-class RegistrationResponse implements RegistrationResponseInterface, ChallengeProvider
+class RegistrationResponse implements RegistrationResponseInterface
 {
     /** @var AttestationCertificateInterface */
     private $attestationCert;
@@ -139,11 +139,6 @@ class RegistrationResponse implements RegistrationResponseInterface, ChallengePr
     public function getAttestationCertificate(): AttestationCertificateInterface
     {
         return $this->attestationCert;
-    }
-
-    public function getChallengeProvider(): ChallengeProvider
-    {
-        return $this;
     }
 
     public function getChallenge(): string

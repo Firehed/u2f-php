@@ -137,6 +137,11 @@ class RegisterResponse implements RegistrationResponseInterface
         return $this->cert;
     }
 
+    public function getChallenge(): string
+    {
+        return $this->clientData->getChallenge();
+    }
+
     public function getPublicKey(): PublicKeyInterface
     {
         return $this->pubKey;

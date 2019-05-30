@@ -118,7 +118,7 @@ class Server
         // match the one in the signing request, the client signed the
         // wrong thing. This could possibly be an attempt at a replay
         // attack.
-        $this->validateChallenge($response->getChallengeProvider(), $request);
+        $this->validateChallenge($request, $response);
 
         $pem = $registration->getPublicKey()->getPemFormatted();
 
@@ -195,7 +195,7 @@ class Server
                 'with setRegisterRequest()'
             );
         }
-        $this->validateChallenge($response->getChallengeProvider(), $this->registerRequest);
+        $this->validateChallenge($this->registerRequest, $response);
         // Check the Application Parameter
         $this->validateRelyingParty($response->getRpIdHash());
 
@@ -389,13 +389,10 @@ class Server
      *
      * @param ChallengeProvider $from source of known challenge
      * @param ChallengeProvider $to user-provided value
-     * @return true on success
      * @throws SE on failure
      */
-    private function validateChallenge(
-        ChallengeProvider $from,
-        ChallengeProvider $to
-    ): bool {
+    private function validateChallenge(ChallengeProvider $from, ChallengeProvider $to)
+    {
         // Note: strictly speaking, this shouldn't even be targetable as
         // a timing attack. However, this opts to be proactive, and also
         // ensures that no weird PHP-isms in string handling cause mismatched
@@ -403,8 +400,6 @@ class Server
         if (!hash_equals($from->getChallenge(), $to->getChallenge())) {
             throw new SE(SE::CHALLENGE_MISMATCH);
         }
-        // TOOD: generate and compare timestamps
-        return true;
     }
 
     /**

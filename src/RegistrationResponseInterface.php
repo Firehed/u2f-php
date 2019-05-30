@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
-interface RegistrationResponseInterface
+interface RegistrationResponseInterface extends ChallengeProvider
 {
     public function getAttestationCertificate(): AttestationCertificateInterface;
-
-    public function getChallengeProvider(): ChallengeProvider;
 
     public function getKeyHandleBinary(): string;
 

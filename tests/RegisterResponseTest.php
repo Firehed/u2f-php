@@ -179,6 +179,20 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @covers ::getChallenge
+     */
+    public function testGetChallenge()
+    {
+        $json = file_get_contents(__DIR__ . '/register_response.json');
+        assert($json !== false);
+        $response = RegisterResponse::fromJson($json);
+
+        $this->assertSame(
+            'PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo',
+            $response->getChallenge()
+        );
+    }
+    /**
      * @covers ::getRpIdHash
      */
     public function testGetRpIdHash()
