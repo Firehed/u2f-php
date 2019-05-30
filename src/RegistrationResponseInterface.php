@@ -5,9 +5,7 @@ namespace Firehed\U2F;
 
 interface RegistrationResponseInterface
 {
-    public function getAttestationCertificateBinary(): string;
-
-    public function getAttestationCertificatePem(): string;
+    public function getAttestationCertificate(): AttestationCertificate;
 
     public function getChallengeProvider(): ChallengeProvider;
 

@@ -99,7 +99,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers ::getAttestationCertificateBinary
+     * @covers ::getAttestationCertificate
      * @covers ::getKeyHandleBinary
      * @covers ::getPublicKey
      * @covers ::getSignature
@@ -128,7 +128,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         );
         $this->assertSame(
             $cert,
-            $response->getAttestationCertificateBinary(),
+            $response->getAttestationCertificate()->getBinary(),
             'Cert was not parsed correctly'
         );
         $this->assertSame(

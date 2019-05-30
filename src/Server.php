@@ -169,7 +169,7 @@ class Server
         // again. There's no perfect way to handle this since
 
         return (new Registration())
-            ->setAttestationCertificate($registration->getAttestationCertificateBinary())
+            ->setAttestationCertificate($registration->getAttestationCertificate())
             ->setKeyHandle($registration->getKeyHandleBinary())
             ->setPublicKey($registration->getPublicKeyBinary())
             ->setCounter($response->getCounter());
@@ -203,7 +203,7 @@ class Server
         }
 
         // Signature must validate against device issuer's public key
-        $pem = $response->getAttestationCertificatePem();
+        $pem = $response->getAttestationCertificate()->getPemFormatted();
         $sig_check = openssl_verify(
             $response->getSignedData(),
             $response->getSignature(),
@@ -215,7 +215,7 @@ class Server
         }
 
         return (new Registration())
-            ->setAttestationCertificate($response->getAttestationCertificateBinary())
+            ->setAttestationCertificate($response->getAttestationCertificate())
             ->setCounter(0) // The response does not include this
             ->setKeyHandle($response->getKeyHandleBinary())
             ->setPublicKey($response->getPublicKeyBinary());
@@ -416,7 +416,7 @@ class Server
      */
     private function verifyAttestationCertAgainstTrustedCAs(RegistrationResponseInterface $response): void
     {
-        $pem = $response->getAttestationCertificatePem();
+        $pem = $response->getAttestationCertificate()->getPemFormatted();
 
         $result = openssl_x509_checkpurpose(
             $pem,

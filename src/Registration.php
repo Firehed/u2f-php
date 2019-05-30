@@ -7,16 +7,31 @@ use OutOfBoundsException;
 
 class Registration implements RegistrationInterface
 {
-    use AttestationCertificateTrait;
     use ECPublicKeyTrait;
     use KeyHandleTrait;
 
+    /** @var AttestationCertificate */
+    private $cert;
+
+    /** @var int */
     private $counter = -1;
+
+    public function getAttestationCertificate(): AttestationCertificate
+    {
+        return $this->cert;
+    }
 
     public function getCounter(): int
     {
         return $this->counter;
     }
+
+    public function setAttestationCertificate(AttestationCertificate $cert): self
+    {
+        $this->cert = $cert;
+        return $this;
+    }
+
     public function setCounter(int $counter): self
     {
         if ($counter < 0) {
