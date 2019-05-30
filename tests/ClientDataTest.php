@@ -59,6 +59,26 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @covers ::getApplicationParameter
+     */
+    public function testGetApplicationParameter()
+    {
+        $goodData = [
+            'typ' => 'navigator.id.finishEnrollment',
+            'challenge' => 'PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo',
+            'origin' => 'https://u2f.ericstern.com',
+            'cid_pubkey' => '',
+        ];
+        $goodJson = json_encode($goodData);
+        assert($goodJson !== false);
+        $clientData = ClientData::fromJson($goodJson);
+        $this->assertSame(
+            hash('sha256', 'https://u2f.ericstern.com', true),
+            $clientData->getApplicationParameter()
+        );
+    }
+
+    /**
      * @covers ::fromJson
      */
     public function testBadJson()
