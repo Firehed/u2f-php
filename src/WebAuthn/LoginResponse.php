@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Firehed\U2F\WebAuthn;
 
-use Firehed\U2F\ChallengeProvider;
 use Firehed\U2F\LoginResponseInterface;
 
 use function Firehed\U2F\fromBase64Web;
@@ -12,7 +11,7 @@ use function hash;
 use function is_array;
 use function json_decode;
 
-class LoginResponse implements ChallengeProvider, LoginResponseInterface
+class LoginResponse implements LoginResponseInterface
 {
     /** @var AuthenticatorData */
     private $authenticatorData;
@@ -95,11 +94,6 @@ class LoginResponse implements ChallengeProvider, LoginResponseInterface
     public function getChallenge(): string
     {
         return $this->challenge;
-    }
-
-    public function getChallengeProvider(): ChallengeProvider
-    {
-        return $this;
     }
 
     public function getCounter(): int

@@ -6,7 +6,6 @@ namespace Firehed\U2F\WebAuthn;
 use Firehed\CBOR\Decoder;
 use Firehed\U2F\AttestationCertificate;
 use Firehed\U2F\AttestationCertificateInterface;
-use Firehed\U2F\ChallengeProvider;
 use Firehed\U2F\ECPublicKey;
 use Firehed\U2F\PublicKeyInterface;
 use Firehed\U2F\RegistrationResponseInterface;

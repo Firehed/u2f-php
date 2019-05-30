@@ -13,6 +13,7 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::fromDecodedJson
      * @covers ::getAttestationCertificate
+     * @covers ::getChallenge
      * @covers ::getKeyHandleBinary
      * @covers ::getPublicKey
      * @covers ::getRpIdHash
@@ -33,6 +34,12 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
             '40332960e33055f7c01242de0a5717b0'.
             '81b2ba0af4a0293b21753f0dd97f11f4'
         ), $response->getKeyHandleBinary(), 'Key handle ' . bin2hex($response->getKeyHandleBinary()));
+
+        $this->assertSame(
+            'byUSpVKzETlJjwxjW8RpYQ',
+            $response->getChallenge(),
+            'Challenge'
+        );
 
         $this->assertSame(hex2bin(
             '04' . // fixed

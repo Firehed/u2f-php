@@ -55,7 +55,7 @@ class LoginResponseTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(
             'A902wrYRwZM2RV544aj--Q',
-            $response->getChallengeProvider()->getChallenge(),
+            $response->getChallenge(),
             'Challenge'
         );
     }
