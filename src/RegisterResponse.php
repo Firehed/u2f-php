@@ -132,7 +132,7 @@ class RegisterResponse implements RegistrationResponseInterface
         return $this->clientData->getApplicationParameter();
     }
 
-    public function getAttestationCertificate(): AttestationCertificate
+    public function getAttestationCertificate(): AttestationCertificateInterface
     {
         return $this->cert;
     }
