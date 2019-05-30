@@ -126,9 +126,4 @@ class RegisterResponse implements RegistrationResponseInterface
     {
         return $this->clientData->getApplicationParameter();
     }
-
-    public function getChallengeProvider(): ChallengeProvider
-    {
-        return $this->clientData;
-    }
 }
