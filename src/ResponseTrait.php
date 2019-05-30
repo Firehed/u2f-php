@@ -20,11 +20,6 @@ trait ResponseTrait
         return $this->signature;
     }
 
-    public function getChallengeProvider(): ChallengeProvider
-    {
-        return $this->clientData;
-    }
-
     protected function setSignature(string $signature): self
     {
         $this->signature = $signature;

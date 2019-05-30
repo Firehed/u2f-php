@@ -328,12 +328,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         $request = $this->getDefaultRegisterRequest();
 
-        $challengeProvider = $this->createMock(ChallengeProvider::class);
-        $challengeProvider->method('getChallenge')
-            ->willReturn($request->getChallenge());
         $response = $this->createMock(RegistrationResponseInterface::class);
-        $response->method('getChallengeProvider')
-            ->willReturn($challengeProvider);
+        $response->method('getChallenge')
+            ->willReturn($request->getChallenge());
         $response->method('getRpIdHash')
             ->willReturn(hash('sha256', 'https://some.otherdomain.com', true));
 
