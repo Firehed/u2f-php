@@ -204,7 +204,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
                 '"cid_pubkey":""'.
                 '}',
                 true
-            ),
+            )
         );
 
         $this->assertSame(
