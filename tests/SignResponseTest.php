@@ -181,6 +181,40 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @covers ::getSignedData
+     */
+    public function testGetSignedData()
+    {
+        $json = file_get_contents(__DIR__ . '/sign_response.json');
+        assert($json !== false);
+        $response = SignResponse::fromJson($json);
+        print_r($response);
+
+        $expectedSignedData = sprintf(
+            '%s%s%s%s',
+            hash('sha256', 'https://u2f.ericstern.com', true),
+            "\x01", // user presence
+            "\x00\x00\x00\x2d", // counter (int(45))
+            hash(
+                'sha256',
+                '{'.
+                '"typ":"navigator.id.getAssertion",'.
+                '"challenge":"wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg",'.
+                '"origin":"https://u2f.ericstern.com",'.
+                '"cid_pubkey":""'.
+                '}',
+                true
+            ),
+        );
+
+        $this->assertSame(
+            $expectedSignedData,
+            $response->getSignedData(),
+            'Wrong signed data'
+        );
+    }
+
+    /**
      * @dataProvider clientErrors
      */
     public function testErrorResponse(int $code)
