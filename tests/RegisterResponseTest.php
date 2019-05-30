@@ -118,7 +118,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(
             $pubkey,
-            $response->getPublicKeyBinary(),
+            $response->getPublicKey()->getBinary(),
             'Public key was not parsed correctly'
         );
         $this->assertSame(
@@ -162,7 +162,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
                 true
             ),
             $response->getKeyHandleBinary(),
-            $response->getPublicKeyBinary()
+            $response->getPublicKey()->getBinary()
         );
 
         $this->assertSame(

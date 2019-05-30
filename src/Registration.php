@@ -7,7 +7,6 @@ use OutOfBoundsException;
 
 class Registration implements RegistrationInterface
 {
-    use ECPublicKeyTrait;
     use KeyHandleTrait;
 
     /** @var AttestationCertificate */
@@ -15,6 +14,9 @@ class Registration implements RegistrationInterface
 
     /** @var int */
     private $counter = -1;
+
+    /** @var PublicKeyInterface */
+    private $pubKey;
 
     public function getAttestationCertificate(): AttestationCertificate
     {
@@ -38,6 +40,17 @@ class Registration implements RegistrationInterface
             throw new OutOfBoundsException('Counter may not be negative');
         }
         $this->counter = $counter;
+        return $this;
+    }
+
+    public function getPublicKey(): PublicKeyInterface
+    {
+        return $this->pubKey;
+    }
+
+    public function setPublicKey(PublicKeyInterface $pubKey): self
+    {
+        $this->pubKey = $pubKey;
         return $this;
     }
 }

@@ -25,8 +25,7 @@ interface RegistrationInterface
     public function getKeyHandleBinary(): string;
 
     /**
-     * @return string The decoded public key of the U2F
-     * registration.
+     * @return PublicKeyInterface The public key of the registration.
      */
-    public function getPublicKeyBinary(): string;
+    public function getPublicKey(): PublicKeyInterface;
 }

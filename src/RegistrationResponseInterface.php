@@ -11,7 +11,7 @@ interface RegistrationResponseInterface
 
     public function getKeyHandleBinary(): string;
 
-    public function getPublicKeyBinary(): string;
+    public function getPublicKey(): PublicKeyInterface;
 
     public function getRpIdHash(): string;
 

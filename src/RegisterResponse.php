@@ -7,11 +7,13 @@ use Firehed\U2F\InvalidDataException as IDE;
 
 class RegisterResponse implements RegistrationResponseInterface
 {
-    use ECPublicKeyTrait;
     use ResponseTrait;
 
     /** @var AttestationCertificate */
     private $cert;
+
+    /** @var PublicKeyInterface */
+    private $pubKey;
 
     protected function parseResponse(array $response): self
     {
@@ -40,7 +42,7 @@ class RegisterResponse implements RegistrationResponseInterface
         }
         $offset += 1;
 
-        $this->setPublicKey(substr($regData, $offset, 65));
+        $this->pubKey = new ECPublicKey(substr($regData, $offset, 65));
         $offset += 65;
 
         $keyHandleLength = ord($regData[$offset]);
@@ -121,7 +123,7 @@ class RegisterResponse implements RegistrationResponseInterface
             $this->clientData->getApplicationParameter(),
             $this->clientData->getChallengeParameter(),
             $this->getKeyHandleBinary(),
-            $this->getPublicKeyBinary()
+            $this->pubKey->getBinary()
         );
     }
 
@@ -133,5 +135,10 @@ class RegisterResponse implements RegistrationResponseInterface
     public function getAttestationCertificate(): AttestationCertificate
     {
         return $this->cert;
+    }
+
+    public function getPublicKey(): PublicKeyInterface
+    {
+        return $this->pubKey;
     }
 }

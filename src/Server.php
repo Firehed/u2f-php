@@ -89,6 +89,7 @@ class Server
         }
 
         // Search for the registration to use based on the Key Handle
+        /** @var ?Registration */
         $registration = $this->findObjectWithKeyHandle(
             $this->registrations,
             $response->getKeyHandleBinary()
@@ -119,7 +120,7 @@ class Server
         // attack.
         $this->validateChallenge($response->getChallengeProvider(), $request);
 
-        $pem = $registration->getPublicKeyPem();
+        $pem = $registration->getPublicKey()->getPemFormatted();
 
         $toVerify = $response->getSignedData();
 
@@ -171,7 +172,7 @@ class Server
         return (new Registration())
             ->setAttestationCertificate($registration->getAttestationCertificate())
             ->setKeyHandle($registration->getKeyHandleBinary())
-            ->setPublicKey($registration->getPublicKeyBinary())
+            ->setPublicKey($registration->getPublicKey())
             ->setCounter($response->getCounter());
     }
 
@@ -218,7 +219,7 @@ class Server
             ->setAttestationCertificate($response->getAttestationCertificate())
             ->setCounter(0) // The response does not include this
             ->setKeyHandle($response->getKeyHandleBinary())
-            ->setPublicKey($response->getPublicKeyBinary());
+            ->setPublicKey($response->getPublicKey());
     }
 
     /**

@@ -230,8 +230,8 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertSame(
-            $response->getPublicKeyBinary(),
-            $registration->getPublicKeyBinary(),
+            $response->getPublicKey()->getBinary(),
+            $registration->getPublicKey()->getBinary(),
             'Public key was not copied from response'
         );
     }
@@ -517,12 +517,10 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      */
     public function testAuthenticateThrowsWhenCounterGoesBackwards()
     {
-        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
-        assert($pk !== false);
         // Counter from "DB" bumped, suggesting response was cloned
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey($pk)
+            ->setPublicKey($this->getDefaultPublicKey())
             ->setCounter(82)
             ;
         $request = $this->getDefaultSignRequest();
@@ -563,12 +561,10 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      */
     public function testAuthenticateThrowsIfNoRegistrationMatchesKeyHandle()
     {
-        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
-        assert($pk !== false);
         // Change registration KH
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web('some-other-key-handle'))
-            ->setPublicKey($pk)
+            ->setPublicKey($this->getDefaultPublicKey())
             ->setCounter(2)
             ;
         $request = $this->getDefaultSignRequest();
@@ -645,7 +641,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // leading bytes are formatting; see ECPublicKeyTrait)
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey($pk)
+            ->setPublicKey(new ECPublicKey($pk))
             ->setCounter(2)
             ;
         $request = $this->getDefaultSignRequest();
@@ -685,13 +681,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     private function getDefaultRegistration(): RegistrationInterface
     {
-        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
-        assert($pk !== false);
         // From database attached to the authenticating user
         return  (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
             ->setAttestationCertificate($this->getDefaultAttestationCertificate())
-            ->setPublicKey($pk)
+            ->setPublicKey($this->getDefaultPublicKey())
             ->setCounter(2)
             ;
     }
@@ -726,6 +720,13 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
         assert($attest !== false);
         return new AttestationCertificate($attest);
+    }
+
+    public function getDefaultPublicKey(): PublicKeyInterface
+    {
+        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
+        assert($pk !== false);
+        return new ECPublicKey($pk);
     }
 
     private function readJsonFile(string $file): array
