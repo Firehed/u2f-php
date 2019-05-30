@@ -218,8 +218,8 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertSame(
-            $response->getAttestationCertificateBinary(),
-            $registration->getAttestationCertificateBinary(),
+            $response->getAttestationCertificate()->getBinary(),
+            $registration->getAttestationCertificate()->getBinary(),
             'Attestation cert was not copied from response'
         );
 
@@ -230,8 +230,8 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertSame(
-            $response->getPublicKeyBinary(),
-            $registration->getPublicKeyBinary(),
+            $response->getPublicKey()->getBinary(),
+            $registration->getPublicKey()->getBinary(),
             'Public key was not copied from response'
         );
     }
@@ -517,12 +517,10 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      */
     public function testAuthenticateThrowsWhenCounterGoesBackwards()
     {
-        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
-        assert($pk !== false);
         // Counter from "DB" bumped, suggesting response was cloned
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey($pk)
+            ->setPublicKey($this->getDefaultPublicKey())
             ->setCounter(82)
             ;
         $request = $this->getDefaultSignRequest();
@@ -563,12 +561,10 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      */
     public function testAuthenticateThrowsIfNoRegistrationMatchesKeyHandle()
     {
-        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
-        assert($pk !== false);
         // Change registration KH
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web('some-other-key-handle'))
-            ->setPublicKey($pk)
+            ->setPublicKey($this->getDefaultPublicKey())
             ->setCounter(2)
             ;
         $request = $this->getDefaultSignRequest();
@@ -645,7 +641,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // leading bytes are formatting; see ECPublicKeyTrait)
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey($pk)
+            ->setPublicKey(new ECPublicKey($pk))
             ->setCounter(2)
             ;
         $request = $this->getDefaultSignRequest();
@@ -685,12 +681,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     private function getDefaultRegistration(): RegistrationInterface
     {
-        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
-        assert($pk !== false);
         // From database attached to the authenticating user
         return  (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey($pk)
+            ->setAttestationCertificate($this->getDefaultAttestationCertificate())
+            ->setPublicKey($this->getDefaultPublicKey())
             ->setCounter(2)
             ;
     }
@@ -699,6 +694,39 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         // Value from user
         return SignResponse::fromJson($this->safeReadFile('sign_response.json'));
+    }
+
+    private function getDefaultAttestationCertificate(): AttestationCertificate
+    {
+        $attest = hex2bin(
+            '3082022d30820117a003020102020405b60579300b06092a864886f70d01010b'.
+            '302e312c302a0603550403132359756269636f2055324620526f6f7420434120'.
+            '53657269616c203435373230303633313020170d313430383031303030303030'.
+            '5a180f32303530303930343030303030305a30283126302406035504030c1d59'.
+            '756269636f205532462045452053657269616c20393538313530333330593013'.
+            '06072a8648ce3d020106082a8648ce3d03010703420004fdb8deb3a1ed70eb63'.
+            '6c066eb6006996a5f970fcb5db88fc3b305d41e5966f0c1b54b852fef0a0907e'.
+            'd17f3bffc29d4d321b9cf8a84a2ceaa038cabd35d598dea3263024302206092b'.
+            '0601040182c40a020415312e332e362e312e342e312e34313438322e312e3130'.
+            '0b06092a864886f70d01010b03820101007ed3fb6ccc252013f82f218c2a37da'.
+            '6031d20e7f3081dafcaeb128fc7f9b233914bfb64d6135f17ce221fa764f453e'.
+            'f1273a8ce965956442bb2f1e47483f737dcbc98b585377fef50b270e0289f884'.
+            '36f1adcf49b2621ee5e302df555b9ab74272e069f918149b3dec4f12228b10c0'.
+            'f88de36af58a74bb442b85ae005364bda6702058fc1f2d879b530111ea60e86c'.
+            '63f17fa5944cc83f0aa269848b3ee388a6c09e6b05953fcbb8f47e83a27e0072'.
+            'a63c32ad64864e926d7112fa1997f7839656fbb32be8f7889d0f0145519a27af'.
+            'dd8e46b04ca4290d8540b634b886161e7588c86299dcdd6435d1678a3a6f0a74'.
+            '829c4dd3f70c3524d1ddf16d78add21b64'
+        );
+        assert($attest !== false);
+        return new AttestationCertificate($attest);
+    }
+
+    public function getDefaultPublicKey(): PublicKeyInterface
+    {
+        $pk = base64_decode(self::ENCODED_PUBLIC_KEY);
+        assert($pk !== false);
+        return new ECPublicKey($pk);
     }
 
     private function readJsonFile(string $file): array

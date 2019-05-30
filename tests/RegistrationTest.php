@@ -39,4 +39,28 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\OutOfBoundsException::class);
         $obj->setCounter(-1);
     }
+
+    /**
+     * @covers ::getPublicKey
+     * @covers ::setPublicKey
+     */
+    public function testPublicKey()
+    {
+        $pk = $this->createMock(PublicKeyInterface::class);
+        $reg = new Registration();
+        $reg->setPublicKey($pk);
+        $this->assertSame($pk, $reg->getPublicKey());
+    }
+
+    /**
+     * @covers ::getAttestationCertificate
+     * @covers ::setAttestationCertificate
+     */
+    public function testAttestationCertificate()
+    {
+        $pk = $this->createMock(AttestationCertificateInterface::class);
+        $reg = new Registration();
+        $reg->setAttestationCertificate($pk);
+        $this->assertSame($pk, $reg->getAttestationCertificate());
+    }
 }
