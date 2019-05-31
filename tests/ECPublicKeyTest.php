@@ -71,7 +71,7 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getPemFormatted
      */
-    public function testGetPublicKeyPem()
+    public function testgetPemFormatted()
     {
         $key = hex2bin(
             '04b4960ae0fa301033fbedc85c33ac30408dffd6098bc8580d8b66159959d89b9'.

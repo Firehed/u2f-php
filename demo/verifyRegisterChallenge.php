@@ -36,6 +36,6 @@ header('Content-type: application/json');
 echo json_encode([
     'counter' => $registration->getCounter(),
     'khw' => $registration->getKeyHandleWeb(),
-    'pk_pem' => $registration->getPublicKeyPem(),
-    'ac_pem' => $registration->getAttestationCertificatePem(),
+    'pk_pem' => $registration->getPublicKey()->getPemFormatted(),
+    'ac_pem' => $registration->getAttestationCertificate()->getPemFormatted(),
 ]);
