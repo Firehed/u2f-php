@@ -1,10 +1,17 @@
-const log = (str) => {
-  console.log(str)
+const log = (data) => {
 
-  if (typeof str === 'object') {
-    str = JSON.stringify(str)
+  if (typeof data === 'object') {
+    data = {...data}
+    if (data.password !== undefined) {
+      data.password = '**redacted**'
+    }
   }
-  document.getElementById("log").value += str + "\n\n";
+  console.log(data)
+
+  if (typeof data === 'object') {
+    data = JSON.stringify(data)
+  }
+  document.getElementById("log").value += data + "\n\n";
 
 }
 
@@ -123,11 +130,8 @@ const sendLogin = async (assertion) => {
   return responseJson
 }
 
-const register = async () => {
-  if (navigator.credentials === undefined) {
-    log("WebAuthn not supported in this browser :(")
-    return
-  }
+const registerKey = async (e) => {
+  e.preventDefault()
   const publicKeyCredentialCreationOptions = await getCreationOptions()
   log("PK Creation Options")
   log(publicKeyCredentialCreationOptions)
@@ -139,10 +143,14 @@ const register = async () => {
   log("Credential")
   log(credential)
 
-  let serverRes = await sendRegistration(credential)
+  let response = await sendRegistration(credential)
+  let responseJson = await response.json()
+  log(responseJson)
+  return responseJson
+}
 
-  await sleep(500)
-
+const loginWithKey = async (e) => {
+  e.preventDefault()
   const publicKeyCredentialRequestOptions = await getLoginOptions()
   log("Login options")
   log(publicKeyCredentialRequestOptions)
@@ -158,5 +166,44 @@ const register = async () => {
   log(loginResponse)
 }
 
+const registerAccount = async (e) => {
+  e.preventDefault()
+  const registrationData = {
+    username: document.getElementById('register_username').value,
+    password: document.getElementById('register_password').value,
+  }
 
-register()
+  log(registrationData)
+  const response = await POST('/registerAccount.php', registrationData)
+  const result = await response.json()
+  log(result)
+}
+
+const loginToExistingAccount = async (e) => {
+  e.preventDefault()
+  const loginData = {
+    username: document.getElementById('login_username').value,
+    password: document.getElementById('login_password').value,
+  }
+  log(loginData)
+
+  const response = await POST('/loginToAccount.php', loginData)
+  const result = await response.json()
+  log(result)
+}
+
+const setup = () => {
+  log('Performing setup')
+  if (navigator.credentials === undefined) {
+    log("WebAuthn not supported in this browser :(")
+    return
+  }
+
+  document.getElementById('register').addEventListener('submit', registerAccount)
+  document.getElementById('login').addEventListener('submit', loginToExistingAccount)
+
+  document.getElementById('add_key').addEventListener('submit', registerKey)
+  document.getElementById('login_with_key').addEventListener('submit', loginWithKey)
+  log('Event listeners bound')
+}
+setup()

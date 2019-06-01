@@ -5,14 +5,15 @@ namespace Firehed\U2F;
 
 $config = require 'bootstrap.php';
 $server = $config['server'];
+$pdo = $config['pdo'];
 
 session_start();
 
-if (!isset($_SESSION['user_registrations'])) {
-    throw new Exception('no registrations in session');
+if (!isset($_SESSION['user_id'])) {
+    throw new \Exception('not logged in');
 }
 
-$regs = $_SESSION['user_registrations'];
+$regs = getRegistrations($pdo, (int)$_SESSION['user_id']);
 $server->setRegistrations($regs);
 
 if (!isset($_SESSION['sign_requests'])) {
@@ -23,14 +24,22 @@ unset($_SESSION['sign_requests']);
 $server->setSignRequests($signReqs);
 
 // This expects a (roughly) straight JSONified PublicKeyCredential
-$input = trim(file_get_contents('php://input'));
-log($input, 'raw json');
-$data = json_decode($input, true, 512, JSON_THROW_ON_ERROR);
+$data = decodePostJson();
 
 $response = WebAuthn\LoginResponse::fromDecodedJson($data);
 log($response);
 
 
 $updatedRegistration = $server->authenticate($response);
-header('Content-type: application/json');
-echo '"all good?"';
+
+$stmt = $pdo->prepare('UPDATE user_keys SET counter = :counter WHERE user_id = :user_id AND key_handle = :key_handle');
+$stmt->execute([
+    ':counter' => $updatedRegistration->getCounter(),
+    ':user_id' => $_SESSION['user_id'],
+    ':key_handle' => $updatedRegistration->getKeyHandleBinary(),
+]);
+
+echo json_encode([
+    'result' => true,
+    'new counter' => $updatedRegistration->getCounter(),
+]);
