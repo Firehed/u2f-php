@@ -23,7 +23,8 @@ class AuthenticatorData
     /** @var ?array Attested Credential Data */
     private $ACD;
 
-    private $EXT;
+    /** @var null RESERVED: WebAuthn Extensions */
+    private $extensions;
 
     /**
      * @see https://w3c.github.io/webauthn/#sec-authenticator-data
@@ -79,14 +80,14 @@ class AuthenticatorData
         return $authData;
     }
 
-    public function isUserPresent(): bool
-    {
-        return $this->isUserPresent;
-    }
-
     public function getAttestedCredentialData(): ?array
     {
         return $this->ACD;
+    }
+
+    public function getRpIdHash(): string
+    {
+        return $this->rpIdHash;
     }
 
     public function getSignCount(): int
@@ -94,9 +95,9 @@ class AuthenticatorData
         return $this->signCount;
     }
 
-    public function getRpIdHash(): string
+    public function isUserPresent(): bool
     {
-        return $this->rpIdHash;
+        return $this->isUserPresent;
     }
 
     public function __debugInfo(): array
@@ -112,9 +113,9 @@ class AuthenticatorData
         ];
 
         if ($this->ACD) {
-            // See RFC8152 section 7 (COSE key parameters
+            // See RFC8152 section 7 (COSE key parameters)
             $pk = [
-                'kty' => $this->ACD['credentialPublicKey'][1], // MUST be 'EC2'; sec 13 tbl 21)
+                'kty' => $this->ACD['credentialPublicKey'][1], // MUST be 'EC2' (sec 13 tbl 21)
                 // kid = 2
                 'alg' => $this->ACD['credentialPublicKey'][3] ?? null,
                 // key_ops = 4 // must include sign (1)/verify(2) if present, depending on usage
@@ -134,8 +135,6 @@ class AuthenticatorData
             ];
             $data['ACD'] = $acd;
         }
-        // Future?
-        // $this->EXT
         return $data;
     }
 }
