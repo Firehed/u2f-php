@@ -114,15 +114,20 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $registrations = [
             (new Registration())->setKeyHandle(\random_bytes(16)),
             (new Registration())->setKeyHandle(\random_bytes(16)),
+            (new Registration())->setKeyHandle(\random_bytes(16)),
         ];
         $signRequests = $this->server->generateSignRequests($registrations);
-
         $this->assertIsArray($signRequests);
+        $this->assertCount(count($registrations), $signRequests);
+        $firstRequest = $signRequests[0];
         foreach ($signRequests as $signRequest) {
             $this->assertInstanceOf(SignRequest::class, $signRequest);
+            $this->assertSame(
+                $firstRequest->getChallenge(),
+                $signRequest->getChallenge(),
+                'All sign requests should share a single challenge'
+            );
         }
-        // This method is a simple map operation, so testGenerateSignRequest
-        // does the heavy lifting.
     }
 
     /**
