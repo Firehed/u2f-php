@@ -13,9 +13,12 @@ if (!isset($_SESSION['user_id'])) {
 
 $regs = getRegistrations($pdo, (int)$_SESSION['user_id']);
 
-// FIXME: each of these sign requests include a different challenge, which is
-// fundamentally incompatbile with webauthn
 $signRequests = $server->generateSignRequests($regs);
 $_SESSION['sign_requests'] = $signRequests;
 
-echo json_encode($signRequests);
+echo json_encode([
+    'challenge' => $signRequests[0]->getChallenge(),
+    'key_handles' => array_map(function (SignRequest $sr) {
+        return $sr->getKeyHandleWeb();
+    }, $signRequests),
+]);

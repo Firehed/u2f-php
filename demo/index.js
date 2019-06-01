@@ -80,9 +80,9 @@ const getLoginOptions = async () => {
   const challenges = await getLoginChallenge()
   return {
     // FIXME: reintegrate this with single-challenge format
-    challenge: Uint8Array.from(challenges[0].challenge, c => c.charCodeAt(0)),
-    allowCredentials: challenges.map(ch => ({
-      id: Uint8Array.from(fromBase64Web(ch.keyHandle), c => c.charCodeAt(0)),
+    challenge: Uint8Array.from(challenges.challenge, c => c.charCodeAt(0)),
+    allowCredentials: challenges.key_handles.map(kh => ({
+      id: Uint8Array.from(fromBase64Web(kh), c => c.charCodeAt(0)),
       type: 'public-key',
       transports: ['usb', 'ble', 'nfc'],
     })),
