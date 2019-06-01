@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <title>U2F Demo - WebAuthn</title>
+        <link rel="stylesheet" href="index.css" />
+    </head>
+
+    <body>
+        <h1>Example WebAuthn flows</h1>
+        <form id="register">
+            <fieldset>
+                <legend>Register</legend>
+                <input type="text" id="register_username" placeholder="Username" /><br />
+                <input type="password" id="register_password" placeholder="Password" /><br />
+                <button type="submit" id="register_submit">Register</button>
+            </fieldset>
+        </form>
+
+        <form id="login">
+            <fieldset>
+                <legend>Log In</legend>
+                <input type="text" id="login_username" placeholder="Username" /><br />
+                <input type="password" id="login_password" placeholder="Password" /><br />
+                <button type="submit" id="login_submit">login</button>
+            </fieldset>
+        </form>
+
+        <form id="add_key">
+            <fieldset>
+                <legend>Add a Key</legend>
+                <button type="submit" id="add_key_submit">Add a new key</button>
+            </fieldset>
+        </form>
+
+        <form id="login_with_key">
+            <fieldset>
+                <legend>Login with a Key</legend>
+                <button type="submit" id="login_with_key_submit">Login with a registered key</button>
+            </fieldset>
+        </form>
+
+        <textarea id="log" autocomplete="off"></textarea>
+        <script src="index.js" type="text/javascript"></script>
+    </body>
+</html>
