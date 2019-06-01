@@ -1,5 +1,6 @@
 <?php
-$server = require 'bootstrap.php';
+$config = require 'bootstrap.php';
+$server = $config['server'];
 
 session_start();
 if (!isset($_SESSION['user_registrations'])) {

@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
-$server = require 'bootstrap.php';
+$config = require 'bootstrap.php';
+$server = $config['server'];
 
 session_start();
 

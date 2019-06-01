@@ -4,7 +4,8 @@ namespace Firehed\U2F;
 
 use Firehed\CBOR\Decoder;
 
-$server = require 'bootstrap.php';
+$config = require 'bootstrap.php';
+$server = $config['server'];
 
 session_start();
 if (!isset($_SESSION['register_challenge'])) {
