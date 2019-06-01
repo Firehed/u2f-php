@@ -78,7 +78,8 @@ header('Content-type: application/json');
 echo json_encode($request->getChallenge());
 ```
 
-Client-side, create a [`PublicKeyCredentialCreationOptions`](https://www.w3.org/TR/webauthn/#dictdef-publickeycredentialcreationoptions) data structure, and provide it to the WebAuthn API:
+#### Client-side registration
+Create a [`PublicKeyCredentialCreationOptions`](https://www.w3.org/TR/webauthn/#dictdef-publickeycredentialcreationoptions) data structure, and provide it to the WebAuthn API:
 
 ```js
 const userId = "some value from your application"
@@ -106,11 +107,9 @@ const options = {
 const credential = await navigator.credentials.create({
   publicKey: options
 })
-```
 
-Format the user's `credential` and POST it to your application:
+// Format the user's `credential` and POST it to your application:
 
-```js
 const dataToSend = {
   rawId: new Uint8Array(credential.rawId),
   type: credential.type,
@@ -127,17 +126,20 @@ const response = POST('/verifyRegisterChallenge.php', dataToSend)
 
 #### Parse and verify the response
 
+Using the previously-generated registration request, ask the server to verify the POSTed data.
+If verification succeeds, you will have a Registration object to associate with the user:
+
 ```php
 // You should validate that the inbound request has an 'application/json' Content-type header
 $rawPostBody = trim(file_get_contents('php://input'));
 $data = json_decode($rawPostBody, true);
 $response = \Firehed\U2F\WebAuthn\RegistrationResponse::fromDecodedJson($data);
 
-$server->setRegisterRequest($previously_generated_request);
+$server->setRegisterRequest($_SESSION['registration_request']);
 $registration = $server->register($response)
 ```
 
-##### Persist the `$registration`
+#### Persist the `$registration`
 
 Registrations SHOULD be persisted as a one-to-many relationship with the user, since a user may own multiple keys and may want to associate all of them with their account (e.g. a backup key is kept on a spouse's keychain).
 It is RECOMMENDED to use `(user_id, key_handle)` as a unique composite identifier.
@@ -156,21 +158,23 @@ CREATE TABLE token_registrations (
 )
 ```
 ```php
-$stmt = $pdo->prepare('
-    INSERT INTO token_registrations (
-        user_id,
-        counter,
-        key_handle,
-        public_key,
-        attestation_certificate
-    ) VALUES (
-        :user_id,
-        :counter,
-        :key_handle,
-        :public_key,
-        :attestation_certificate
-    )
-');
+// This assumes you are connecting to your database with PDO
+$query = <<<SQL
+INSERT INTO token_registrations (
+    user_id,
+    counter,
+    key_handle,
+    public_key,
+    attestation_certificate
+) VALUES (
+    :user_id,
+    :counter,
+    :key_handle,
+    :public_key,
+    :attestation_certificate
+)
+SQL;
+$stmt = $pdo->prepare($query);
 // Note: you may want to base64- or hex-encode the binary values below.
 // Doing so is entirely optional.
 $stmt->execute([
@@ -181,6 +185,9 @@ $stmt->execute([
     ':attestation_certificate' => $registration->getAttestationCertificate()->getBinary(),
 ]);
 ```
+
+After doing this, you should add a flag of some kind on the user to indicate that 2FA is enabled, and ensure that they have authenticated with their second factor.
+Since this is entirely application-specific, it won't be covered here.
 
 ### Authentication
 
@@ -208,7 +215,9 @@ echo json_encode([
 ]);
 ```
 
-Client-side, turn the challenge and key handles into a [`PublicKeyCredentialRequestOptions`](https://www.w3.org/TR/webauthn/#assertion-options) data structure, and provide it to the WebAuthn API:
+#### Client-side authentication
+
+Create a [`PublicKeyCredentialRequestOptions`](https://www.w3.org/TR/webauthn/#assertion-options) data structure, and provide it to the WebAuthn API:
 
 ```js
 // This is a basic decoder for the above `getKeyHandleWeb()` format
@@ -229,10 +238,9 @@ const options = {
 const assertion = await navigator.credentials.get({
   publicKey: options
 });
-```
 
-Format the user's `assertion` and POST it to your application:
-```js
+// Format the user's `assertion` and POST it to your application:
+
 const dataToSend = {
   rawId: new Uint8Array(assertion.rawId),
   type: assertion.type,
@@ -266,18 +274,23 @@ If no exception is thrown, `$registration` will be a Registration object with an
 Failure to do so **is insecure** and exposes your application to token cloning attacks.
 
 ```php
-$stmt = $pdo->prepare('
-    UPDATE token_registrations
-    SET counter = :counter
-    WHERE user_id = :user_id
-        AND key_handle = :key_handle
-');
+// Again, assumes a PDO connection
+$query = <<<SQL
+UPDATE token_registrations
+SET counter = :counter
+WHERE user_id = :user_id
+    AND key_handle = :key_handle
+SQL;
+$stmt = $pdo->prepare($query);
 $stmt->execute([
     ':counter' => $registration->getCounter(),
     ':user_id' => $_SESSION['user_id'],
     ':key_handle' => $registration->getKeyHandleBinary(), // if you are storing base64- or hex- encoded above, do so here as well
 ]);
 ```
+
+If you reach this point, the user has succcessfully authenticated with their second factor.
+Update their session to indicate this, and allow them to proceeed.
 
 <!-- live demo is not updated for webauthn yet -->
 <!--
