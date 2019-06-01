@@ -25,10 +25,8 @@ $server->setSignRequests($signReqs);
 
 // This expects a (roughly) straight JSONified PublicKeyCredential
 $data = decodePostJson();
-
 $response = WebAuthn\LoginResponse::fromDecodedJson($data);
-log($response);
-
+log($response, 'login response');
 
 $updatedRegistration = $server->authenticate($response);
 

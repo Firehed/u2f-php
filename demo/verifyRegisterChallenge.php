@@ -24,11 +24,7 @@ $server->setRegisterRequest($registerRequest);
 
 // This expects a (roughly) straight JSONified PublicKeyCredential
 $data = decodePostJson();
-
-assert($data['type'] === 'public-key');
-
 $response = WebAuthn\RegistrationResponse::fromDecodedJson($data);
-
 log($response, 'register response');
 
 $registration = $server->register($response);
