@@ -94,4 +94,22 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
             '1ddf16d78add21b64'
         ), $response->getAttestationCertificate()->getBinary(), 'Attestation cert');
     }
+
+    /**
+     * @covers ::__debugInfo
+     */
+    public function testDebugInfoDoesntPrintBinary()
+    {
+        $json = file_get_contents(__DIR__ . '/registrationresponse.json');
+        assert($json !== false);
+        $data = json_decode($json, true);
+
+        $response = RegistrationResponse::fromDecodedJson($data);
+        $debug = print_r($response, true);
+        $this->assertRegExp(
+            '/[^\x20-\x7f]/',
+            $debug,
+            'Debug output contained non-ascii'
+        );
+    }
 }

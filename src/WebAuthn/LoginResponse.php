@@ -122,4 +122,17 @@ class LoginResponse implements LoginResponseInterface
             hash('sha256', $this->clientDataJson, true)
         );
     }
+
+    public function __debugInfo(): array
+    {
+        $hex = function (string $binary) {
+            return '0x' . bin2hex($binary);
+        };
+        return [
+            'clientDataJson' => $this->clientDataJson,
+            'challenge' => $hex($this->challenge),
+            'keyHandle' => $hex($this->keyHandle),
+            'signature' => $hex($this->signature),
+        ];
+    }
 }

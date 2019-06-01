@@ -24,7 +24,7 @@ class RegistrationResponse implements RegistrationResponseInterface
     private $challenge;
 
     /** @var string (binary) */
-    private $keyHandleBinary;
+    private $keyHandle;
 
     /** @var PublicKeyInterface */
     private $publicKey;
@@ -124,7 +124,7 @@ class RegistrationResponse implements RegistrationResponseInterface
             $credentialData['credentialId'],
             $publicKeyU2F
         ); // 8.6.5
-        $response->keyHandleBinary = $credentialData['credentialId'];
+        $response->keyHandle = $credentialData['credentialId'];
         $response->publicKey = $publicKey;
         $response->attestationCert = $attestationCert;
         return $response;
@@ -149,24 +149,46 @@ class RegistrationResponse implements RegistrationResponseInterface
     {
         return $this->signedData;
     }
+
     public function getSignature(): string
     {
         return $this->signature;
     }
+
     public function getPublicKey(): PublicKeyInterface
     {
         return $this->publicKey;
     }
+
     public function getKeyHandleBinary(): string
     {
-        return $this->keyHandleBinary;
+        return $this->keyHandle;
     }
+
     private static function byteArrayToBinaryString(array $bytes): string
     {
         return implode('', array_map('chr', $bytes));
     }
+
     public function getRpIdHash(): string
     {
         return $this->rpIdHash;
+    }
+
+    public function __debugInfo(): array
+    {
+        $hex = function (string $binary) {
+            return '0x' . bin2hex($binary);
+        };
+        return [
+            'attestationCert' => $this->attestationCert,
+            'clientDataJson' => $this->clientDataJson,
+            'challenge' => $hex($this->challenge),
+            'keyHandle' => $hex($this->keyHandle),
+            'publicKey' => $this->publicKey,
+            'rpIdHash' => $hex($this->rpIdHash),
+            'signature' => $hex($this->signature),
+            'signedData' => $hex($this->signedData),
+        ];
     }
 }

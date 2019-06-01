@@ -59,4 +59,22 @@ class LoginResponseTest extends \PHPUnit\Framework\TestCase
             'Challenge'
         );
     }
+
+    /**
+     * @covers ::__debugInfo
+     */
+    public function testDebugInfoDoesntPrintBinary()
+    {
+        $json = file_get_contents(__DIR__ . '/loginresponse.json');
+        assert($json !== false);
+        $data = json_decode($json, true);
+
+        $response = LoginResponse::fromDecodedJson($data);
+        $debug = print_r($response, true);
+        $this->assertRegExp(
+            '/[^\x20-\x7f]/',
+            $debug,
+            'Debug output contained non-ascii'
+        );
+    }
 }
