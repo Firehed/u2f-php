@@ -10,6 +10,8 @@ class ClientData implements JsonSerializable, ChallengeProvider
 {
     use ChallengeTrait;
 
+    /** @var string */
+    private $originalJson;
     private $cid_pubkey;
     private $origin;
     private $typ;
@@ -23,7 +25,11 @@ class ClientData implements JsonSerializable, ChallengeProvider
         $ret->setType($ret->validateKey('typ', $data));
         $ret->setChallenge($ret->validateKey('challenge', $data));
         $ret->origin = $ret->validateKey('origin', $data);
-        $ret->cid_pubkey = $ret->validateKey('cid_pubkey', $data);
+        // This field is optional
+        if (isset($data['cid_pubkey'])) {
+            $ret->cid_pubkey = $data['cid_pubkey'];
+        }
+        $ret->originalJson = $json;
         return $ret;
     }
 
@@ -63,8 +69,8 @@ class ClientData implements JsonSerializable, ChallengeProvider
 
     // Returns the SHA256 hash of this object per the raw message formats spec
     public function getChallengeParameter(): string {
-        $json = json_encode($this, \JSON_UNESCAPED_SLASHES);
-        return hash('sha256', $json, true);
+        // $json = json_encode($this, \JSON_UNESCAPED_SLASHES);
+        return hash('sha256', $this->originalJson, true);
     }
 
     public function jsonSerialize() {
