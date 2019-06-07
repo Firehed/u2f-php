@@ -560,6 +560,41 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->authenticate($response);
     }
 
+    // -( Alternate formats (see #14) )----------------------------------------
+
+    public function testRegistrationWithoutCidPubkey_BugFix14()
+    {
+        $server = new Server();
+        $server->disableCAVerification()
+            ->setAppId('https://u2f.ericstern.com');
+
+        $registerRequest = new RegisterRequest();
+        $registerRequest->setAppId($server->getAppId())
+            ->setChallenge('dNqjowssvlxx9zBhvsy03A');
+        $server->setRegisterRequest($registerRequest);
+
+        $json = '{"registrationData":"BQSFDYsZaHlRBQcdLyu4jZ-Bukb1vw6QtSfmvTQO'.
+            'IXpjZpfqYptdtpBznuNBslzlZdodspfqRkqwJIt3a0W2P_HlQImHG1FoSkYdPwSzp'.
+            '3WvlDisShW5fveiaaI4Zk8oZBkyWoQ6v1c2ypcd5OWPX6rAH-N7cPjw1Vg_w1q_YL'.
+            'c3mR8wggE0MIHboAMCAQICCjJ1rwmwx867ew8wCgYIKoZIzj0EAwIwFTETMBEGA1U'.
+            'EAxMKVTJGIElzc3VlcjAaFwswMDAxMDEwMDAwWhcLMDAwMTAxMDAwMFowFTETMBEG'.
+            'A1UEAxMKVTJGIERldmljZTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCLzJT4vt'.
+            'kl-799Ks5wINHdVRIKCLq-kX6oIajh_2Dv4Sk0cBVteQt1xdGau1XzEaGYIOvU5hU'.
+            'm2J2pxVBQIzaajFzAVMBMGCysGAQQBguUcAgEBBAQDAgUgMAoGCCqGSM49BAMCA0g'.
+            'AMEUCIQDBo6aOLxanIUYnBX9iu3KMngPnobpi0EZSTkVtLC8_cwIgC1945RGqGBKf'.
+            'byNtkhMifZK05n7fU-gW37Bdnci5D94wRQIgEPJVWZ7zgVQUctG3xpWBv77s3u2R7'.
+            'OJP-UjkWdcUs2QCIQC1fqlZIrl4kIEsSQTRMauvcaoeunV-I24WYnp3rgC_Dg","v'.
+            'ersion":"U2F_V2","challenge":"dNqjowssvlxx9zBhvsy03A","appId":"ht'.
+            'tps://u2f.ericstern.com","clientData":"eyJjaGFsbGVuZ2UiOiJkTnFqb3'.
+            'dzc3ZseHg5ekJodnN5MDNBIiwib3JpZ2luIjoiaHR0cHM6Ly91MmYuZXJpY3N0ZXJ'.
+            'uLmNvbSIsInR5cCI6Im5hdmlnYXRvci5pZC5maW5pc2hFbnJvbGxtZW50In0"}';
+        $registerResponse = RegisterResponse::fromJson($json);
+
+        $registration = $server->register($registerResponse);
+
+        $this->assertInstanceOf(Registration::class, $registration);
+    }
+
     // -( Helpers )------------------------------------------------------------
 
     private function getDefaultRegisterRequest(): RegisterRequest {
