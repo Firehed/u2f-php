@@ -69,7 +69,6 @@ class ClientData implements JsonSerializable, ChallengeProvider
 
     // Returns the SHA256 hash of this object per the raw message formats spec
     public function getChallengeParameter(): string {
-        // $json = json_encode($this, \JSON_UNESCAPED_SLASHES);
         return hash('sha256', $this->originalJson, true);
     }
 

@@ -94,7 +94,6 @@ class ClientDataTest extends \PHPUnit_Framework_TestCase
             $without('typ'),
             $without('challenge'),
             $without('origin'),
-            // $without('cid_pubkey'),
         ];
     }
 
