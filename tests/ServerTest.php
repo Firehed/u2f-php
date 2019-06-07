@@ -560,6 +560,72 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->authenticate($response);
     }
 
+    // -( Alternate formats (see #14) )----------------------------------------
+
+    public function testRegistrationWithoutCidPubkey_BugFix14()
+    {
+        $server = (new Server())
+            ->disableCAVerification()
+            ->setAppId('https://u2f.ericstern.com');
+
+        $registerRequest = new RegisterRequest();
+        $registerRequest->setAppId($server->getAppId())
+            ->setChallenge('dNqjowssvlxx9zBhvsy03A');
+        $server->setRegisterRequest($registerRequest);
+
+        $json = '{"registrationData":"BQSFDYsZaHlRBQcdLyu4jZ-Bukb1vw6QtSfmvTQO'.
+            'IXpjZpfqYptdtpBznuNBslzlZdodspfqRkqwJIt3a0W2P_HlQImHG1FoSkYdPwSzp'.
+            '3WvlDisShW5fveiaaI4Zk8oZBkyWoQ6v1c2ypcd5OWPX6rAH-N7cPjw1Vg_w1q_YL'.
+            'c3mR8wggE0MIHboAMCAQICCjJ1rwmwx867ew8wCgYIKoZIzj0EAwIwFTETMBEGA1U'.
+            'EAxMKVTJGIElzc3VlcjAaFwswMDAxMDEwMDAwWhcLMDAwMTAxMDAwMFowFTETMBEG'.
+            'A1UEAxMKVTJGIERldmljZTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCLzJT4vt'.
+            'kl-799Ks5wINHdVRIKCLq-kX6oIajh_2Dv4Sk0cBVteQt1xdGau1XzEaGYIOvU5hU'.
+            'm2J2pxVBQIzaajFzAVMBMGCysGAQQBguUcAgEBBAQDAgUgMAoGCCqGSM49BAMCA0g'.
+            'AMEUCIQDBo6aOLxanIUYnBX9iu3KMngPnobpi0EZSTkVtLC8_cwIgC1945RGqGBKf'.
+            'byNtkhMifZK05n7fU-gW37Bdnci5D94wRQIgEPJVWZ7zgVQUctG3xpWBv77s3u2R7'.
+            'OJP-UjkWdcUs2QCIQC1fqlZIrl4kIEsSQTRMauvcaoeunV-I24WYnp3rgC_Dg","v'.
+            'ersion":"U2F_V2","challenge":"dNqjowssvlxx9zBhvsy03A","appId":"ht'.
+            'tps://u2f.ericstern.com","clientData":"eyJjaGFsbGVuZ2UiOiJkTnFqb3'.
+            'dzc3ZseHg5ekJodnN5MDNBIiwib3JpZ2luIjoiaHR0cHM6Ly91MmYuZXJpY3N0ZXJ'.
+            'uLmNvbSIsInR5cCI6Im5hdmlnYXRvci5pZC5maW5pc2hFbnJvbGxtZW50In0"}';
+        $registerResponse = RegisterResponse::fromJson($json);
+
+        $registration = $server->register($registerResponse);
+        $this->assertInstanceOf(Registration::class, $registration);
+    }
+
+    public function testRegistrationWithoutCidPubkey_BugFix14_2()
+    {
+        $server = (new Server())
+            ->disableCAVerification()
+            ->setAppId('https://u2f.ericstern.com');
+
+        $registerRequest = new RegisterRequest();
+        $registerRequest->setAppId($server->getAppId())
+            ->setChallenge('E23usdC7VkxjN1mwRAeyjg');
+        $server->setRegisterRequest($registerRequest);
+
+        $json = '{"registrationData":"BQSTffB-e9hdFwhsfb2t-2ppwyxZAltnDf6TYwv4'.
+            '1VtleEO4488JwNFGr_bks_4EzA4DoluDBCgfmULGpZpXykTZQMOMz9DfbESHnuBY9'.
+            'cmTxVTVtrsTFTQA-IPETCYJ2dYACULXRN7_qLq_2WnDQJaME7zWyZEB0NFu-hosav'.
+            'uqjncwggEbMIHCoAMCAQICCiIygbKxS2KpYY8wCgYIKoZIzj0EAwIwFTETMBEGA1U'.
+            'EAxMKVTJGIElzc3VlcjAaFwswMDAxMDEwMDAwWhcLMDAwMTAxMDAwMFowFTETMBEG'.
+            'A1UEAxMKVTJGIERldmljZTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCdqjfpHR'.
+            '9L8a6-pVRv9PWu-pORC9sO9eDk6ZlFIXaclyfxbLJqAehvIWJuzij_BxJOLbQPD_9'.
+            'fX5uKh9tDv8nowCgYIKoZIzj0EAwIDSAAwRQIhAMGjpo4vFqchRicFf2K7coyeA-e'.
+            'humLQRlJORW0sLz9zAiALX3jlEaoYEp9vI22SEyJ9krTmft9T6BbfsF2dyLkP3jBE'.
+            'AiAHD70-wA4f3SZk6s0RocHAA4nDCGaVFvTBG4gZXcZTnQIge2joenpQxVP0r1o9E'.
+            'zL9C3aR-HEKhSHr86MX4eUTMlw","version":"U2F_V2","challenge":"E23us'.
+            'dC7VkxjN1mwRAeyjg","appId":"https://u2f.ericstern.com","clientDat'.
+            'a":"eyJjaGFsbGVuZ2UiOiJFMjN1c2RDN1ZreGpOMW13UkFleWpnIiwib3JpZ2luI'.
+            'joiaHR0cHM6Ly91MmYuZXJpY3N0ZXJuLmNvbSIsInR5cCI6Im5hdmlnYXRvci5pZC'.
+            '5maW5pc2hFbnJvbGxtZW50In0"}';
+        $registerResponse = RegisterResponse::fromJson($json);
+
+        $registration = $server->register($registerResponse);
+        $this->assertInstanceOf(Registration::class, $registration);
+    }
+
     // -( Helpers )------------------------------------------------------------
 
     private function getDefaultRegisterRequest(): RegisterRequest {
