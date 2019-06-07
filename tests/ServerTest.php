@@ -564,8 +564,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testRegistrationWithoutCidPubkey_BugFix14()
     {
-        $server = new Server();
-        $server->disableCAVerification()
+        $server = (new Server())
+            ->disableCAVerification()
             ->setAppId('https://u2f.ericstern.com');
 
         $registerRequest = new RegisterRequest();
@@ -591,7 +591,38 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $registerResponse = RegisterResponse::fromJson($json);
 
         $registration = $server->register($registerResponse);
+        $this->assertInstanceOf(Registration::class, $registration);
+    }
 
+    public function testRegistrationWithoutCidPubkey_BugFix14_2()
+    {
+        $server = (new Server())
+            ->disableCAVerification()
+            ->setAppId('https://u2f.ericstern.com');
+
+        $registerRequest = new RegisterRequest();
+        $registerRequest->setAppId($server->getAppId())
+            ->setChallenge('E23usdC7VkxjN1mwRAeyjg');
+        $server->setRegisterRequest($registerRequest);
+
+        $json = '{"registrationData":"BQSTffB-e9hdFwhsfb2t-2ppwyxZAltnDf6TYwv4'.
+            '1VtleEO4488JwNFGr_bks_4EzA4DoluDBCgfmULGpZpXykTZQMOMz9DfbESHnuBY9'.
+            'cmTxVTVtrsTFTQA-IPETCYJ2dYACULXRN7_qLq_2WnDQJaME7zWyZEB0NFu-hosav'.
+            'uqjncwggEbMIHCoAMCAQICCiIygbKxS2KpYY8wCgYIKoZIzj0EAwIwFTETMBEGA1U'.
+            'EAxMKVTJGIElzc3VlcjAaFwswMDAxMDEwMDAwWhcLMDAwMTAxMDAwMFowFTETMBEG'.
+            'A1UEAxMKVTJGIERldmljZTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCdqjfpHR'.
+            '9L8a6-pVRv9PWu-pORC9sO9eDk6ZlFIXaclyfxbLJqAehvIWJuzij_BxJOLbQPD_9'.
+            'fX5uKh9tDv8nowCgYIKoZIzj0EAwIDSAAwRQIhAMGjpo4vFqchRicFf2K7coyeA-e'.
+            'humLQRlJORW0sLz9zAiALX3jlEaoYEp9vI22SEyJ9krTmft9T6BbfsF2dyLkP3jBE'.
+            'AiAHD70-wA4f3SZk6s0RocHAA4nDCGaVFvTBG4gZXcZTnQIge2joenpQxVP0r1o9E'.
+            'zL9C3aR-HEKhSHr86MX4eUTMlw","version":"U2F_V2","challenge":"E23us'.
+            'dC7VkxjN1mwRAeyjg","appId":"https://u2f.ericstern.com","clientDat'.
+            'a":"eyJjaGFsbGVuZ2UiOiJFMjN1c2RDN1ZreGpOMW13UkFleWpnIiwib3JpZ2luI'.
+            'joiaHR0cHM6Ly91MmYuZXJpY3N0ZXJuLmNvbSIsInR5cCI6Im5hdmlnYXRvci5pZC'.
+            '5maW5pc2hFbnJvbGxtZW50In0"}';
+        $registerResponse = RegisterResponse::fromJson($json);
+
+        $registration = $server->register($registerResponse);
         $this->assertInstanceOf(Registration::class, $registration);
     }
 
