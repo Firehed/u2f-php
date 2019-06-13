@@ -653,7 +653,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     // -( Alternate formats (see #14) )----------------------------------------
 
-    public function testRegistrationWithoutCidPubkey_BugFix14()
+    public function testRegistrationWithoutCidPubkeyBug14Case1()
     {
         $server = (new Server())
             ->disableCAVerification()
@@ -685,7 +685,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(Registration::class, $registration);
     }
 
-    public function testRegistrationWithoutCidPubkey_BugFix14_2()
+    public function testRegistrationWithoutCidPubkeyBug14Case2()
     {
         $server = (new Server())
             ->disableCAVerification()
