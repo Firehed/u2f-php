@@ -43,8 +43,8 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
         );
 
         $goodJson = '{"typ":"navigator.id.finishEnrollment","challenge":"PfsWR'.
-            '1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo","origin":"https://u2f.eri'.'
-            cstern.com","cid_pubkey":""}';
+            '1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo","origin":"https://u2f.eri'.
+            'cstern.com","cid_pubkey":""}';
 
         assert($goodJson !== false);
         $clientData = ClientData::fromJson($goodJson);
