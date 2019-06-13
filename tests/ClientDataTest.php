@@ -48,7 +48,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
             'origin' => 'https://u2f.ericstern.com',
             'cid_pubkey' => '',
         ];
-        $goodJson = json_encode($goodData);
+        $goodJson = json_encode($goodData, JSON_UNESCAPED_SLASHES);
         assert($goodJson !== false);
         $clientData = ClientData::fromJson($goodJson);
         $this->assertTrue(
@@ -139,7 +139,6 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
             $without('typ'),
             $without('challenge'),
             $without('origin'),
-            $without('cid_pubkey'),
         ];
     }
 
