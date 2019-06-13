@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
-use JsonSerializable;
 use Firehed\U2F\InvalidDataException as IDE;
 
-class ClientData implements JsonSerializable
+class ClientData
 {
     use ChallengeTrait;
 
+    /** @var string */
+    private $originalJson;
     private $cid_pubkey;
     private $origin;
     private $typ;
@@ -24,7 +25,11 @@ class ClientData implements JsonSerializable
         $ret->setType($ret->validateKey('typ', $data));
         $ret->setChallenge($ret->validateKey('challenge', $data));
         $ret->origin = $ret->validateKey('origin', $data);
-        $ret->cid_pubkey = $ret->validateKey('cid_pubkey', $data);
+        // This field is optional
+        if (isset($data['cid_pubkey'])) {
+            $ret->cid_pubkey = $data['cid_pubkey'];
+        }
+        $ret->originalJson = $json;
         return $ret;
     }
 
@@ -72,18 +77,6 @@ class ClientData implements JsonSerializable
     // Returns the SHA256 hash of this object per the raw message formats spec
     public function getChallengeParameter(): string
     {
-        $json = json_encode($this, \JSON_UNESCAPED_SLASHES);
-        assert($json !== false);
-        return hash('sha256', $json, true);
-    }
-
-    public function jsonSerialize()
-    {
-        return [
-            'typ' => $this->typ,
-            'challenge' => $this->getChallenge(),
-            'origin' => $this->origin,
-            'cid_pubkey' => $this->cid_pubkey,
-        ];
+        return hash('sha256', $this->originalJson, true);
     }
 }

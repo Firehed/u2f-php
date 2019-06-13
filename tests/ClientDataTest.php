@@ -29,7 +29,6 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @covers ::getChallengeParameter
-     * @covers ::jsonSerialize
      */
     public function testGetChallengeParameter()
     {
@@ -42,13 +41,10 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
             'Test vector should have been 32 bytes'
         );
 
-        $goodData = [
-            'typ' => 'navigator.id.finishEnrollment',
-            'challenge' => 'PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo',
-            'origin' => 'https://u2f.ericstern.com',
-            'cid_pubkey' => '',
-        ];
-        $goodJson = json_encode($goodData);
+        $goodJson = '{"typ":"navigator.id.finishEnrollment","challenge":"PfsWR'.
+            '1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo","origin":"https://u2f.eri'.
+            'cstern.com","cid_pubkey":""}';
+
         assert($goodJson !== false);
         $clientData = ClientData::fromJson($goodJson);
         $this->assertTrue(
@@ -139,7 +135,6 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
             $without('typ'),
             $without('challenge'),
             $without('origin'),
-            $without('cid_pubkey'),
         ];
     }
 
