@@ -29,7 +29,6 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @covers ::getChallengeParameter
-     * @covers ::jsonSerialize
      */
     public function testGetChallengeParameter()
     {
