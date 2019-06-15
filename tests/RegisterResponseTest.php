@@ -102,6 +102,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
      * @covers ::getAttestationCertificate
      * @covers ::getKeyHandleBinary
      * @covers ::getPublicKey
+     * @covers ::getRpIdHash
      * @covers ::getSignature
      */
     public function testDataAccuracyAfterSuccessfulParsing()
@@ -135,6 +136,11 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
             $sig,
             $response->getSignature(),
             'Signature was not parsed correctly'
+        );
+        $this->assertSame(
+            hash('sha256', 'https://u2f.ericstern.com', true),
+            $response->getRpIdHash(),
+            'Relying party Id hash was not parsed correctly'
         );
     }
 
