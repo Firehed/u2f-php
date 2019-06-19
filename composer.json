@@ -8,12 +8,16 @@
         "mfa",
         "security",
         "u2f",
+        "webauthn",
+        "web authentication",
+        "webauthentication",
         "yubico",
         "yubikey"
     ],
     "homepage": "https://github.com/Firehed/u2f-php",
     "require": {
-        "php": ">=7.2"
+        "php": ">=7.2",
+        "firehed/cbor": "dev-master"
     },
     "require-dev": {
         "php-coveralls/php-coveralls": "^2.0",
