@@ -6,6 +6,20 @@ namespace Firehed\U2F\WebAuthn;
 use BadMethodCallException;
 use Firehed\CBOR\Decoder;
 
+/**
+ * @phpstan-type AttestedCredentialData array{
+ *   aaguid: string,
+ *   credentialId: string,
+ *   credentialPublicKey: array{
+ *     1: int,
+ *     3?: int,
+ *     -1: int,
+ *     -2?: string,
+ *     -3?: string,
+ *     -4?: string,
+ *   }
+ * }
+ */
 class AuthenticatorData
 {
     /** @var bool */
@@ -20,7 +34,9 @@ class AuthenticatorData
     /** @var int */
     private $signCount;
 
-    /** @var ?array Attested Credential Data */
+    /**
+     * @var ?AttestedCredentialData Attested Credential Data
+     */
     private $ACD;
 
     /** @var null RESERVED: WebAuthn Extensions */
@@ -80,6 +96,7 @@ class AuthenticatorData
         return $authData;
     }
 
+    /** @return ?AttestedCredentialData */
     public function getAttestedCredentialData(): ?array
     {
         return $this->ACD;

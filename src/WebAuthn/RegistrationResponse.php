@@ -54,11 +54,24 @@ class RegistrationResponse implements RegistrationResponseInterface
      * }
      * const jsonToSend = JSON.stringify(dataToSend)
      * ```
+     *
+     * @param array{
+     *   type: 'public-key',
+     *   id: string,
+     *   rawId: int[],
+     *   response: array{
+     *     attestationObject: int[],
+     *     clientDataJSON: int[],
+     *   }
+     * } $data
      */
     public static function fromDecodedJson(array $data): RegistrationResponse
     {
+        // @phpstan-ignore-next-line
         assert(isset($data['type']) && $data['type'] === 'public-key');
+        // @phpstan-ignore-next-line
         assert(isset($data['response']['clientDataJSON']));
+        // @phpstan-ignore-next-line
         assert(isset($data['response']['attestationObject']));
 
         // 7.1.1
@@ -100,6 +113,7 @@ class RegistrationResponse implements RegistrationResponseInterface
         $attestationCert = new AttestationCertificate($aoAttStmt['x5c'][0]);
 
         $credentialData = $authData->getAttestedCredentialData();
+        assert($credentialData !== null);
         $publicKey = $credentialData['credentialPublicKey'];
         assert($publicKey[3] === -7); // ES256 (8.6.2)
 
@@ -165,6 +179,9 @@ class RegistrationResponse implements RegistrationResponseInterface
         return $this->keyHandle;
     }
 
+    /**
+     * @param int[] $bytes
+     */
     private static function byteArrayToBinaryString(array $bytes): string
     {
         return implode('', array_map('chr', $bytes));
@@ -175,6 +192,18 @@ class RegistrationResponse implements RegistrationResponseInterface
         return $this->rpIdHash;
     }
 
+    /**
+     * @return array{
+     *   attestationCert: AttestationCertificateInterface,
+     *   clientDataJson: string,
+     *   challenge: string,
+     *   keyHandle: string,
+     *   publicKey: PublicKeyInterface,
+     *   rpIdHash: string,
+     *   signature: string,
+     *   signedData: string,
+     * }
+     */
     public function __debugInfo(): array
     {
         $hex = function (string $binary) {
