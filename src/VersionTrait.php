@@ -5,6 +5,7 @@ namespace Firehed\U2F;
 
 trait VersionTrait
 {
+    /** @var 'U2F_V2' */
     private $version = 'U2F_V2';
 
     public function getVersion(): string
