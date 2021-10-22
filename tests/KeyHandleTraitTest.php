@@ -14,7 +14,7 @@ class KeyHandleTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::getKeyHandleBinary
      * @covers ::setKeyHandle
      */
-    public function testAccessors()
+    public function testAccessors(): void
     {
         $obj = new class {
             use KeyHandleTrait;
@@ -35,7 +35,7 @@ class KeyHandleTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getKeyHandleWeb
      */
-    public function testGetKeyHandleWeb()
+    public function testGetKeyHandleWeb(): void
     {
         $obj = new class {
             use KeyHandleTrait;
