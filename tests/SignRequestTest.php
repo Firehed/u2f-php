@@ -13,7 +13,7 @@ class SignRequestTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::jsonSerialize
      */
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $appId = 'https://u2f.example.com';
         $challenge = 'some-random-string';
