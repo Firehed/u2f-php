@@ -13,7 +13,7 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__construct
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $key = "\x04".\random_bytes(64);
         $obj = new ECPublicKey($key);
@@ -23,7 +23,7 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__construct
      */
-    public function testConstructThrowsWithBadFirstByte()
+    public function testConstructThrowsWithBadFirstByte(): void
     {
         $key = "\x01".\random_bytes(64);
         $this->expectException(InvalidDataException::class);
@@ -35,7 +35,7 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__construct
      */
-    public function testConstructThrowsWhenTooShort()
+    public function testConstructThrowsWhenTooShort(): void
     {
         $key = "\x04".random_bytes(63);
         $this->expectException(InvalidDataException::class);
@@ -46,7 +46,7 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__construct
      */
-    public function testConstructThrowsWhenTooLong()
+    public function testConstructThrowsWhenTooLong(): void
     {
         $key = "\x04".random_bytes(65);
         $this->expectException(InvalidDataException::class);
@@ -57,7 +57,7 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getBinary
      */
-    public function testGetBinary()
+    public function testGetBinary(): void
     {
         $key = "\x04".\random_bytes(64);
         $obj = new ECPublicKey($key);
@@ -71,7 +71,7 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getPemFormatted
      */
-    public function testGetPublicKeyPem()
+    public function testGetPublicKeyPem(): void
     {
         $key = hex2bin(
             '04b4960ae0fa301033fbedc85c33ac30408dffd6098bc8580d8b66159959d89b9'.
@@ -91,7 +91,7 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__debugInfo
      */
-    public function testDebugInfoEncodesBinary()
+    public function testDebugInfoEncodesBinary(): void
     {
         $x = random_bytes(32);
         $y = random_bytes(32);
