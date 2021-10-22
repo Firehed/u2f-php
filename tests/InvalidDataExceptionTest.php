@@ -14,7 +14,7 @@ class InvalidDataExceptionTest extends \PHPUnit\Framework\TestCase
      * @covers ::__construct
      * @dataProvider invalidDataExceptionCodes
      */
-    public function testInvalidDataException(int $code)
+    public function testInvalidDataException(int $code): void
     {
         $ex = new InvalidDataException($code, 'Prefill');
         $this->assertInstanceOf(
@@ -34,6 +34,7 @@ class InvalidDataExceptionTest extends \PHPUnit\Framework\TestCase
     }
 
     // -( DataProviders )------------------------------------------------------
+    /** @return array{int}[] */
     public function invalidDataExceptionCodes()
     {
         return [
