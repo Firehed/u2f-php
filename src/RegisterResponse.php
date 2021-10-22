@@ -15,6 +15,15 @@ class RegisterResponse implements RegistrationResponseInterface
     /** @var PublicKeyInterface */
     private $pubKey;
 
+    /**
+     * @param array{
+     *   registrationData: string,
+     *   version: string,
+     *   chalenge: string,
+     *   appId: string,
+     *   clientData: string,
+     * } $response
+     */
     protected function parseResponse(array $response): self
     {
         $this->validateKeyInArray('registrationData', $response);

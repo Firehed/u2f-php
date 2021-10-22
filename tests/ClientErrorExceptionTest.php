@@ -14,7 +14,7 @@ class ClientErrorExceptionTest extends \PHPUnit\Framework\TestCase
      * @covers ::__construct
      * @dataProvider clientErrors
      */
-    public function testClientError(int $code)
+    public function testClientError(int $code): void
     {
         $ex = new ClientErrorException($code);
         $this->assertInstanceOf(
@@ -29,6 +29,7 @@ class ClientErrorExceptionTest extends \PHPUnit\Framework\TestCase
     }
 
     // -( DataProviders )------------------------------------------------------
+    /** @return array{int}[] */
     public function clientErrors()
     {
         return [

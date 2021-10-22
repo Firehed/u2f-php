@@ -3,18 +3,25 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
-use JsonSerializable;
 use Firehed\U2F\InvalidDataException as IDE;
 
-class ClientData implements JsonSerializable
+class ClientData
 {
     use ChallengeTrait;
 
+    /** @var string */
+    private $originalJson;
+
+    /** @var string */
     private $cid_pubkey;
+
+    /** @var string */
     private $origin;
+
+    /** @var string */
     private $typ;
 
-    public static function fromJson(string $json)
+    public static function fromJson(string $json): ClientData
     {
         $data = json_decode($json, true);
         if (json_last_error() !== \JSON_ERROR_NONE) {
@@ -24,7 +31,11 @@ class ClientData implements JsonSerializable
         $ret->setType($ret->validateKey('typ', $data));
         $ret->setChallenge($ret->validateKey('challenge', $data));
         $ret->origin = $ret->validateKey('origin', $data);
-        $ret->cid_pubkey = $ret->validateKey('cid_pubkey', $data);
+        // This field is optional
+        if (isset($data['cid_pubkey'])) {
+            $ret->cid_pubkey = $data['cid_pubkey'];
+        }
+        $ret->originalJson = $json;
         return $ret;
     }
 
@@ -57,11 +68,11 @@ class ClientData implements JsonSerializable
      * Checks for the presence of $key in $data. Returns the value if found,
      * throws an InvalidDataException if missing
      * @param string $key The array key to check
-     * @param array $data The array to check in
-     * @return mixed The data, if present
+     * @param array<string, string> $data The array to check in
+     * @return string The data, if present
      * @throws InvalidDataException if not prsent
      */
-    private function validateKey(string $key, array $data)
+    private function validateKey(string $key, array $data): string
     {
         if (!array_key_exists($key, $data)) {
             throw new IDE(IDE::MISSING_KEY, $key);
@@ -72,18 +83,6 @@ class ClientData implements JsonSerializable
     // Returns the SHA256 hash of this object per the raw message formats spec
     public function getChallengeParameter(): string
     {
-        $json = json_encode($this, \JSON_UNESCAPED_SLASHES);
-        assert($json !== false);
-        return hash('sha256', $json, true);
-    }
-
-    public function jsonSerialize()
-    {
-        return [
-            'typ' => $this->typ,
-            'challenge' => $this->getChallenge(),
-            'origin' => $this->origin,
-            'cid_pubkey' => $this->cid_pubkey,
-        ];
+        return hash('sha256', $this->originalJson, true);
     }
 }

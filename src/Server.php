@@ -9,7 +9,6 @@ use RuntimeException;
 
 class Server
 {
-
     use AppIdTrait;
 
     /**
@@ -22,30 +21,40 @@ class Server
      * certificates, or b) explicitly disable verifiation. By default, it will
      * attempt to validate against an empty list which will always fail. This
      * is by design.
+     *
+     * @var string[]
      */
     private $trustedCAs = [];
 
     /**
      * Indicates whether to verify against `$trustedCAs`. Must be explicitly
      * disabled with `disableCAVerification()`.
+     *
+     * @var bool
      */
     private $verifyCA = true;
 
     /**
      * Holds a RegisterRequest used by `register()`, which contains the
      * challenge in the signature.
+     *
+     * @var ?RegisterRequest
      */
     private $registerRequest;
 
     /**
      * Holds Registrations that were previously established by the
      * authenticating party during `authenticate()`
+     *
+     * @var RegistrationInterface[]
      */
     private $registrations = [];
 
     /**
      * Holds SignRequests used by `authenticate` which contain the challenge
      * that's part of the signed response.
+     *
+     * @var SignRequest[]
      */
     private $signRequests = [];
 
@@ -277,7 +286,7 @@ class Server
      */
     public function setRegistrations(array $registrations): self
     {
-        array_map(function (Registration $r) {
+        array_map(function (RegistrationInterface $r) {
         }, $registrations); // type check
         $this->registrations = $registrations;
         return $this;
@@ -350,12 +359,12 @@ class Server
      * key handle value. If one is found, it is returned; if not, this returns
      * null.
      *
-     * TODO: create and implement a HasKeyHandle interface of sorts to type
-     * this better
-     * @param array $objects haystack to search
+     * @template T of KeyHandleInterface
+     *
+     * @param T[] $objects haystack to search
      * @param string $keyHandle key handle to find in haystack
-     * @return mixed element from haystack
-     * @return null if no element matches
+     *
+     * @return ?T element from haystack if match found, otherwise null
      */
     private function findObjectWithKeyHandle(
         array $objects,
@@ -398,7 +407,7 @@ class Server
      * @param ChallengeProvider $to user-provided value
      * @throws SE on failure
      */
-    private function validateChallenge(ChallengeProvider $from, ChallengeProvider $to)
+    private function validateChallenge(ChallengeProvider $from, ChallengeProvider $to): void
     {
         // Note: strictly speaking, this shouldn't even be targetable as
         // a timing attack. However, this opts to be proactive, and also

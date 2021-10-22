@@ -13,7 +13,7 @@ class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__construct
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         // Note: a future, stricter implementation which actually parses and
         // examines the ASN.1 format should fail on this. For now it's just
@@ -26,7 +26,7 @@ class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getBinary
      */
-    public function testGetBinary()
+    public function testGetBinary(): void
     {
         $raw = random_bytes(128);
         $cert = new AttestationCertificate($raw);
@@ -40,7 +40,7 @@ class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getPemFormatted
      */
-    public function testGetPemFormatted()
+    public function testGetPemFormatted(): void
     {
         $raw = random_bytes(128);
         $cert = new AttestationCertificate($raw);
@@ -57,7 +57,7 @@ class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__debugInfo
      */
-    public function testDebugInfoEncodesBinary()
+    public function testDebugInfoEncodesBinary(): void
     {
         $cert = new AttestationCertificate(random_bytes(128));
         $debugInfo = $cert->__debugInfo();

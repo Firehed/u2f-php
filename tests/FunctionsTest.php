@@ -9,7 +9,7 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
      * @covers Firehed\U2F\fromBase64Web
      * @dataProvider vectors
      */
-    public function testFromBase64Web($plain, $encoded)
+    public function testFromBase64Web(string $plain, string $encoded): void
     {
         $this->assertSame(
             $plain,
@@ -22,7 +22,7 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
      * @covers Firehed\U2F\toBase64Web
      * @dataProvider vectors
      */
-    public function testToBase64Web($plain, $encoded)
+    public function testToBase64Web(string $plain, string $encoded): void
     {
         $this->assertSame(
             $encoded,
@@ -31,6 +31,7 @@ class FunctionsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /** @return array{string, string}[] */
     public function vectors(): array
     {
         return [

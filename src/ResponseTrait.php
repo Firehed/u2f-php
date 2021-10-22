@@ -44,6 +44,7 @@ trait ResponseTrait
 
     abstract protected function parseResponse(array $response): self;
 
+    /** @param array<string, mixed> $data */
     private function validateKeyInArray(string $key, array $data): bool
     {
         if (!isset($data[$key])) {

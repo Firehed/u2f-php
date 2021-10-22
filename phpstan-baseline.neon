@@ -1,0 +1,27 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Property Firehed\\\\U2F\\\\ClientData\\:\\:\\$cid_pubkey is never read, only written\\.$#"
+			count: 1
+			path: src/ClientData.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\ClientData\\:\\:\\$typ is never read, only written\\.$#"
+			count: 1
+			path: src/ClientData.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\FunctionsTest\\:\\:vectors\\(\\) should return array\\<array\\(string, string\\)\\> but returns array\\(array\\('', ''\\), array\\('f', 'Zg'\\), array\\('fo', 'Zm8'\\), array\\('foo', 'Zm9v'\\), array\\('foob', 'Zm9vYg'\\), array\\('fooba', 'Zm9vYmE'\\), array\\('foobar', 'Zm9vYmFy'\\), array\\(string\\|false, 'AA_BB\\-cc'\\)\\)\\.$#"
+			count: 1
+			path: tests/FunctionsTest.php
+
+		-
+			message: "#^Call to an undefined static method object\\:\\:fromJson\\(\\)\\.$#"
+			count: 4
+			path: tests/ResponseTraitTest.php
+
+		-
+			message: "#^Method class@anonymous/tests/ResponseTraitTest\\.php\\:18\\:\\:parseResponse\\(\\) has parameter \\$response with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/ResponseTraitTest.php
+

@@ -11,11 +11,13 @@ namespace Firehed\U2F;
 class RegisterResponseTest extends \PHPUnit\Framework\TestCase
 {
 
+    /** @var string */
     private $validClientData =
         'eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZmluaXNoRW5yb2xsbWVudCIsImNoYWxsZW5nZSI6I'.
         'kJyQWN4dGIxOWFYNTRoN0Y2T0NKWVptQ3prZHlHV0Nib3NEcHpNMUh2MkUiLCJvcmlnaW'.
         '4iOiJodHRwczovL3UyZi5lcmljc3Rlcm4uY29tIiwiY2lkX3B1YmtleSI6IiJ9';
 
+    /** @var string */
     private $validRegistrationData =
         'BQS55FfGvxbgmcNO1cpNhdr4r-CMSbMtuhiMMJbXqd_3FD8Aah2X_n4ZiyBlgBqbbe4Rd'.
         'yksR7ZXoqPYT47-tmeWQJhf7xs1T8ObBRpkFi_VWG5oFJe499mQYxcj9BR0G8B5fjkYbU'.
@@ -36,7 +38,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::fromJson
      */
-    public function testFromJson()
+    public function testFromJson(): void
     {
         $json = json_encode([
             'registrationData' => $this->validRegistrationData,
@@ -53,7 +55,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider clientErrors
      */
-    public function testErrorResponse(int $code)
+    public function testErrorResponse(int $code): void
     {
         $json = sprintf('{"errorCode":%d}', $code);
         $this->expectException(ClientErrorException::class);
@@ -61,7 +63,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         RegisterResponse::fromJson($json);
     }
 
-    public function testFromJsonBadJson()
+    public function testFromJsonBadJson(): void
     {
         $json = 'this is not json';
         $this->expectException(InvalidDataException::class);
@@ -69,7 +71,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         RegisterResponse::fromJson($json);
     }
 
-    public function testFromJsonMissingClientData()
+    public function testFromJsonMissingClientData(): void
     {
         $json = sprintf('{"registrationData":"%s"}', $this->validRegistrationData);
         $this->expectException(InvalidDataException::class);
@@ -78,7 +80,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         RegisterResponse::fromJson($json);
     }
 
-    public function testFromJsonMissingRegistrationData()
+    public function testFromJsonMissingRegistrationData(): void
     {
         $json = sprintf('{"clientData":"%s"}', $this->validClientData);
         $this->expectException(InvalidDataException::class);
@@ -90,7 +92,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider invalidRegistrationData
      */
-    public function testBadRegistrationData(string $registrationData)
+    public function testBadRegistrationData(string $registrationData): void
     {
         $json = $this->buildJson($this->validClientData, $registrationData);
         $this->expectException(InvalidDataException::class);
@@ -105,7 +107,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
      * @covers ::getRpIdHash
      * @covers ::getSignature
      */
-    public function testDataAccuracyAfterSuccessfulParsing()
+    public function testDataAccuracyAfterSuccessfulParsing(): void
     {
         $pubkey = "\x04".random_bytes(64);
         $handle = random_bytes(32);
@@ -147,7 +149,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getSignedData
      */
-    public function testGetSignedData()
+    public function testGetSignedData(): void
     {
         $json = file_get_contents(__DIR__ . '/register_response.json');
         assert($json !== false);
@@ -181,7 +183,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getChallenge
      */
-    public function testGetChallenge()
+    public function testGetChallenge(): void
     {
         $json = file_get_contents(__DIR__ . '/register_response.json');
         assert($json !== false);
@@ -195,7 +197,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getRpIdHash
      */
-    public function testGetRpIdHash()
+    public function testGetRpIdHash(): void
     {
         $json = file_get_contents(__DIR__ . '/register_response.json');
         assert($json !== false);
@@ -209,6 +211,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
 
     // -( DataProviders )------------------------------------------------------
 
+    /** @return array{int}[] */
     public function clientErrors()
     {
         return [
@@ -220,6 +223,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
+    /** @return array{string}[] */
     public function invalidRegistrationData(): array
     {
         $bad_reserved_byte = "\x01".str_repeat('a', 200);
@@ -248,7 +252,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
 
     // -( Helpers )------------------------------------------------------------
 
-    protected function buildJson($clientData, $registrationData): string
+    protected function buildJson(string $clientData, string $registrationData): string
     {
         return sprintf(
             '{"clientData":"%s","registrationData":"%s"}',

@@ -58,6 +58,7 @@ class ECPublicKey implements PublicKeyInterface
         return $pem;
     }
 
+    /** @return array{x: string, y: string} */
     public function __debugInfo(): array
     {
         return [

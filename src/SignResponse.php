@@ -10,7 +10,10 @@ class SignResponse implements LoginResponseInterface
     use ResponseTrait;
 
     // Decoded SignatureData
+    /** @var int */
     private $counter = -1;
+
+    /** @var int */
     private $user_presence = 0;
 
     public function getCounter(): int
@@ -41,6 +44,13 @@ class SignResponse implements LoginResponseInterface
         );
     }
 
+    /**
+     * @param array{
+     *   keyHandle: string,
+     *   clientData: string,
+     *   signatureData: string,
+     * } $response
+     */
     protected function parseResponse(array $response): self
     {
         $this->validateKeyInArray('keyHandle', $response);
@@ -56,6 +66,7 @@ class SignResponse implements LoginResponseInterface
             throw new IDE(IDE::MALFORMED_DATA, 'signatureData');
         }
         $decoded = unpack('cpresence/Ncounter/a*signature', $sig_raw);
+        assert($decoded !== false);
         $this->user_presence = $decoded['presence'];
         $this->counter = $decoded['counter'];
         $this->setSignature($decoded['signature']);

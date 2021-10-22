@@ -4,6 +4,7 @@ namespace Firehed\U2F;
 
 trait ChallengeTrait
 {
+    /** @var string */
     private $challenge;
 
     // B64-websafe value (at no point is the binary version used)
