@@ -4,12 +4,13 @@ namespace Firehed\U2F;
 
 trait ChallengeTrait
 {
+    /** @var string */
     private $challenge;
 
     // B64-websafe value (at no point is the binary version used)
     public function getChallenge(): string
     {
-        return ($this->challenge);
+        return $this->challenge;
     }
 
     public function setChallenge(string $challenge): self
