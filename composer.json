@@ -17,7 +17,7 @@
     "homepage": "https://github.com/Firehed/u2f-php",
     "require": {
         "php": ">=7.2",
-        "firehed/cbor": "dev-master"
+        "firehed/cbor": "^0.1"
     },
     "require-dev": {
         "php-coveralls/php-coveralls": "^2.0",
