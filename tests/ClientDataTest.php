@@ -13,7 +13,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::fromJson
      */
-    public function testFromValidJson()
+    public function testFromValidJson(): void
     {
         $goodData = [
             'typ' => 'navigator.id.finishEnrollment',
@@ -30,7 +30,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getChallengeParameter
      */
-    public function testGetChallengeParameter()
+    public function testGetChallengeParameter(): void
     {
         $expected_param = base64_decode('exDPjyyKbizXMAAUNLpv0QYJNyXClbUqewUWojPtp0g=');
         assert($expected_param !== false);
@@ -56,7 +56,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getApplicationParameter
      */
-    public function testGetApplicationParameter()
+    public function testGetApplicationParameter(): void
     {
         $goodData = [
             'typ' => 'navigator.id.finishEnrollment',
@@ -76,7 +76,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::fromJson
      */
-    public function testBadJson()
+    public function testBadJson(): void
     {
         $json = 'this is not json';
         $this->expectException(InvalidDataException::class);
@@ -88,7 +88,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
      * @covers ::fromJson
      * @dataProvider missingData
      */
-    public function testDataValidation($json)
+    public function testDataValidation(string $json): void
     {
         $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode(InvalidDataException::MISSING_KEY);
@@ -98,7 +98,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider types
      */
-    public function testTypes(string $type, bool $allowed)
+    public function testTypes(string $type, bool $allowed): void
     {
         $all = [
             'typ' => $type,
@@ -119,6 +119,9 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
 
     // -( DataProviders )------------------------------------------------------
 
+    /**
+     * @return array{string}[]
+     */
     public function missingData(): array
     {
         $all = [
@@ -129,7 +132,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
         ];
         $without = function (string $i) use ($all): array {
             unset($all[$i]);
-            return [json_encode($all)];
+            return [json_encode($all, JSON_THROW_ON_ERROR)];
         };
         return [
             $without('typ'),
@@ -138,6 +141,9 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
+    /**
+     * @return array{string, bool}[]
+     */
     public function types(): array
     {
         return [
