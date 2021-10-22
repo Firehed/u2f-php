@@ -1,0 +1,822 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method Firehed\\\\U2F\\\\AttestationCertificate\\:\\:__debugInfo\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/AttestationCertificate.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientData\\:\\:fromJson\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/ClientData.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientData\\:\\:validateKey\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/ClientData.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\ClientData\\:\\:\\$challenge has no typehint specified\\.$#"
+			count: 1
+			path: src/ClientData.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\ClientData\\:\\:\\$cid_pubkey has no typehint specified\\.$#"
+			count: 1
+			path: src/ClientData.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\ClientData\\:\\:\\$cid_pubkey is never read, only written\\.$#"
+			count: 1
+			path: src/ClientData.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\ClientData\\:\\:\\$origin has no typehint specified\\.$#"
+			count: 1
+			path: src/ClientData.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\ClientData\\:\\:\\$typ has no typehint specified\\.$#"
+			count: 1
+			path: src/ClientData.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\ClientData\\:\\:\\$typ is never read, only written\\.$#"
+			count: 1
+			path: src/ClientData.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ECPublicKey\\:\\:__debugInfo\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/ECPublicKey.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\RegisterRequest\\:\\:\\$appId has no typehint specified\\.$#"
+			count: 1
+			path: src/RegisterRequest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\RegisterRequest\\:\\:\\$challenge has no typehint specified\\.$#"
+			count: 1
+			path: src/RegisterRequest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\RegisterRequest\\:\\:\\$version has no typehint specified\\.$#"
+			count: 1
+			path: src/RegisterRequest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponse\\:\\:parseResponse\\(\\) has parameter \\$response with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/RegisterResponse.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponse\\:\\:validateKeyInArray\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/RegisterResponse.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\Server\\:\\:findObjectWithKeyHandle\\(\\) has parameter \\$objects with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\Server\\:\\:validateChallenge\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Negated boolean expression is always true\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of function array_map expects callable\\(Firehed\\\\U2F\\\\RegistrationInterface\\)\\: mixed, Closure\\(Firehed\\\\U2F\\\\Registration\\)\\: void given\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\Server\\:\\:\\$appId has no typehint specified\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\Server\\:\\:\\$registerRequest has no typehint specified\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\Server\\:\\:\\$registrations has no typehint specified\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\Server\\:\\:\\$signRequests has no typehint specified\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\Server\\:\\:\\$trustedCAs has no typehint specified\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\Server\\:\\:\\$verifyCA has no typehint specified\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: src/Server.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\SignRequest\\:\\:\\$appId has no typehint specified\\.$#"
+			count: 1
+			path: src/SignRequest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\SignRequest\\:\\:\\$challenge has no typehint specified\\.$#"
+			count: 1
+			path: src/SignRequest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\SignRequest\\:\\:\\$version has no typehint specified\\.$#"
+			count: 1
+			path: src/SignRequest.php
+
+		-
+			message: "#^Cannot access offset 'counter' on array\\|false\\.$#"
+			count: 1
+			path: src/SignResponse.php
+
+		-
+			message: "#^Cannot access offset 'presence' on array\\|false\\.$#"
+			count: 1
+			path: src/SignResponse.php
+
+		-
+			message: "#^Cannot access offset 'signature' on array\\|false\\.$#"
+			count: 1
+			path: src/SignResponse.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponse\\:\\:parseResponse\\(\\) has parameter \\$response with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/SignResponse.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponse\\:\\:validateKeyInArray\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/SignResponse.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\SignResponse\\:\\:\\$counter has no typehint specified\\.$#"
+			count: 1
+			path: src/SignResponse.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\SignResponse\\:\\:\\$user_presence has no typehint specified\\.$#"
+			count: 1
+			path: src/SignResponse.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\AppIdTraitTest\\:\\:testAccessors\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/AppIdTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\AppIdTraitTest\\:\\:testGetApplicationParameter\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/AppIdTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\AppIdTraitTest\\:\\:testGetRpIdHash\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/AppIdTraitTest.php
+
+		-
+			message: "#^Property class@anonymous/tests/AppIdTraitTest\\.php\\:20\\:\\:\\$appId has no typehint specified\\.$#"
+			count: 1
+			path: tests/AppIdTraitTest.php
+
+		-
+			message: "#^Property class@anonymous/tests/AppIdTraitTest\\.php\\:42\\:\\:\\$appId has no typehint specified\\.$#"
+			count: 1
+			path: tests/AppIdTraitTest.php
+
+		-
+			message: "#^Property class@anonymous/tests/AppIdTraitTest\\.php\\:59\\:\\:\\$appId has no typehint specified\\.$#"
+			count: 1
+			path: tests/AppIdTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\AttestationCertificateTest\\:\\:testConstruct\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/AttestationCertificateTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\AttestationCertificateTest\\:\\:testDebugInfoEncodesBinary\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/AttestationCertificateTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\AttestationCertificateTest\\:\\:testGetBinary\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/AttestationCertificateTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\AttestationCertificateTest\\:\\:testGetPemFormatted\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/AttestationCertificateTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ChallengeTraitTest\\:\\:testAccessors\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ChallengeTraitTest.php
+
+		-
+			message: "#^Property class@anonymous/tests/ChallengeTraitTest\\.php\\:20\\:\\:\\$challenge has no typehint specified\\.$#"
+			count: 1
+			path: tests/ChallengeTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientDataTest\\:\\:missingData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/ClientDataTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientDataTest\\:\\:testBadJson\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ClientDataTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientDataTest\\:\\:testDataValidation\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ClientDataTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientDataTest\\:\\:testDataValidation\\(\\) has parameter \\$json with no typehint specified\\.$#"
+			count: 1
+			path: tests/ClientDataTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientDataTest\\:\\:testFromValidJson\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ClientDataTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientDataTest\\:\\:testGetApplicationParameter\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ClientDataTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientDataTest\\:\\:testGetChallengeParameter\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ClientDataTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientDataTest\\:\\:testTypes\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ClientDataTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientDataTest\\:\\:types\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/ClientDataTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientErrorExceptionTest\\:\\:clientErrors\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ClientErrorExceptionTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ClientErrorExceptionTest\\:\\:testClientError\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ClientErrorExceptionTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ECPublicKeyTest\\:\\:testConstruct\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ECPublicKeyTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ECPublicKeyTest\\:\\:testConstructThrowsWhenTooLong\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ECPublicKeyTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ECPublicKeyTest\\:\\:testConstructThrowsWhenTooShort\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ECPublicKeyTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ECPublicKeyTest\\:\\:testConstructThrowsWithBadFirstByte\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ECPublicKeyTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ECPublicKeyTest\\:\\:testDebugInfoEncodesBinary\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ECPublicKeyTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ECPublicKeyTest\\:\\:testGetBinary\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ECPublicKeyTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ECPublicKeyTest\\:\\:testGetPublicKeyPem\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ECPublicKeyTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\FunctionsTest\\:\\:testFromBase64Web\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/FunctionsTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\FunctionsTest\\:\\:testFromBase64Web\\(\\) has parameter \\$encoded with no typehint specified\\.$#"
+			count: 1
+			path: tests/FunctionsTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\FunctionsTest\\:\\:testFromBase64Web\\(\\) has parameter \\$plain with no typehint specified\\.$#"
+			count: 1
+			path: tests/FunctionsTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\FunctionsTest\\:\\:testToBase64Web\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/FunctionsTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\FunctionsTest\\:\\:testToBase64Web\\(\\) has parameter \\$encoded with no typehint specified\\.$#"
+			count: 1
+			path: tests/FunctionsTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\FunctionsTest\\:\\:testToBase64Web\\(\\) has parameter \\$plain with no typehint specified\\.$#"
+			count: 1
+			path: tests/FunctionsTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\FunctionsTest\\:\\:vectors\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/FunctionsTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\InvalidDataExceptionTest\\:\\:invalidDataExceptionCodes\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/InvalidDataExceptionTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\InvalidDataExceptionTest\\:\\:testInvalidDataException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/InvalidDataExceptionTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\KeyHandleTraitTest\\:\\:testAccessors\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/KeyHandleTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\KeyHandleTraitTest\\:\\:testGetKeyHandleWeb\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/KeyHandleTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterRequestTest\\:\\:testJsonSerialize\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterRequestTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:buildJson\\(\\) has parameter \\$clientData with no typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:buildJson\\(\\) has parameter \\$registrationData with no typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:clientErrors\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:invalidRegistrationData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:testBadRegistrationData\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:testDataAccuracyAfterSuccessfulParsing\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:testErrorResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:testFromJson\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:testFromJsonBadJson\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:testFromJsonMissingClientData\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:testFromJsonMissingRegistrationData\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:testGetChallenge\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:testGetRpIdHash\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:testGetSignedData\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:\\$validClientData has no typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\RegisterResponseTest\\:\\:\\$validRegistrationData has no typehint specified\\.$#"
+			count: 1
+			path: tests/RegisterResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegistrationTest\\:\\:testAttestationCertificate\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegistrationTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegistrationTest\\:\\:testCounter\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegistrationTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegistrationTest\\:\\:testPublicKey\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegistrationTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\RegistrationTest\\:\\:testSetCounterRejectsNegativeNumbers\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RegistrationTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ResponseTraitTest\\:\\:badClientData\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ResponseTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ResponseTraitTest\\:\\:clientErrors\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ResponseTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ResponseTraitTest\\:\\:testClientDataValidation\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ResponseTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ResponseTraitTest\\:\\:testErrorResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ResponseTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ResponseTraitTest\\:\\:testFromJsonWithNonJson\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ResponseTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ResponseTraitTest\\:\\:testValidJson\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ResponseTraitTest.php
+
+		-
+			message: "#^Method class@anonymous/tests/ResponseTraitTest\\.php\\:17\\:\\:parseResponse\\(\\) has parameter \\$response with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/ResponseTraitTest.php
+
+		-
+			message: "#^Method class@anonymous/tests/ResponseTraitTest\\.php\\:17\\:\\:validateKeyInArray\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/ResponseTraitTest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\ResponseTraitTest\\:\\:\\$trait has no typehint specified\\.$#"
+			count: 1
+			path: tests/ResponseTraitTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SecurityExceptionTest\\:\\:securityExceptionCodes\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SecurityExceptionTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SecurityExceptionTest\\:\\:testSecurityException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SecurityExceptionTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:readJsonFile\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:safeDecode\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:safeEncode\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testAuthenticate\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testAuthenticateThrowsIfNoRegistrationMatchesKeyHandle\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testAuthenticateThrowsIfNoRegistrationsPresent\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testAuthenticateThrowsIfNoRequestMatchesKeyHandle\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testAuthenticateThrowsIfNoSignRequestsPresent\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testAuthenticateThrowsIfRequestIsSignedWithWrongKey\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testAuthenticateThrowsIfSignatureIsInvalid\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testAuthenticateThrowsWhenChallengeDoesNotMatch\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testAuthenticateThrowsWhenCounterGoesBackwards\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testAuthenticateThrowsWithObviousReplayAttack\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testConstruct\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testDisableCAVerificationReturnsSelf\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testGenerateRegisterRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testGenerateSignRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testGenerateSignRequests\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegisterDefaultsToTryingEmptyCAList\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegisterThrowsIfChallengeDoesNotMatch\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegisterThrowsIfNoRegistrationRequestProvided\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegisterThrowsWithBadSignature\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegisterThrowsWithChangedApplicationParameter\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegisterThrowsWithChangedChallengeParameter\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegisterThrowsWithChangedKeyHandle\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegisterThrowsWithChangedPubkey\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegisterThrowsWithUntrustedDeviceIssuerCertificate\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegisterWorksWithCAList\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegistration\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegistrationWithoutCidPubkeyBug14Case1\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testRegistrationWithoutCidPubkeyBug14Case2\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testSetRegisterRequestReturnsSelf\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testSetRegistrationsEnforcesTypeCheck\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testSetRegistrationsReturnsSelf\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testSetSignRequestsEnforcesTypeCheck\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\ServerTest\\:\\:testSetSignRequestsReturnsSelf\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\ServerTest\\:\\:\\$server has no typehint specified\\.$#"
+			count: 1
+			path: tests/ServerTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignRequestTest\\:\\:testJsonSerialize\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignRequestTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:clientErrors\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testDataAccuracyAfterSuccessfulParsing\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testErrorResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testFromJsonWithInvalidSignatureData\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testFromJsonWithMissingClientData\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testFromJsonWithMissingKeyHandle\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testFromJsonWithMissingSignatureData\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testFromJsonWorks\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testGetChallenge\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testGetSignedData\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testSignatureWithNullRemainsIntact\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\SignResponseTest\\:\\:testSignatureWithSpaceRemainsIntact\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\SignResponseTest\\:\\:\\$valid_client_data has no typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\SignResponseTest\\:\\:\\$valid_key_handle has no typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Property Firehed\\\\U2F\\\\SignResponseTest\\:\\:\\$valid_signature_data has no typehint specified\\.$#"
+			count: 1
+			path: tests/SignResponseTest.php
+
+		-
+			message: "#^Method Firehed\\\\U2F\\\\VersionTraitTest\\:\\:testGetVersion\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/VersionTraitTest.php
+
+		-
+			message: "#^Property class@anonymous/tests/VersionTraitTest\\.php\\:19\\:\\:\\$version has no typehint specified\\.$#"
+			count: 1
+			path: tests/VersionTraitTest.php
+

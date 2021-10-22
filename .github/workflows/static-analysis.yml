@@ -1,0 +1,41 @@
+name: Static analysis
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    # Run on all PRs
+
+env:
+  CI: "true"
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer update
+          --no-ansi
+          --no-interaction
+          --no-progress
+          --no-suggest
+          --prefer-dist
+
+      - name: PHPStan
+        run: composer phpstan

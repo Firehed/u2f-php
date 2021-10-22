@@ -17,11 +17,11 @@
     },
     "require-dev": {
         "php-coveralls/php-coveralls": "^2.0",
-        "phpstan/phpstan": "^0.11",
-        "phpunit/phpunit": "^8.0",
+        "phpstan/phpstan": "^0.12",
+        "phpunit/phpunit": "^8.5",
         "squizlabs/php_codesniffer": "^3.2",
         "spatie/phpunit-watcher": "^1.8",
-        "phpstan/phpstan-phpunit": "^0.11.2"
+        "phpstan/phpstan-phpunit": "^0.12"
     },
     "autoload": {
         "psr-4": {
@@ -51,7 +51,7 @@
         "coverage": "phpunit --coverage-html build; open build/index.html",
         "autofix": "phpcbf src lib tests db",
         "phpunit": "phpunit",
-        "phpstan": "phpstan analyse --no-progress .",
-        "phpcs": "phpcs ."
+        "phpstan": "phpstan analyse --no-progress",
+        "phpcs": "phpcs"
     }
 }

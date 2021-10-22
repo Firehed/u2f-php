@@ -2,8 +2,10 @@
 
 A PHP implementation of the FIDO U2F authentication standard
 
-[![Build Status](https://travis-ci.org/Firehed/u2f-php.svg?branch=master)](https://travis-ci.org/Firehed/u2f-php)
-[![Coverage Status](https://coveralls.io/repos/github/Firehed/u2f-php/badge.svg)](https://coveralls.io/github/Firehed/u2f-php)
+[![Lint](https://github.com/Firehed/u2f-php/actions/workflows/lint.yml/badge.svg)](https://github.com/Firehed/u2f-php/actions/workflows/lint.yml)
+[![Static analysis](https://github.com/Firehed/u2f-php/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/Firehed/u2f-php/actions/workflows/static-analysis.yml)
+[![Test](https://github.com/Firehed/u2f-php/actions/workflows/test.yml/badge.svg)](https://github.com/Firehed/u2f-php/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/Firehed/u2f-php/branch/master/graph/badge.svg?token=8VxRoJxmNL)](https://codecov.io/gh/Firehed/u2f-php)
 
 ## Introduction
 
