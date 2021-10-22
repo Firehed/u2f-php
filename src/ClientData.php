@@ -11,11 +11,17 @@ class ClientData
 
     /** @var string */
     private $originalJson;
+
+    /** @var string */
     private $cid_pubkey;
+
+    /** @var string */
     private $origin;
+
+    /** @var string */
     private $typ;
 
-    public static function fromJson(string $json)
+    public static function fromJson(string $json): ClientData
     {
         $data = json_decode($json, true);
         if (json_last_error() !== \JSON_ERROR_NONE) {
@@ -62,11 +68,11 @@ class ClientData
      * Checks for the presence of $key in $data. Returns the value if found,
      * throws an InvalidDataException if missing
      * @param string $key The array key to check
-     * @param array $data The array to check in
-     * @return mixed The data, if present
+     * @param array<string, string> $data The array to check in
+     * @return string The data, if present
      * @throws InvalidDataException if not prsent
      */
-    private function validateKey(string $key, array $data)
+    private function validateKey(string $key, array $data): string
     {
         if (!array_key_exists($key, $data)) {
             throw new IDE(IDE::MISSING_KEY, $key);

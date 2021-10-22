@@ -14,7 +14,7 @@ class VersionTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getVersion
      */
-    public function testGetVersion()
+    public function testGetVersion(): void
     {
         $obj = new class {
             use VersionTrait;

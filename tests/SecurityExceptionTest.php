@@ -14,7 +14,7 @@ class SecurityExceptionTest extends \PHPUnit\Framework\TestCase
      * @covers ::__construct
      * @dataProvider securityExceptionCodes
      */
-    public function testSecurityException(int $code)
+    public function testSecurityException(int $code): void
     {
         $ex = new SecurityException($code);
         $this->assertInstanceOf(
@@ -29,6 +29,7 @@ class SecurityExceptionTest extends \PHPUnit\Framework\TestCase
     }
 
     // -( DataProviders )------------------------------------------------------
+    /** @return array{int}[] */
     public function securityExceptionCodes()
     {
         return [

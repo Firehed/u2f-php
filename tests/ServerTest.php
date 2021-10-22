@@ -22,6 +22,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         'BEyIn4ldTViNAgceMA/YgRX1DlJR3bSF39drG44Fx1E2LaF9Md9RUN2CHyfzSokIjjCHP'.
         '8jMsTYwdt0tKe6qLzc=';
 
+    /** @var Server */
     private $server;
 
     public function setUp(): void
@@ -34,7 +35,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__construct
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $server = new Server();
         $this->assertInstanceOf(Server::class, $server);
@@ -43,7 +44,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::disableCAVerification
      */
-    public function testDisableCAVerificationReturnsSelf()
+    public function testDisableCAVerificationReturnsSelf(): void
     {
         $server = new Server();
         $this->assertSame(
@@ -56,7 +57,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::generateRegisterRequest
      */
-    public function testGenerateRegisterRequest()
+    public function testGenerateRegisterRequest(): void
     {
         $req = $this->server->generateRegisterRequest();
         $this->assertInstanceOf(RegisterRequest::class, $req);
@@ -78,7 +79,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::generateSignRequest
      */
-    public function testGenerateSignRequest()
+    public function testGenerateSignRequest(): void
     {
         $kh = \random_bytes(16);
         $registration = (new Registration())
@@ -109,7 +110,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::generateSignRequests
      */
-    public function testGenerateSignRequests()
+    public function testGenerateSignRequests(): void
     {
         $registrations = [
             (new Registration())->setKeyHandle(\random_bytes(16)),
@@ -128,7 +129,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::setRegisterRequest
      */
-    public function testSetRegisterRequestReturnsSelf()
+    public function testSetRegisterRequestReturnsSelf(): void
     {
         $req = $this->getDefaultRegisterRequest();
         $this->assertSame(
@@ -141,7 +142,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::setRegistrations
      */
-    public function testSetRegistrationsReturnsSelf()
+    public function testSetRegistrationsReturnsSelf(): void
     {
         $reg = $this->getDefaultRegistration();
         $this->assertSame(
@@ -154,17 +155,18 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::setRegistrations
      */
-    public function testSetRegistrationsEnforcesTypeCheck()
+    public function testSetRegistrationsEnforcesTypeCheck(): void
     {
         $wrong = true;
         $this->expectException(TypeError::class);
+        // @phpstan-ignore-next-line
         $this->server->setRegistrations([$wrong]);
     }
 
     /**
      * @covers ::setSignRequests
      */
-    public function testSetSignRequestsReturnsSelf()
+    public function testSetSignRequestsReturnsSelf(): void
     {
         $req = $this->getDefaultSignRequest();
         $this->assertSame(
@@ -177,10 +179,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::setSignRequests
      */
-    public function testSetSignRequestsEnforcesTypeCheck()
+    public function testSetSignRequestsEnforcesTypeCheck(): void
     {
         $wrong = true;
         $this->expectException(TypeError::class);
+        // @phpstan-ignore-next-line
         $this->server->setSignRequests([$wrong]);
     }
 
@@ -189,7 +192,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::register
      */
-    public function testRegisterThrowsIfNoRegistrationRequestProvided()
+    public function testRegisterThrowsIfNoRegistrationRequestProvided(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->server->register($this->getDefaultRegisterResponse());
@@ -198,7 +201,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::register
      */
-    public function testRegistration()
+    public function testRegistration(): void
     {
         $request = $this->getDefaultRegisterRequest();
         $response = $this->getDefaultRegisterResponse();
@@ -239,7 +242,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::register
      */
-    public function testRegisterDefaultsToTryingEmptyCAList()
+    public function testRegisterDefaultsToTryingEmptyCAList(): void
     {
         $request = $this->getDefaultRegisterRequest();
         $response = $this->getDefaultRegisterResponse();
@@ -258,7 +261,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::register
      */
-    public function testRegisterThrowsIfChallengeDoesNotMatch()
+    public function testRegisterThrowsIfChallengeDoesNotMatch(): void
     {
         // This would have come from a session, database, etc.
         $request = (new RegisterRequest())
@@ -276,7 +279,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::register
      */
-    public function testRegisterThrowsWithUntrustedDeviceIssuerCertificate()
+    public function testRegisterThrowsWithUntrustedDeviceIssuerCertificate(): void
     {
         $request = $this->getDefaultRegisterRequest();
         $response = $this->getDefaultRegisterResponse();
@@ -297,7 +300,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      * @covers ::register
      * @covers ::setTrustedCAs
      */
-    public function testRegisterWorksWithCAList()
+    public function testRegisterWorksWithCAList(): void
     {
         $request = $this->getDefaultRegisterRequest();
         $response = $this->getDefaultRegisterResponse();
@@ -306,6 +309,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // generated with a YubiCo device and separately tested against
         // a different reference implementation.
         $CAs = glob(dirname(__DIR__).'/CAcerts/*.pem');
+        assert($CAs !== false);
         $this->server->setTrustedCAs($CAs);
 
         try {
@@ -324,7 +328,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::register
      */
-    public function testRegisterThrowsWithChangedApplicationParameter()
+    public function testRegisterThrowsWithChangedApplicationParameter(): void
     {
         $request = $this->getDefaultRegisterRequest();
 
@@ -344,7 +348,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::register
      */
-    public function testRegisterThrowsWithChangedChallengeParameter()
+    public function testRegisterThrowsWithChangedChallengeParameter(): void
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: challenge parameter
@@ -366,7 +370,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::register
      */
-    public function testRegisterThrowsWithChangedKeyHandle()
+    public function testRegisterThrowsWithChangedKeyHandle(): void
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: key handle
@@ -386,7 +390,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::register
      */
-    public function testRegisterThrowsWithChangedPubkey()
+    public function testRegisterThrowsWithChangedPubkey(): void
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: public key
@@ -406,7 +410,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::register
      */
-    public function testRegisterThrowsWithBadSignature()
+    public function testRegisterThrowsWithBadSignature(): void
     {
         $request = $this->getDefaultRegisterRequest();
         // Mess up some known-good data: signature
@@ -428,7 +432,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::authenticate
      */
-    public function testAuthenticateThrowsIfNoRegistrationsPresent()
+    public function testAuthenticateThrowsIfNoRegistrationsPresent(): void
     {
         $this->server->setSignRequests([$this->getDefaultSignRequest()]);
         $this->expectException(BadMethodCallException::class);
@@ -438,7 +442,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::authenticate
      */
-    public function testAuthenticateThrowsIfNoSignRequestsPresent()
+    public function testAuthenticateThrowsIfNoSignRequestsPresent(): void
     {
         $this->server->setRegistrations([$this->getDefaultRegistration()]);
         $this->expectException(BadMethodCallException::class);
@@ -448,7 +452,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::authenticate
      */
-    public function testAuthenticate()
+    public function testAuthenticate(): void
     {
         // All normal
         $registration = $this->getDefaultRegistration();
@@ -484,7 +488,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      *
      * @covers ::authenticate
      */
-    public function testAuthenticateThrowsWithObviousReplayAttack()
+    public function testAuthenticateThrowsWithObviousReplayAttack(): void
     {
         // All normal
         $registration = $this->getDefaultRegistration();
@@ -512,7 +516,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::authenticate
      */
-    public function testAuthenticateThrowsWhenCounterGoesBackwards()
+    public function testAuthenticateThrowsWhenCounterGoesBackwards(): void
     {
         // Counter from "DB" bumped, suggesting response was cloned
         $registration = (new Registration())
@@ -534,7 +538,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      /**
      * @covers ::authenticate
      */
-    public function testAuthenticateThrowsWhenChallengeDoesNotMatch()
+    public function testAuthenticateThrowsWhenChallengeDoesNotMatch(): void
     {
         $registration = $this->getDefaultRegistration();
         // Change request challenge
@@ -556,7 +560,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::authenticate
      */
-    public function testAuthenticateThrowsIfNoRegistrationMatchesKeyHandle()
+    public function testAuthenticateThrowsIfNoRegistrationMatchesKeyHandle(): void
     {
         // Change registration KH
         $registration = (new Registration())
@@ -578,7 +582,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::authenticate
      */
-    public function testAuthenticateThrowsIfNoRequestMatchesKeyHandle()
+    public function testAuthenticateThrowsIfNoRequestMatchesKeyHandle(): void
     {
         $registration = $this->getDefaultRegistration();
         // Change request KH
@@ -600,7 +604,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::authenticate
      */
-    public function testAuthenticateThrowsIfSignatureIsInvalid()
+    public function testAuthenticateThrowsIfSignatureIsInvalid(): void
     {
         $registration = $this->getDefaultRegistration();
         $request = $this->getDefaultSignRequest();
@@ -624,7 +628,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      *
      * @covers ::authenticate
      */
-    public function testAuthenticateThrowsIfRequestIsSignedWithWrongKey()
+    public function testAuthenticateThrowsIfRequestIsSignedWithWrongKey(): void
     {
         $pk = base64_decode(
             'BCXk9bGiuzLRJaX6pFONm+twgIrDkOSNDdXgltt+KhOD'.
@@ -653,7 +657,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     // -( Alternate formats (see #14) )----------------------------------------
 
-    public function testRegistrationWithoutCidPubkeyBug14Case1()
+    public function testRegistrationWithoutCidPubkeyBug14Case1(): void
     {
         $server = (new Server())
             ->disableCAVerification()
@@ -685,7 +689,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(Registration::class, $registration);
     }
 
-    public function testRegistrationWithoutCidPubkeyBug14Case2()
+    public function testRegistrationWithoutCidPubkeyBug14Case2(): void
     {
         $server = (new Server())
             ->disableCAVerification()
@@ -792,6 +796,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return new ECPublicKey($pk);
     }
 
+    /** @return mixed[] */
     private function readJsonFile(string $file): array
     {
         return $this->safeDecode($this->safeReadFile($file));
@@ -804,6 +809,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return $body;
     }
 
+    /** @return mixed[] */
     private function safeDecode(string $json): array
     {
         $data = json_decode($json, true);
@@ -811,6 +817,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return $data;
     }
 
+    /** @param mixed[] $data */
     private function safeEncode(array $data): string
     {
         $json = json_encode($data);

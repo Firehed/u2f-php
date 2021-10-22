@@ -15,7 +15,7 @@ class AppIdTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::getAppId
      * @covers ::setAppId
      */
-    public function testAccessors()
+    public function testAccessors(): void
     {
         $obj = new class {
             use AppIdTrait;
@@ -37,7 +37,7 @@ class AppIdTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getApplicationParameter
      */
-    public function testGetApplicationParameter()
+    public function testGetApplicationParameter(): void
     {
         $obj = new class {
             use AppIdTrait;
@@ -54,7 +54,7 @@ class AppIdTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getRpIdHash
      */
-    public function testGetRpIdHash()
+    public function testGetRpIdHash(): void
     {
         $obj = new class {
             use AppIdTrait;

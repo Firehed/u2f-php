@@ -10,6 +10,7 @@ namespace Firehed\U2F;
  */
 class ResponseTraitTest extends \PHPUnit\Framework\TestCase
 {
+    /** @var object */
     private $trait;
 
     public function setUp(): void
@@ -28,7 +29,7 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::fromJson
      * @covers ::getSignature
      */
-    public function testValidJson()
+    public function testValidJson(): void
     {
         $signature = __METHOD__;
         $json = json_encode([
@@ -59,7 +60,7 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::fromJson
      */
-    public function testFromJsonWithNonJson()
+    public function testFromJsonWithNonJson(): void
     {
         $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode(InvalidDataException::MALFORMED_DATA);
@@ -70,7 +71,7 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::fromJson
      * @dataProvider clientErrors
      */
-    public function testErrorResponse(int $code)
+    public function testErrorResponse(int $code): void
     {
         $json = sprintf('{"errorCode":%d}', $code);
         $this->expectException(ClientErrorException::class);
@@ -82,7 +83,7 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::fromJson
      * @dataProvider badClientData
      */
-    public function testClientDataValidation(string $json, int $code)
+    public function testClientDataValidation(string $json, int $code): void
     {
         $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode($code);
@@ -91,7 +92,8 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
 
     // -( DataProviders )------------------------------------------------------
 
-    public function clientErrors()
+    /** @return array{int}[] */
+    public function clientErrors(): array
     {
         return [
             [ClientError::OTHER_ERROR],
@@ -102,7 +104,8 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function badClientData()
+    /** @return array{string, int}[] */
+    public function badClientData(): array
     {
         return [
             ['{}', InvalidDataException::MISSING_KEY],

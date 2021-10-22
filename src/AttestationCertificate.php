@@ -27,6 +27,7 @@ class AttestationCertificate implements AttestationCertificateInterface
         return $pem;
     }
 
+    /** @return array{binary: string} */
     public function __debugInfo(): array
     {
         return ['binary' => '0x' . bin2hex($this->binary)];

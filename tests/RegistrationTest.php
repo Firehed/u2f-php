@@ -15,7 +15,7 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
      * @covers ::setCounter
      * @covers ::getCounter
      */
-    public function testCounter()
+    public function testCounter(): void
     {
         $obj = new Registration();
         $this->assertSame(
@@ -33,7 +33,7 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::setCounter
      */
-    public function testSetCounterRejectsNegativeNumbers()
+    public function testSetCounterRejectsNegativeNumbers(): void
     {
         $obj = new Registration();
         $this->expectException(\OutOfBoundsException::class);
@@ -44,7 +44,7 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
      * @covers ::getPublicKey
      * @covers ::setPublicKey
      */
-    public function testPublicKey()
+    public function testPublicKey(): void
     {
         $pk = $this->createMock(PublicKeyInterface::class);
         $reg = new Registration();
@@ -56,7 +56,7 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
      * @covers ::getAttestationCertificate
      * @covers ::setAttestationCertificate
      */
-    public function testAttestationCertificate()
+    public function testAttestationCertificate(): void
     {
         $pk = $this->createMock(AttestationCertificateInterface::class);
         $reg = new Registration();

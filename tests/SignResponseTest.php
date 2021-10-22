@@ -13,15 +13,18 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
 
     const JSON_FORMAT = '{"keyHandle":"%s","clientData":"%s","signatureData":"%s"}';
 
+    /** @var string */
     private $valid_key_handle =
         'JUnVTStPn-V2-bCu0RlvPbukBpHTD5Mi1ZGglDOcN0vD45rnTD0BXdkRt78huTwJ7tVax'.
         'TqSetHjr22tCjmYLQ';
 
+    /** @var string */
     private $valid_client_data =
         'eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZ2V0QXNzZXJ0aW9uIiwiY2hhbGxlbmdlIjoid3Qye'.
         'mU4SXNrY1RPM25Jc08yRDJoRmpFNXRWRDA0MU5wblllc0xwSndlZyIsIm9yaWdpbiI6Im'.
         'h0dHBzOi8vdTJmLmVyaWNzdGVybi5jb20iLCJjaWRfcHVia2V5IjoiIn0';
 
+    /** @var string */
     private $valid_signature_data =
         'AQAAAC0wRgIhAJPy1RvD1WCw1XZX53BXydX_Kyf_XZQueFSIPigRF-D2AiEAx3bJr5ixr'.
         'XGdUX1XooAfhz15ZIY8rC5H4qaW7gQspJ4';
@@ -29,7 +32,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::fromJson
      */
-    public function testFromJsonWorks()
+    public function testFromJsonWorks(): void
     {
         $json = sprintf(
             self::JSON_FORMAT,
@@ -46,7 +49,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
      * @covers ::getSignature
      * @covers ::getUserPresenceByte
      */
-    public function testDataAccuracyAfterSuccessfulParsing()
+    public function testDataAccuracyAfterSuccessfulParsing(): void
     {
         $sig = random_bytes(16);
         $counter = random_int(0, pow(2, 32));
@@ -94,7 +97,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testSignatureWithNullRemainsIntact()
+    public function testSignatureWithNullRemainsIntact(): void
     {
         $sig = "\x00\x00\x00".random_bytes(10)."\x00\x00\x00";
         $sigData = toBase64Web("\x01\x00\x00\x00\x45".$sig);
@@ -112,7 +115,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testSignatureWithSpaceRemainsIntact()
+    public function testSignatureWithSpaceRemainsIntact(): void
     {
         $sig = '   '.random_bytes(10).'   ';
         $sigData = toBase64Web("\x01\x00\x00\x00\x45".$sig);
@@ -131,7 +134,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
     }
 
 
-    public function testFromJsonWithMissingKeyHandle()
+    public function testFromJsonWithMissingKeyHandle(): void
     {
         $json = sprintf(
             '{"clientData":"%s","signatureData":"%s"}',
@@ -143,7 +146,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         SignResponse::fromJson($json);
     }
 
-    public function testFromJsonWithMissingClientData()
+    public function testFromJsonWithMissingClientData(): void
     {
         $json = sprintf(
             '{"keyHandle":"%s","signatureData":"%s"}',
@@ -155,7 +158,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         SignResponse::fromJson($json);
     }
 
-    public function testFromJsonWithMissingSignatureData()
+    public function testFromJsonWithMissingSignatureData(): void
     {
         $json = sprintf(
             '{"keyHandle":"%s","clientData":"%s"}',
@@ -167,7 +170,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         SignResponse::fromJson($json);
     }
 
-    public function testFromJsonWithInvalidSignatureData()
+    public function testFromJsonWithInvalidSignatureData(): void
     {
         $json = sprintf(
             '{"keyHandle":"%s","clientData":"%s","signatureData":"%s"}',
@@ -183,7 +186,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getSignedData
      */
-    public function testGetSignedData()
+    public function testGetSignedData(): void
     {
         $json = file_get_contents(__DIR__ . '/sign_response.json');
         assert($json !== false);
@@ -216,7 +219,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::getChallenge
      */
-    public function testGetChallenge()
+    public function testGetChallenge(): void
     {
         $json = file_get_contents(__DIR__ . '/sign_response.json');
         assert($json !== false);
@@ -231,7 +234,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider clientErrors
      */
-    public function testErrorResponse(int $code)
+    public function testErrorResponse(int $code): void
     {
         $json = sprintf('{"errorCode":%d}', $code);
         $this->expectException(ClientErrorException::class);
@@ -239,6 +242,7 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         SignResponse::fromJson($json);
     }
 
+    /** @return array{int}[] */
     public function clientErrors()
     {
         return [
