@@ -15,7 +15,7 @@ class ChallengeTraitTest extends \PHPUnit\Framework\TestCase
      * @covers ::getChallenge
      * @covers ::setChallenge
      */
-    public function testAccessors()
+    public function testAccessors(): void
     {
         $obj = new class {
             use ChallengeTrait;
