@@ -5,6 +5,7 @@ namespace Firehed\U2F;
 
 trait AppIdTrait
 {
+    /** @var string */
     private $appId;
 
     public function getAppId(): string
