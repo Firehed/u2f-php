@@ -54,13 +54,28 @@ class LoginResponse implements LoginResponseInterface
      * }
      * const jsonToSend = JSON.stringify(dataToSend)
      * ```
+     *
+     * @param array{
+     *   type: 'public-key',
+     *   rawId: int[],
+     *   response: array{
+     *     authenticatorData: int[],
+     *     clientDataJSON: int[],
+     *     signature: int[],
+     *   }
+     * } $data
      */
     public static function fromDecodedJson(array $data): LoginResponse
     {
+        // @phpstan-ignore-next-line
         assert(isset($data['type']) && $data['type'] === 'public-key');
+        // @phpstan-ignore-next-line
         assert(isset($data['rawId']));
+        // @phpstan-ignore-next-line
         assert(isset($data['response']['clientDataJSON']));
+        // @phpstan-ignore-next-line
         assert(isset($data['response']['signature']));
+        // @phpstan-ignore-next-line
         assert(isset($data['response']['authenticatorData']));
 
         $authDataBytes = self::byteArrayToBinaryString($data['response']['authenticatorData']);
@@ -86,6 +101,9 @@ class LoginResponse implements LoginResponseInterface
         return $response;
     }
 
+    /**
+     * @param int[] $bytes
+     */
     private static function byteArrayToBinaryString(array $bytes): string
     {
         return implode('', array_map('chr', $bytes));
@@ -123,6 +141,14 @@ class LoginResponse implements LoginResponseInterface
         );
     }
 
+    /**
+     * @return array{
+     *   clientDataJson: string,
+     *   challenge: string,
+     *   keyHandle: string,
+     *   signature: string,
+     * }
+     */
     public function __debugInfo(): array
     {
         $hex = function (string $binary) {
