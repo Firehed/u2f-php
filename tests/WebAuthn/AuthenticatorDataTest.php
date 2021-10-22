@@ -17,7 +17,7 @@ class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
      * @covers ::getAttestedCredentialData
      * @covers ::getRpIdHash
      */
-    public function testParseOfRegistration()
+    public function testParseOfRegistration(): void
     {
         $data = hex2bin(
             '49960de5880e8c687434170f6476605b8fe4aeb9a28632c7995cf3ba831d9763'.
@@ -68,7 +68,7 @@ class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
      * @covers ::getAttestedCredentialData
      * @covers ::getRpIdHash
      */
-    public function testParseOfLogin()
+    public function testParseOfLogin(): void
     {
         $data = hex2bin(
             '49960de5880e8c687434170f6476605b'.
@@ -94,7 +94,7 @@ class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__debugInfo
      */
-    public function testDebugInfoDoesntPrintBinary()
+    public function testDebugInfoDoesntPrintBinary(): void
     {
         $data = hex2bin(
             '49960de5880e8c687434170f6476605b8fe4aeb9a28632c7995cf3ba831d9763'.

@@ -117,6 +117,26 @@ class AuthenticatorData
         return $this->isUserPresent;
     }
 
+    /**
+     * @return array{
+     *   isUserPresent: bool,
+     *   isUserVerified: bool,
+     *   rpIdHash: string,
+     *   signCount: int,
+     *   ACD?: array{
+     *     aaguid: string,
+     *     credentialId: string,
+     *     credentialPublicKey: array{
+     *       kty: int,
+     *       alg: ?int,
+     *       crv: int,
+     *       x: string,
+     *       y: string,
+     *       d: string,
+     *     },
+     *   },
+     * }
+     */
     public function __debugInfo(): array
     {
         $hex = function ($str) {

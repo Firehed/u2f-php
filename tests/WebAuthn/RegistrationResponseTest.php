@@ -20,7 +20,7 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
      * @covers ::getSignature
      * @covers ::getSignedData
      */
-    public function testFromDecodedJson()
+    public function testFromDecodedJson(): void
     {
         $json = file_get_contents(__DIR__ . '/registrationresponse.json');
         assert($json !== false);
@@ -98,7 +98,7 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__debugInfo
      */
-    public function testDebugInfoDoesntPrintBinary()
+    public function testDebugInfoDoesntPrintBinary(): void
     {
         $json = file_get_contents(__DIR__ . '/registrationresponse.json');
         assert($json !== false);

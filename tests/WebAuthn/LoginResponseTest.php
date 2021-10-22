@@ -21,7 +21,7 @@ class LoginResponseTest extends \PHPUnit\Framework\TestCase
      * @covers ::getKeyHandleBinary
      * @covers ::getSignedData
      */
-    public function testFromDecodedJson()
+    public function testFromDecodedJson(): void
     {
         $json = file_get_contents(__DIR__ . '/loginresponse.json');
         assert($json !== false);
@@ -63,7 +63,7 @@ class LoginResponseTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers ::__debugInfo
      */
-    public function testDebugInfoDoesntPrintBinary()
+    public function testDebugInfoDoesntPrintBinary(): void
     {
         $json = file_get_contents(__DIR__ . '/loginresponse.json');
         assert($json !== false);
