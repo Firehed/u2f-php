@@ -16,7 +16,7 @@ class Registration implements RegistrationInterface
     private $counter = -1;
 
     /** @var PublicKeyInterface */
-    private $pubKey;
+    private $publicKey;
 
     public function getAttestationCertificate(): AttestationCertificateInterface
     {
@@ -45,12 +45,34 @@ class Registration implements RegistrationInterface
 
     public function getPublicKey(): PublicKeyInterface
     {
-        return $this->pubKey;
+        return $this->publicKey;
     }
 
-    public function setPublicKey(PublicKeyInterface $pubKey): self
+    public function setPublicKey(PublicKeyInterface $publicKey): self
     {
-        $this->pubKey = $pubKey;
+        $this->publicKey = $publicKey;
         return $this;
+    }
+
+    /**
+     * @return array{
+     *   cert: AttestationCertificateInterface,
+     *   counter: int,
+     *   publicKey: PublicKeyInterface,
+     *   keyHandle: string,
+     * }
+     */
+    public function __debugInfo(): array
+    {
+        $hex = function (string $binary): string {
+            return '0x' . bin2hex($binary);
+        };
+
+        return [
+            'cert' => $this->cert,
+            'counter' => $this->counter,
+            'publicKey' => $this->publicKey,
+            'keyHandle' => $hex($this->keyHandle),
+        ];
     }
 }
