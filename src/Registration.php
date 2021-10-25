@@ -67,6 +67,7 @@ class Registration implements RegistrationInterface
         $hex = function (string $binary): string {
             return '0x' . bin2hex($binary);
         };
+
         return [
             'cert' => $this->cert,
             'counter' => $this->counter,

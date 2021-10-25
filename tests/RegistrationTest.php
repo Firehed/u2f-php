@@ -63,4 +63,21 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
         $reg->setAttestationCertificate($pk);
         $this->assertSame($pk, $reg->getAttestationCertificate());
     }
+
+    /**
+     * @covers ::__debugInfo
+     */
+    public function testDebugInfoEncodesBinary(): void
+    {
+        $reg = new Registration();
+        $reg->setAttestationCertificate($this->createMock(AttestationCertificateInterface::class));
+        $reg->setPublicKey($this->createMock(PublicKeyInterface::class));
+        $kh = random_bytes(20);
+        $reg->setKeyHandle($kh);
+        $reg->setCounter(50);
+
+        $debugInfo = $reg->__debugInfo();
+        $this->assertNotSame($kh, $debugInfo['keyHandle']);
+        $this->assertRegExp('/^0x[0-9a-f]{40}$/', $debugInfo['keyHandle']);
+    }
 }
