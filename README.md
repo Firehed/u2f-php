@@ -306,7 +306,7 @@ See its README for more information.
 
 ## Tests
 
-All tests are in the `tests/` directory and can be run with `vendor/bin/phpunit tests/`.
+All tests are in the `tests/` directory and can be run with `vendor/bin/phpunit`.
 
 ## License
 

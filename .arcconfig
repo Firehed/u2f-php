@@ -1,6 +1,0 @@
-{
-    "unit.engine": "Firehed\\Arctools\\Unit\\PHPUnitTestEngine",
-    "load": [
-        "vendor/firehed/arctools/src"
-    ]
-}
