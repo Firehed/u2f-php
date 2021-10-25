@@ -57,7 +57,6 @@ class RegistrationResponse implements RegistrationResponseInterface
      *
      * @param array{
      *   type: 'public-key',
-     *   id: string,
      *   rawId: int[],
      *   response: array{
      *     attestationObject: int[],
