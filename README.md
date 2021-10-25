@@ -1,6 +1,7 @@
 # U2F
 
-A PHP implementation of the FIDO U2F authentication standard
+A PHP implementation of the FIDO U2F authentication standard.
+Now also for Web Authentication!
 
 [![Lint](https://github.com/Firehed/u2f-php/actions/workflows/lint.yml/badge.svg)](https://github.com/Firehed/u2f-php/actions/workflows/lint.yml)
 [![Static analysis](https://github.com/Firehed/u2f-php/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/Firehed/u2f-php/actions/workflows/static-analysis.yml)
@@ -9,7 +10,12 @@ A PHP implementation of the FIDO U2F authentication standard
 
 ## Introduction
 
-U2F, or Universal Second Factor, is a new authentication protocol designed "to augment the security of their existing password infrastructure by adding a strong second factor to user login"[1](https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-overview.html#background). It allows websites to replace the need for a companion app (such as Google Authenticator) with a single hardware token that will work across any website supporting the U2F protocol.
+Web Authenication (commonly called WebAuthn) is a set of technologies to securely authenticate users in web applications.
+It is most commonly used as a second factor - either biometrics or a hardware device - to supplement password logins.
+It allows websites to replace the need for a companion app (such as Google Authenticator) or communication protocols (e.g. SMS) with a hardware-based second factor.
+
+This library has its roots in the U2F (universal second factor) protocol that WebAuthn evolved from, and supports both standards.
+Note that browsers are starting to drop support for the original U2F protocols in favor of WebAuthn; consequently, this library will do the same in the next major version.
 
 This library is designed to allow easy integration of the U2F protocol to an existing user authentication scheme.
 It handles the parsing and validating all of the raw message formats, and translates them into standard PHP objects.
@@ -22,8 +28,9 @@ Registration is the act of associating a key that the end-user is physically in 
 
 Additional resources:
 
-* [FIDO U2F Overview](https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-overview.html)
-* [FIDO U2F Javascript API](https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-u2f-javascript-api.html)
+* [W3 Spec](https://www.w3.org/TR/webauthn-2)
+* [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API)
+
 
 ## Installation
 
@@ -41,7 +48,7 @@ The API is designed to "fail loudly"; that is, failures will throw an exception,
 This reduces the need for complex error checking and handling during use, since the whole thing can be simply wrapped in a `try/catch` block and assume that everything went well if no exceptions are caught.
 
 This guide covers the modern Web Authentication ("WebAuthn") usage and data formats.
-For the legacy u2f.js usage, see [usage-u2f.md](usage-u2f.md).
+More information on the legacy U2F protocols are available in versions of this README from v1.1.0 and earlier.
 
 ### Setup
 
@@ -225,6 +232,7 @@ Create a [`PublicKeyCredentialRequestOptions`](https://www.w3.org/TR/webauthn/#a
 // This is a basic decoder for the above `getKeyHandleWeb()` format
 const fromBase64Web = s => atob(s.replace(/\-/g,'+').replace(/_/g,'/'))
 
+// postedData is the decoded JSON from the above snippet
 const challenge = postedData.challenge
 const keyHandles = postedData.key_handles
 const options = {
