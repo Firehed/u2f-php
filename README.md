@@ -51,7 +51,7 @@ All operations are performed by the U2F Server class, so it needs to be instanci
 use Firehed\U2F\Server;
 $server = new Server();
 $server->setTrustedCAs(glob('path/to/certs/*.pem'))
-       ->setAppId('https://u2f.example.com');
+       ->setAppId('u2f.example.com');
 ```
 
 The trusted CAs are whitelisted vendors, and must be an array of absolute paths to PEM-formatted CA certs (as strings).
