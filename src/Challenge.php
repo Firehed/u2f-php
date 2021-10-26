@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
-class Challenge implements ChallengeProviderInterface
+use JsonSerializable;
+
+class Challenge implements ChallengeProviderInterface, JsonSerializable
 {
     /** @var string */
     private $challenge;
@@ -15,6 +17,11 @@ class Challenge implements ChallengeProviderInterface
     }
 
     public function getChallenge(): string
+    {
+        return $this->challenge;
+    }
+
+    public function jsonSerialize(): string
     {
         return $this->challenge;
     }
