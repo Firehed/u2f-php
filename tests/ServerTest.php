@@ -32,8 +32,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testConstruct(): void
     {
-        $server = new Server();
+        $server = new Server('test.example.com');
         $this->assertInstanceOf(Server::class, $server);
+        self::assertSame('test.example.com', $server->getAppId());
     }
 
     public function testDisableCAVerificationReturnsSelf(): void

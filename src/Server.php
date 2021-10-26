@@ -64,8 +64,9 @@ class Server
      */
     private $signRequests = [];
 
-    public function __construct()
+    public function __construct(string $appId = '')
     {
+        $this->appId = $appId;
         $overload = ini_get('mbstring.func_overload');
         // @codeCoverageIgnoreStart
         if ($overload > 0) {
@@ -407,6 +408,17 @@ class Server
             return $req->setChallenge($challenge);
         }, $requests);
         return array_values($requestsWithSameChallenge);
+    }
+
+    /**
+     * @deprecated
+     *
+     * Re-implements the trait's version solely for deprecation warnings
+     */
+    public function setAppId(string $appId): self
+    {
+        $this->appId = $appId;
+        return $this;
     }
 
     /**
