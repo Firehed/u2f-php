@@ -343,7 +343,7 @@ class Server
     {
         return (new RegisterRequest())
             ->setAppId($this->getAppId())
-            ->setChallenge($this->generateChallenge());
+            ->setChallenge($this->generateChallenge()->getChallenge());
     }
 
     /**
@@ -357,7 +357,7 @@ class Server
     {
         return (new SignRequest())
             ->setAppId($this->getAppId())
-            ->setChallenge($this->generateChallenge())
+            ->setChallenge($this->generateChallenge()->getChallenge())
             ->setKeyHandle($reg->getKeyHandleBinary());
     }
 
@@ -371,7 +371,7 @@ class Server
      */
     public function generateSignRequests(array $registrations): array
     {
-        $challenge = $this->generateChallenge();
+        $challenge = $this->generateChallenge()->getChallenge();
         $requests = array_map([$this, 'generateSignRequest'], $registrations);
         $requestsWithSameChallenge = array_map(function (SignRequest $req) use ($challenge) {
             return $req->setChallenge($challenge);
@@ -405,13 +405,11 @@ class Server
 
     /**
      * Generates a random challenge and returns it base64-web-encoded
-     *
-     * @return string
      */
-    private function generateChallenge(): string
+    public function generateChallenge(): ChallengeProviderInterface
     {
         // FIDO Alliance spec suggests a minimum of 8 random bytes
-        return toBase64Web(\random_bytes(16));
+        return new Challenge(toBase64Web(\random_bytes(16)));
     }
 
     private function validateRelyingParty(string $rpIdHash): void
