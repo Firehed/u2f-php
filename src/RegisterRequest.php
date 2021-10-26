@@ -10,7 +10,14 @@ class RegisterRequest implements JsonSerializable, ChallengeProvider
     use ChallengeTrait;
     use VersionTrait;
 
-    public function jsonSerialize()
+    /**
+     * @return array{
+     *   version: string,
+     *   challenge: string,
+     *   appId: string,
+     * }
+     */
+    public function jsonSerialize(): array
     {
         return [
             "version" => $this->version,
