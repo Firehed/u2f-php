@@ -10,12 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Challenge class
 - ChallengeProviderInterface (will replace ChallengeProvider)
 - Server::generateChallenge(): ChallengeProviderInterface (now public; signature changed from previous private implementation)
-- Server::validateRegistration(RegisterRequest, RegistrationResponseInterface) (will replace Server::setRegisterRequest + Server::register)
+- Server::validateLogin(ChallengeProviderInterface, LoginResponseInterface, RegistrationInterface[]): RegistrationInterface (will replace Server::setRegistrations + Server::setSignRequests + Server::authenticate)
+- Server::validateRegistration(RegisterRequest, RegistrationResponseInterface): RegistrationInterface (will replace Server::setRegisterRequest + Server::register)
 
 ### Deprecated
 - ChallengeProvider
+- Server::authenticate(LoginResponseInterface)
 - Server::register(RegistrationResponseInterface)
 - Server::setRegisterRequest(RegisterRequest)
+- Server::setRegistrations(RegistrationInterface[])
+- Server::setSignRequests(SignRequest[])
 
 
 ## [1.2.0] - 2021-10-26

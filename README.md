@@ -217,16 +217,16 @@ After doing so, send them to the user:
 ```php
 $registrations = $user->getU2FRegistrations(); // this must be an array of Registration objects
 
-$signRequests = $server->generateSignRequests($registrations);
-$_SESSION['sign_requests'] = $signRequests;
+$challenge = $server->generateChallenge();
+$_SESSION['challenge'] = $challenge;
 
 // WebAuthn expects a single challenge for all key handles, and the Server generates the requests accordingly.
 header('Content-type: application/json');
 echo json_encode([
-    'challenge' => $signRequests[0]->getChallenge(),
-    'key_handles' => array_map(function (SignRequest $sr) {
-        return $sr->getKeyHandleWeb();
-    }, $signRequests),
+    'challenge' => $challenge,
+    'key_handles' => array_map(function (\Firehed\U2F\RegistrationInterface $reg) {
+        return $reg->getKeyHandleWeb();
+    }, $registrations),
 ]);
 ```
 
@@ -280,9 +280,11 @@ $data = json_decode($rawPostBody, true);
 $response = \Firehed\U2F\WebAuthn\LoginResponse::fromDecodedJson($data);
 
 $registrations = $user->getU2FRegistrations(); // Registration[]
-$server->setRegistrations($registrations)
-       ->setSignRequests($_SESSION['sign_requests']);
-$registration = $server->authenticate($response);
+$registration = $server->validateLogin(
+    $_SESSION['challenge'],
+    $response,
+    $registrations
+);
 ```
 
 #### Persist the updated `$registration`
