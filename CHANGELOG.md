@@ -13,10 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Server::validateLogin(ChallengeProviderInterface, LoginResponseInterface, RegistrationInterface[]): RegistrationInterface (will replace Server::setRegistrations + Server::setSignRequests + Server::authenticate)
 - Server::validateRegistration(RegisterRequest, RegistrationResponseInterface): RegistrationInterface (will replace Server::setRegisterRequest + Server::register)
 
+### Changed
+- Server's constructor now can take `string $appId` as a parameter
+
 ### Deprecated
 - ChallengeProvider
 - Server::authenticate(LoginResponseInterface)
 - Server::register(RegistrationResponseInterface)
+- Server::setAppId(string)
 - Server::setRegisterRequest(RegisterRequest)
 - Server::setRegistrations(RegistrationInterface[])
 - Server::setSignRequests(SignRequest[])

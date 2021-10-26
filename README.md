@@ -62,9 +62,8 @@ All operations are performed by the U2F Server class, so it needs to be instanci
 
 ```php
 use Firehed\U2F\Server;
-$server = new Server();
-$server->setTrustedCAs(glob('path/to/certs/*.pem'))
-       ->setAppId('u2f.example.com');
+$server = new Server('u2f.example.com');
+$server->setTrustedCAs(glob('path/to/certs/*.pem'));
 ```
 
 The trusted CAs are whitelisted vendors, and must be an array of absolute paths to PEM-formatted CA certs (as strings).
@@ -73,7 +72,7 @@ Some provider certificates are provided in the `CACerts/` directory in the repos
 You may also choose to disable CA verification, by calling `->disableCAVerification()` instead of `setTrustedCAs()`.
 This removes trust in the hardware vendors, but ensures that as new vendors issue tokens, they will be forward-compatible with your website.
 
-The URI provided to `setAppId()` must be the HTTPS domain component of your website.
+The URI provided to the constructor must be the HTTPS domain component of your website.
 See [FIDO U2F AppID and Facet Specification](https://fidoalliance.org/specs/fido-u2f-v1.0-nfc-bt-amendment-20150514/fido-appid-and-facets.html#appid-example-1) for additional information.
 
 ### Registration
