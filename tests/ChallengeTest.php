@@ -20,7 +20,7 @@ class ChallengeTest extends \PHPUnit\Framework\TestCase
     {
         $wrapped = bin2hex(random_bytes(10));
         $challenge = new Challenge($wrapped);
-        $decoded = json_decode(json_encode($challenge));
+        $decoded = json_decode(json_encode($challenge, JSON_THROW_ON_ERROR));
         self::assertSame($wrapped, $decoded);
     }
 }
