@@ -127,6 +127,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testSetRegistrationsReturnsSelf(): void
     {
         $reg = $this->getDefaultRegistration();
@@ -145,6 +148,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->server->setRegistrations([$wrong]);
     }
 
+    /**
+     * @deprecated
+     */
     public function testSetSignRequestsReturnsSelf(): void
     {
         $req = $this->getDefaultSignRequest();
@@ -165,6 +171,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     // -( Registration )-------------------------------------------------------
 
+    /**
+     * @deprecated
+     */
     public function testRegisterThrowsIfNoRegistrationRequestProvided(): void
     {
         $this->expectException(BadMethodCallException::class);
@@ -392,6 +401,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     // -( Authentication )-----------------------------------------------------
 
+    /**
+     * @deprecated
+     */
     public function testAuthenticateThrowsIfNoRegistrationsPresent(): void
     {
         $this->server->setSignRequests([$this->getDefaultSignRequest()]);
@@ -399,6 +411,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->server->authenticate($this->getDefaultSignResponse());
     }
 
+    /**
+     * @deprecated
+     */
     public function testAuthenticateThrowsIfNoSignRequestsPresent(): void
     {
         $this->server->setRegistrations([$this->getDefaultRegistration()]);
@@ -406,7 +421,10 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->server->authenticate($this->getDefaultSignResponse());
     }
 
-    public function testAuthenticate(): void
+    /**
+     * @deprecated
+     */
+    public function testLegacyAuthenticate(): void
     {
         // All normal
         $registration = $this->getDefaultRegistration();
@@ -414,9 +432,36 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $response = $this->getDefaultSignResponse();
 
         $return = $this->server
-                ->setRegistrations([$registration])
-                ->setSignRequests([$request])
-                ->authenticate($response);
+            ->setRegistrations([$registration])
+            ->setSignRequests([$request])
+            ->authenticate($response);
+        $this->assertInstanceOf(
+            RegistrationInterface::class,
+            $return,
+            'A successful authentication should have returned an object '.
+            'implementing RegistrationInterface'
+        );
+        $this->assertNotSame(
+            $registration,
+            $return,
+            'A new object implementing RegistrationInterface should have been '.
+            'returned'
+        );
+        $this->assertSame(
+            $response->getCounter(),
+            $return->getCounter(),
+            'The new registration\'s counter did not match the Response'
+        );
+    }
+
+    public function testValidateLogin(): void
+    {
+        // All normal
+        $registration = $this->getDefaultRegistration();
+        $request = $this->getDefaultSignRequest();
+        $response = $this->getDefaultSignResponse();
+
+        $return = $this->server->validateLogin($request, $response, [$registration]);
         $this->assertInstanceOf(
             RegistrationInterface::class,
             $return,
@@ -440,32 +485,26 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      * This tries to authenticate with a used response immediately following
      * its successful use.
      */
-    public function testAuthenticateThrowsWithObviousReplayAttack(): void
+    public function testValidateLoginThrowsWithObviousReplayAttack(): void
     {
         // All normal
         $registration = $this->getDefaultRegistration();
         $request = $this->getDefaultSignRequest();
         $response = $this->getDefaultSignResponse();
 
-        $new_registration = $this->server
-                ->setRegistrations([$registration])
-                ->setSignRequests([$request])
-                ->authenticate($response);
+        $updatedRegistration = $this->server->validateLogin($request, $response, [$registration]);
         // Here is where you would persist $new_registration to update the
         // stored counter value. This simulates fetching that updated value and
         // trying to authenticate with it. Uses a completely new Server
         // instances to fully simulate a new request. The available sign
         // requests should also be cleared from the session by now, but this is
         // a worst-case scenario.
-        $server = (new Server())
-            ->setRegistrations([$new_registration])
-            ->setSignRequests([$request]);
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::COUNTER_USED);
-        $server->authenticate($response);
+        $this->server->validateLogin($request, $response, [$updatedRegistration]);
     }
 
-    public function testAuthenticateThrowsWhenCounterGoesBackwards(): void
+    public function testValidateLoginThrowsWhenCounterGoesBackwards(): void
     {
         // Counter from "DB" bumped, suggesting response was cloned
         $registration = (new Registration())
@@ -478,13 +517,10 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::COUNTER_USED);
-        $this->server
-            ->setRegistrations([$registration])
-            ->setSignRequests([$request])
-            ->authenticate($response);
+        $this->server->validateLogin($request, $response, [$registration]);
     }
 
-    public function testAuthenticateThrowsWhenChallengeDoesNotMatch(): void
+    public function testValidateLoginThrowsWhenChallengeDoesNotMatch(): void
     {
         $registration = $this->getDefaultRegistration();
         // Change request challenge
@@ -497,13 +533,10 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::CHALLENGE_MISMATCH);
-        $this->server
-            ->setRegistrations([$registration])
-            ->setSignRequests([$request])
-            ->authenticate($response);
+        $this->server->validateLogin($request, $response, [$registration]);
     }
 
-    public function testAuthenticateThrowsIfNoRegistrationMatchesKeyHandle(): void
+    public function testValidateLoginThrowsIfNoRegistrationMatchesKeyHandle(): void
     {
         // Change registration KH
         $registration = (new Registration())
@@ -516,12 +549,12 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::KEY_HANDLE_UNRECOGNIZED);
-        $this->server
-            ->setRegistrations([$registration])
-            ->setSignRequests([$request])
-            ->authenticate($response);
+        $this->server->validateLogin($request, $response, [$registration]);
     }
 
+    /**
+     * @deprecated
+     */
     public function testAuthenticateThrowsIfNoRequestMatchesKeyHandle(): void
     {
         $registration = $this->getDefaultRegistration();
@@ -541,7 +574,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ->authenticate($response);
     }
 
-    public function testAuthenticateThrowsIfSignatureIsInvalid(): void
+    public function testValidateLoginThrowsIfSignatureIsInvalid(): void
     {
         $registration = $this->getDefaultRegistration();
         $request = $this->getDefaultSignRequest();
@@ -552,10 +585,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server
-            ->setRegistrations([$registration])
-            ->setSignRequests([$request])
-            ->authenticate($response);
+        $this->server->validateLogin($request, $response, [$registration]);
     }
 
     /**
@@ -563,13 +593,8 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      * a perfectly-valid signature is rejected if it's not actually from the
      * registered keypair.
      */
-    public function testAuthenticateThrowsIfRequestIsSignedWithWrongKey(): void
+    public function testValidateLoginThrowsIfRequestIsSignedWithWrongKey(): void
     {
-        $pk = base64_decode(
-            'BCXk9bGiuzLRJaX6pFONm+twgIrDkOSNDdXgltt+KhOD'.
-            '9OxeRv2zYiz7SrVa8eb4LbGR9IDUE7gJySiiuQYWt1w='
-        );
-        assert($pk !== false);
         // This was a different key genearated with:
         // $ openssl ecparam -name prime256v1 -genkey -out private.pem
         // $ openssl ec -in private.pem -pubout -out public.pem
@@ -589,10 +614,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $response = $this->getDefaultSignResponse();
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server
-            ->setRegistrations([$registration])
-            ->setSignRequests([$request])
-            ->authenticate($response);
+        $this->server->validateLogin($request, $response, [$registration]);
     }
 
     // -( Alternate formats (see #14) )----------------------------------------
