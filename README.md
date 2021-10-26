@@ -31,6 +31,12 @@ Additional resources:
 * [W3 Spec](https://www.w3.org/TR/webauthn-2)
 * [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API)
 
+## Demo
+
+You may try all of this at https://u2f.ericstern.com, and see the corresponding code at https://github.com/Firehed/u2f-php-examples
+
+The example code is only designed to show how the APIs interact with each other, and intentionally leaves out best practices such as use of routers and dependency inversion containers to keep the examples as simple as possible.
+See its README for more information.
 
 ## Installation
 
@@ -301,16 +307,6 @@ $stmt->execute([
 
 If you reach this point, the user has succcessfully authenticated with their second factor.
 Update their session to indicate this, and allow them to proceeed.
-
-<!-- live demo is not updated for webauthn yet -->
-<!--
-## Demo
-
-You may try all of this at https://u2f.ericstern.com, and see the corresponding code at https://github.com/Firehed/u2f-php-examples
-
-The example code is only designed to show how the APIs interact with each other, and intentionally leaves out best practices such as use of routers and dependency inversion containers to keep the examples as simple as possible.
-See its README for more information.
--->
 
 ## Tests
 
