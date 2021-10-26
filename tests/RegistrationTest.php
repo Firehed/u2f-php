@@ -4,17 +4,11 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\Registration
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\Registration
  */
 class RegistrationTest extends \PHPUnit\Framework\TestCase
 {
 
-    /**
-     * @covers ::setCounter
-     * @covers ::getCounter
-     */
     public function testCounter(): void
     {
         $obj = new Registration();
@@ -30,9 +24,6 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::setCounter
-     */
     public function testSetCounterRejectsNegativeNumbers(): void
     {
         $obj = new Registration();
@@ -40,10 +31,6 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
         $obj->setCounter(-1);
     }
 
-    /**
-     * @covers ::getPublicKey
-     * @covers ::setPublicKey
-     */
     public function testPublicKey(): void
     {
         $pk = $this->createMock(PublicKeyInterface::class);
@@ -52,10 +39,6 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($pk, $reg->getPublicKey());
     }
 
-    /**
-     * @covers ::getAttestationCertificate
-     * @covers ::setAttestationCertificate
-     */
     public function testAttestationCertificate(): void
     {
         $pk = $this->createMock(AttestationCertificateInterface::class);
@@ -64,9 +47,6 @@ class RegistrationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($pk, $reg->getAttestationCertificate());
     }
 
-    /**
-     * @covers ::__debugInfo
-     */
     public function testDebugInfoEncodesBinary(): void
     {
         $reg = new Registration();

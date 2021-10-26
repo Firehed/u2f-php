@@ -4,17 +4,11 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\AppIdTrait
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\AppIdTrait
  */
 class AppIdTraitTest extends \PHPUnit\Framework\TestCase
 {
 
-    /**
-     * @covers ::getAppId
-     * @covers ::setAppId
-     */
     public function testAccessors(): void
     {
         $obj = new class {
@@ -34,9 +28,6 @@ class AppIdTraitTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::getApplicationParameter
-     */
     public function testGetApplicationParameter(): void
     {
         $obj = new class {
@@ -51,9 +42,6 @@ class AppIdTraitTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::getRpIdHash
-     */
     public function testGetRpIdHash(): void
     {
         $obj = new class {

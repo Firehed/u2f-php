@@ -4,17 +4,11 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\ChallengeTrait
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\ChallengeTrait
  */
 class ChallengeTraitTest extends \PHPUnit\Framework\TestCase
 {
 
-    /**
-     * @covers ::getChallenge
-     * @covers ::setChallenge
-     */
     public function testAccessors(): void
     {
         $obj = new class {

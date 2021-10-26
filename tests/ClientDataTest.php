@@ -4,15 +4,10 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\ClientData
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\ClientData
  */
 class ClientDataTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @covers ::fromJson
-     */
     public function testFromValidJson(): void
     {
         $goodData = [
@@ -27,9 +22,6 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(ClientData::class, $clientData);
     }
 
-    /**
-     * @covers ::getChallengeParameter
-     */
     public function testGetChallengeParameter(): void
     {
         $expected_param = base64_decode('exDPjyyKbizXMAAUNLpv0QYJNyXClbUqewUWojPtp0g=');
@@ -53,9 +45,6 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::getApplicationParameter
-     */
     public function testGetApplicationParameter(): void
     {
         $goodData = [
@@ -73,9 +62,6 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::fromJson
-     */
     public function testBadJson(): void
     {
         $json = 'this is not json';
@@ -85,7 +71,6 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers ::fromJson
      * @dataProvider missingData
      */
     public function testDataValidation(string $json): void
