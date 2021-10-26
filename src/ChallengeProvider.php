@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace Firehed\U2F;
 
-interface ChallengeProvider
+/**
+ * @deprecated This will be removed in the next major version. Use
+ * ChallengeProviderInterface instead.
+ */
+interface ChallengeProvider extends ChallengeProviderInterface
 {
-    public function getChallenge(): string;
 }
