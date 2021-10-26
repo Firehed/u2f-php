@@ -36,6 +36,17 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         self::assertSame('test.example.com', $server->getAppId());
     }
 
+    /**
+     * @deprecated
+     */
+    public function testSetAppId(): void
+    {
+        $server = new Server();
+        self::assertSame('', $server->getAppId());
+        $server->setAppId(self::APP_ID);
+        self::assertSame(self::APP_ID, $server->getAppId());
+    }
+
     public function testDisableCAVerificationReturnsSelf(): void
     {
         $server = new Server();
