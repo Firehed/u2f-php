@@ -98,15 +98,20 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $registrations = [
             (new Registration())->setKeyHandle(\random_bytes(16)),
             (new Registration())->setKeyHandle(\random_bytes(16)),
+            (new Registration())->setKeyHandle(\random_bytes(16)),
         ];
         $signRequests = $this->server->generateSignRequests($registrations);
-
         $this->assertIsArray($signRequests);
+        $this->assertCount(count($registrations), $signRequests);
+        $firstRequest = $signRequests[0];
         foreach ($signRequests as $signRequest) {
             $this->assertInstanceOf(SignRequest::class, $signRequest);
+            $this->assertSame(
+                $firstRequest->getChallenge(),
+                $signRequest->getChallenge(),
+                'All sign requests should share a single challenge'
+            );
         }
-        // This method is a simple map operation, so testGenerateSignRequest
-        // does the heavy lifting.
     }
 
     public function testSetRegisterRequestReturnsSelf(): void
@@ -546,6 +551,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // $ openssl ec -in private.pem -pubout -out public.pem
         // Then taking the trailing 65 bytes of the base64-decoded value (the
         // leading bytes are formatting; see ECPublicKeyTrait)
+        $pk = base64_decode(
+            'BCXk9bGiuzLRJaX6pFONm+twgIrDkOSNDdXgltt+KhOD'.
+            '9OxeRv2zYiz7SrVa8eb4LbGR9IDUE7gJySiiuQYWt1w='
+        );
+        assert($pk !== false);
         $registration = (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
             ->setPublicKey(new ECPublicKey($pk))

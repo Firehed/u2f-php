@@ -97,6 +97,7 @@ class ClientDataTest extends \PHPUnit\Framework\TestCase
             $this->expectException(InvalidDataException::class);
             $this->expectExceptionCode(InvalidDataException::MALFORMED_DATA);
         }
+        assert($json !== false);
         $data = ClientData::fromJson($json);
         // Implicitly, allowed == true because no exceptionw was thrown
         $this->assertInstanceOf(ClientData::class, $data);

@@ -11,7 +11,15 @@ class SignRequest implements JsonSerializable, ChallengeProvider, KeyHandleInter
     use KeyHandleTrait;
     use VersionTrait;
 
-    public function jsonSerialize()
+    /**
+     * @return array{
+     *   version: string,
+     *   challenge: string,
+     *   keyHandle: string,
+     *   appId: string,
+     * }
+     */
+    public function jsonSerialize(): array
     {
         return [
             "version" => $this->version,

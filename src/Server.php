@@ -337,14 +337,21 @@ class Server
     }
 
     /**
-     * Wraps generateSignRequest for multiple registrations
+     * Wraps generateSignRequest for multiple registrations. Using this API
+     * ensures that all sign requests share a single challenge, which greatly
+     * simplifies compatibility with WebAuthn
      *
      * @param RegistrationInterface[] $registrations
      * @return SignRequest[]
      */
     public function generateSignRequests(array $registrations): array
     {
-        return array_values(array_map([$this, 'generateSignRequest'], $registrations));
+        $challenge = $this->generateChallenge();
+        $requests = array_map([$this, 'generateSignRequest'], $registrations);
+        $requestsWithSameChallenge = array_map(function (SignRequest $req) use ($challenge) {
+            return $req->setChallenge($challenge);
+        }, $requests);
+        return array_values($requestsWithSameChallenge);
     }
 
     /**
