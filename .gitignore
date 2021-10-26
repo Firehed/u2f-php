@@ -1,8 +1,6 @@
 /examples/users/*
 /examples/vendor/
-/build/
 /vendor/
-*.sqlite3
 # Suggested for libraries
 composer.lock
 .phpunit.result.cache
