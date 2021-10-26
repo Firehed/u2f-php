@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] - Unreleased
 
 ### Added
+- Challenge class
 - ChallengeProviderInterface (will replace ChallengeProvider)
+- Server::generateChallenge(): ChallengeProviderInterface (now public; signature changed from previous private implementation)
 - Server::validateRegistration(RegisterRequest, RegistrationResponseInterface) (will replace Server::setRegisterRequest + Server::register)
 
 ### Deprecated
