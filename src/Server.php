@@ -48,6 +48,8 @@ class Server
      * Holds Registrations that were previously established by the
      * authenticating party during `authenticate()`
      *
+     * @deprecated
+     *
      * @var RegistrationInterface[]
      */
     private $registrations = [];
@@ -55,6 +57,8 @@ class Server
     /**
      * Holds SignRequests used by `authenticate` which contain the challenge
      * that's part of the signed response.
+     *
+     * @deprecated
      *
      * @var SignRequest[]
      */
@@ -74,55 +78,31 @@ class Server
 
     /**
      * This method authenticates a `LoginResponseInterface` against outstanding
-     * registrations and their corresponding `SignRequest`s. If the response's
-     * signature validates and the counter hasn't done anything strange, the
-     * registration will be returned with an updated counter value, which *must*
-     * be persisted for the next authentication. If any verification component
+     * registrations and a known challenge. If the response's signature
+     * validates and the counter hasn't done anything strange, the registration
+     * will be returned with an updated counter value, which *must* be
+     * persisted for the next authentication. If any verification component
      * fails, a `SE` will be thrown.
      *
-     * @param LoginResponseInterface $response the parsed response from the user
+     * @param RegistrationInterface[] $registrations
      * @return RegistrationInterface if authentication succeeds
      * @throws SE if authentication fails
      * @throws BadMethodCallException if a precondition is not met
      */
-    public function authenticate(LoginResponseInterface $response): RegistrationInterface
-    {
-        if (!$this->registrations) {
-            throw new BadMethodCallException(
-                'Before calling authenticate(), provide objects implementing'.
-                'RegistrationInterface with setRegistrations()'
-            );
-        }
-        if (!$this->signRequests) {
-            throw new BadMethodCallException(
-                'Before calling authenticate(), provide `SignRequest`s with '.
-                'setSignRequests()'
-            );
-        }
-
+    public function validateLogin(
+        ChallengeProviderInterface $challenge,
+        LoginResponseInterface $response,
+        array $registrations
+    ): RegistrationInterface {
         // Search for the registration to use based on the Key Handle
-        /** @var ?Registration */
         $registration = $this->findObjectWithKeyHandle(
-            $this->registrations,
+            $registrations,
             $response->getKeyHandleBinary()
         );
-        if (!$registration) {
+        if ($registration === null) {
             // This would suggest either some sort of forgery attempt or
             // a hilariously-broken token responding to handles it doesn't
             // support and not returning a DEVICE_INELIGIBLE client error.
-            throw new SE(SE::KEY_HANDLE_UNRECOGNIZED);
-        }
-
-        // Search for the Signing Request to use based on the Key Handle
-        $request = $this->findObjectWithKeyHandle(
-            $this->signRequests,
-            $registration->getKeyHandleBinary()
-        );
-        if (!$request) {
-            // Similar to above, there is a bizarre mismatch between the known
-            // possible sign requests and the key handle determined above. This
-            // would probably be caused by a logic error causing bogus sign
-            // requests to be passed to this method.
             throw new SE(SE::KEY_HANDLE_UNRECOGNIZED);
         }
 
@@ -130,7 +110,7 @@ class Server
         // match the one in the signing request, the client signed the
         // wrong thing. This could possibly be an attempt at a replay
         // attack.
-        $this->validateChallenge($request, $response);
+        $this->validateChallenge($challenge, $response);
 
         $pem = $registration->getPublicKey()->getPemFormatted();
 
@@ -186,6 +166,52 @@ class Server
             ->setKeyHandle($registration->getKeyHandleBinary())
             ->setPublicKey($registration->getPublicKey())
             ->setCounter($response->getCounter());
+    }
+
+    /**
+     * @deprecated This is being replaced by validateLogin
+     *
+     * This method authenticates a `LoginResponseInterface` against outstanding
+     * registrations and their corresponding `SignRequest`s. If the response's
+     * signature validates and the counter hasn't done anything strange, the
+     * registration will be returned with an updated counter value, which *must*
+     * be persisted for the next authentication. If any verification component
+     * fails, a `SE` will be thrown.
+     *
+     * @param LoginResponseInterface $response the parsed response from the user
+     * @return RegistrationInterface if authentication succeeds
+     * @throws SE if authentication fails
+     * @throws BadMethodCallException if a precondition is not met
+     */
+    public function authenticate(LoginResponseInterface $response): RegistrationInterface
+    {
+        if (!$this->registrations) {
+            throw new BadMethodCallException(
+                'Before calling authenticate(), provide objects implementing'.
+                'RegistrationInterface with setRegistrations()'
+            );
+        }
+        if (!$this->signRequests) {
+            throw new BadMethodCallException(
+                'Before calling authenticate(), provide `SignRequest`s with '.
+                'setSignRequests()'
+            );
+        }
+
+        // Search for the Signing Request to use based on the Key Handle
+        $request = $this->findObjectWithKeyHandle(
+            $this->signRequests,
+            $response->getKeyHandleBinary()
+        );
+        if (!$request) {
+            // Similar to above, there is a bizarre mismatch between the known
+            // possible sign requests and the key handle determined above. This
+            // would probably be caused by a logic error causing bogus sign
+            // requests to be passed to this method.
+            throw new SE(SE::KEY_HANDLE_UNRECOGNIZED);
+        }
+
+        return $this->validateLogin($request, $response, $this->registrations);
     }
 
     /**
@@ -303,6 +329,8 @@ class Server
     }
 
     /**
+     * @deprecated
+     *
      * Provide a user's existing registration to be used during
      * authentication
      *
@@ -318,6 +346,8 @@ class Server
     }
 
     /**
+     * @deprecated
+     *
      * Provide the previously-generated SignRequests, corresponing to the
      * existing Registrations, of of which should be signed and will be
      * verified during authenticate()
