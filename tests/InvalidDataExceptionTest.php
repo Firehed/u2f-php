@@ -4,14 +4,11 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\InvalidDataException
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\InvalidDataException
  */
 class InvalidDataExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @covers ::__construct
      * @dataProvider invalidDataExceptionCodes
      */
     public function testInvalidDataException(int $code): void

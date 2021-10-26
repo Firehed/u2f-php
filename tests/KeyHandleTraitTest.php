@@ -4,16 +4,10 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\KeyHandleTrait
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\KeyHandleTrait
  */
 class KeyHandleTraitTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @covers ::getKeyHandleBinary
-     * @covers ::setKeyHandle
-     */
     public function testAccessors(): void
     {
         $obj = new class {
@@ -32,9 +26,6 @@ class KeyHandleTraitTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::getKeyHandleWeb
-     */
     public function testGetKeyHandleWeb(): void
     {
         $obj = new class {

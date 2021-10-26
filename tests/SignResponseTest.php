@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\SignResponse
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\SignResponse
  */
 class SignResponseTest extends \PHPUnit\Framework\TestCase
 {
@@ -29,9 +27,6 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         'AQAAAC0wRgIhAJPy1RvD1WCw1XZX53BXydX_Kyf_XZQueFSIPigRF-D2AiEAx3bJr5ixr'.
         'XGdUX1XooAfhz15ZIY8rC5H4qaW7gQspJ4';
 
-    /**
-     * @covers ::fromJson
-     */
     public function testFromJsonWorks(): void
     {
         $json = sprintf(
@@ -44,11 +39,6 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(SignResponse::class, $response);
     }
 
-    /**
-     * @covers ::getCounter
-     * @covers ::getSignature
-     * @covers ::getUserPresenceByte
-     */
     public function testDataAccuracyAfterSuccessfulParsing(): void
     {
         $sig = random_bytes(16);
@@ -183,9 +173,6 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         SignResponse::fromJson($json);
     }
 
-    /**
-     * @covers ::getSignedData
-     */
     public function testGetSignedData(): void
     {
         $json = file_get_contents(__DIR__ . '/sign_response.json');
@@ -216,9 +203,6 @@ class SignResponseTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::getChallenge
-     */
     public function testGetChallenge(): void
     {
         $json = file_get_contents(__DIR__ . '/sign_response.json');

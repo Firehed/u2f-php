@@ -4,14 +4,11 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\SecurityException
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\SecurityException
  */
 class SecurityExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @covers ::__construct
      * @dataProvider securityExceptionCodes
      */
     public function testSecurityException(int $code): void

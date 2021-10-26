@@ -4,16 +4,10 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\VersionTrait
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\VersionTrait
  */
 class VersionTraitTest extends \PHPUnit\Framework\TestCase
 {
-
-    /**
-     * @covers ::getVersion
-     */
     public function testGetVersion(): void
     {
         $obj = new class {

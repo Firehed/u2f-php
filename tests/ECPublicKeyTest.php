@@ -4,15 +4,10 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\ECPublicKey
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\ECPublicKey
  */
 class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @covers ::__construct
-     */
     public function testConstruct(): void
     {
         $key = "\x04".\random_bytes(64);
@@ -20,9 +15,6 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(PublicKeyInterface::class, $obj);
     }
 
-    /**
-     * @covers ::__construct
-     */
     public function testConstructThrowsWithBadFirstByte(): void
     {
         $key = "\x01".\random_bytes(64);
@@ -32,9 +24,6 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
     }
 
 
-    /**
-     * @covers ::__construct
-     */
     public function testConstructThrowsWhenTooShort(): void
     {
         $key = "\x04".random_bytes(63);
@@ -43,9 +32,6 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
         new ECPublicKey($key);
     }
 
-    /**
-     * @covers ::__construct
-     */
     public function testConstructThrowsWhenTooLong(): void
     {
         $key = "\x04".random_bytes(65);
@@ -54,9 +40,6 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
         new ECPublicKey($key);
     }
 
-    /**
-     * @covers ::getBinary
-     */
     public function testGetBinary(): void
     {
         $key = "\x04".\random_bytes(64);
@@ -68,9 +51,6 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::getPemFormatted
-     */
     public function testGetPublicKeyPem(): void
     {
         $key = hex2bin(
@@ -88,9 +68,6 @@ class ECPublicKeyTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($pem, $obj->getPemFormatted());
     }
 
-    /**
-     * @covers ::__debugInfo
-     */
     public function testDebugInfoEncodesBinary(): void
     {
         $x = random_bytes(32);

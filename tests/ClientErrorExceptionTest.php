@@ -4,14 +4,11 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\ClientErrorException
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\ClientErrorException
  */
 class ClientErrorExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @covers ::__construct
      * @dataProvider clientErrors
      */
     public function testClientError(int $code): void

@@ -21,7 +21,7 @@ parameters:
 			path: tests/ResponseTraitTest.php
 
 		-
-			message: "#^Method class@anonymous/tests/ResponseTraitTest\\.php\\:18\\:\\:parseResponse\\(\\) has parameter \\$response with no value type specified in iterable type array\\.$#"
+			message: "#^Method class@anonymous/tests/ResponseTraitTest\\.php\\:16\\:\\:parseResponse\\(\\) has parameter \\$response with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/ResponseTraitTest.php
 
