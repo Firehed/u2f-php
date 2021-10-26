@@ -403,11 +403,11 @@ class Server
      * user-provided value. A mismatch will throw a SE. Future
      * versions may also enforce a timing window.
      *
-     * @param ChallengeProvider $from source of known challenge
-     * @param ChallengeProvider $to user-provided value
+     * @param ChallengeProviderInterface $from source of known challenge
+     * @param ChallengeProviderInterface $to user-provided value
      * @throws SE on failure
      */
-    private function validateChallenge(ChallengeProvider $from, ChallengeProvider $to): void
+    private function validateChallenge(ChallengeProviderInterface $from, ChallengeProviderInterface $to): void
     {
         // Note: strictly speaking, this shouldn't even be targetable as
         // a timing attack. However, this opts to be proactive, and also
