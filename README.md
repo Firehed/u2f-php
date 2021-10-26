@@ -150,8 +150,8 @@ $rawPostBody = trim(file_get_contents('php://input'));
 $data = json_decode($rawPostBody, true);
 $response = \Firehed\U2F\WebAuthn\RegistrationResponse::fromDecodedJson($data);
 
-$server->setRegisterRequest($_SESSION['registration_request']);
-$registration = $server->register($response)
+$request = $_SESSION['registration_request'];
+$registration = $server->validateRegistration($request, $response);
 ```
 
 #### Persist the `$registration`

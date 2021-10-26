@@ -38,6 +38,8 @@ class Server
      * Holds a RegisterRequest used by `register()`, which contains the
      * challenge in the signature.
      *
+     * @deprecated
+     *
      * @var ?RegisterRequest
      */
     private $registerRequest;
@@ -69,6 +71,7 @@ class Server
         }
         // @codeCoverageIgnoreEnd
     }
+
     /**
      * This method authenticates a `LoginResponseInterface` against outstanding
      * registrations and their corresponding `SignRequest`s. If the response's
@@ -185,26 +188,11 @@ class Server
             ->setCounter($response->getCounter());
     }
 
-    /**
-     * This method authenticates a RegistrationResponseInterface against its
-     * corresponding RegisterRequest by verifying the certificate and signature.
-     * If valid, it returns a registration; if not, a SE will be thrown and
-     * attempt to register the key must be aborted.
-     *
-     * @param RegistrationResponseInterface $response The response to verify
-     * @return RegistrationInterface if the response is proven authentic
-     * @throws SE if the response cannot be proven authentic
-     * @throws BadMethodCallException if a precondition is not met
-     */
-    public function register(RegistrationResponseInterface $response): RegistrationInterface
-    {
-        if (!$this->registerRequest) {
-            throw new BadMethodCallException(
-                'Before calling register(), provide a RegisterRequest '.
-                'with setRegisterRequest()'
-            );
-        }
-        $this->validateChallenge($this->registerRequest, $response);
+    public function validateRegistration(
+        RegisterRequest $request,
+        RegistrationResponseInterface $response,
+    ): RegistrationInterface {
+        $this->validateChallenge($request, $response);
         // Check the Application Parameter
         $this->validateRelyingParty($response->getRpIdHash());
 
@@ -229,6 +217,30 @@ class Server
             ->setCounter(0) // The response does not include this
             ->setKeyHandle($response->getKeyHandleBinary())
             ->setPublicKey($response->getPublicKey());
+    }
+
+    /**
+     * @deprecated This is being replaced with validateRegistration()
+     *
+     * This method authenticates a RegistrationResponseInterface against its
+     * corresponding RegisterRequest by verifying the certificate and signature.
+     * If valid, it returns a registration; if not, a SE will be thrown and
+     * attempt to register the key must be aborted.
+     *
+     * @param RegistrationResponseInterface $response The response to verify
+     * @return RegistrationInterface if the response is proven authentic
+     * @throws SE if the response cannot be proven authentic
+     * @throws BadMethodCallException if a precondition is not met
+     */
+    public function register(RegistrationResponseInterface $response): RegistrationInterface
+    {
+        if ($this->registerRequest === null) {
+            throw new BadMethodCallException(
+                'Before calling register(), provide a RegisterRequest '.
+                'with setRegisterRequest()'
+            );
+        }
+        return $this->validateRegistration($this->registerRequest, $response);
     }
 
     /**
@@ -265,6 +277,8 @@ class Server
     }
 
     /**
+     * @deprecated
+     *
      * Provide the previously-generated RegisterRequest to be used when
      * verifying a RegisterResponse during register()
      *
