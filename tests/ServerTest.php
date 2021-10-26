@@ -114,6 +114,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    /**
+     * @deprecated
+     */
     public function testSetRegisterRequestReturnsSelf(): void
     {
         $req = $this->getDefaultRegisterRequest();
@@ -168,14 +171,53 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->server->register($this->getDefaultRegisterResponse());
     }
 
+    /**
+     * @deprecated
+     */
+    public function testLegacyRegistration(): void
+    {
+        $request = $this->getDefaultRegisterRequest();
+        $response = $this->getDefaultRegisterResponse();
+        $registration = $this->server->setRegisterRequest($request)
+            ->register($response);
+
+        $this->assertInstanceOf(
+            RegistrationInterface::class,
+            $registration,
+            'Server->register did not return a registration'
+        );
+        $this->assertSame(
+            0,
+            $registration->getCounter(),
+            'Counter should start at 0'
+        );
+
+        $this->assertSame(
+            $response->getAttestationCertificate()->getBinary(),
+            $registration->getAttestationCertificate()->getBinary(),
+            'Attestation cert was not copied from response'
+        );
+
+        $this->assertSame(
+            $response->getKeyHandleBinary(),
+            $registration->getKeyHandleBinary(),
+            'Key handle was not copied from response'
+        );
+
+        $this->assertSame(
+            $response->getPublicKey()->getBinary(),
+            $registration->getPublicKey()->getBinary(),
+            'Public key was not copied from response'
+        );
+    }
+
     public function testRegistration(): void
     {
         $request = $this->getDefaultRegisterRequest();
         $response = $this->getDefaultRegisterResponse();
 
         $registration = $this->server
-            ->setRegisterRequest($request)
-            ->register($response);
+            ->validateRegistration($request, $response);
         $this->assertInstanceOf(
             RegistrationInterface::class,
             $registration,
@@ -217,9 +259,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // meaning that an exception should be thrown unless either a)
         // a matching CA is provided or b) verification is explicitly disabled
         $server = (new Server())->setAppId(self::APP_ID);
-        $server
-            ->setRegisterRequest($request)
-            ->register($response);
+        $server->validateRegistration($request, $response);
     }
 
     public function testRegisterThrowsIfChallengeDoesNotMatch(): void
@@ -232,9 +272,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::CHALLENGE_MISMATCH);
-        $this->server
-            ->setRegisterRequest($request)
-            ->register($response);
+        $this->server->validateRegistration($request, $response);
     }
 
     public function testRegisterThrowsWithUntrustedDeviceIssuerCertificate(): void
@@ -249,9 +287,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::NO_TRUSTED_CA);
-        $this->server
-            ->setRegisterRequest($request)
-            ->register($response);
+        $this->server->validateRegistration($request, $response);
     }
 
     public function testRegisterWorksWithCAList(): void
@@ -267,9 +303,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->server->setTrustedCAs($CAs);
 
         try {
-            $reg = $this->server
-                ->setRegisterRequest($request)
-                ->register($response);
+            $reg = $this->server->validateRegistration($request, $response);
         } catch (SecurityException $e) {
             if ($e->getCode() === SecurityException::NO_TRUSTED_CA) {
                 $this->fail('CA Verification should have succeeded');
@@ -291,9 +325,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::WRONG_RELYING_PARTY);
-        $this->server
-            ->setRegisterRequest($request)
-            ->register($response);
+        $this->server->validateRegistration($request, $response);
     }
 
     public function testRegisterThrowsWithChangedChallengeParameter(): void
@@ -310,9 +342,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server
-            ->setRegisterRequest($request)
-            ->register($response);
+        $this->server->validateRegistration($request, $response);
     }
 
     public function testRegisterThrowsWithChangedKeyHandle(): void
@@ -327,9 +357,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server
-            ->setRegisterRequest($request)
-            ->register($response);
+        $this->server->validateRegistration($request, $response);
     }
 
     public function testRegisterThrowsWithChangedPubkey(): void
@@ -344,9 +372,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server
-            ->setRegisterRequest($request)
-            ->register($response);
+        $this->server->validateRegistration($request, $response);
     }
 
     public function testRegisterThrowsWithBadSignature(): void
@@ -361,9 +387,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server
-            ->setRegisterRequest($request)
-            ->register($response);
+        $this->server->validateRegistration($request, $response);
     }
 
     // -( Authentication )-----------------------------------------------------
@@ -614,7 +638,6 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $registerRequest = new RegisterRequest();
         $registerRequest->setAppId($server->getAppId())
             ->setChallenge('E23usdC7VkxjN1mwRAeyjg');
-        $server->setRegisterRequest($registerRequest);
 
         $json = '{"registrationData":"BQSTffB-e9hdFwhsfb2t-2ppwyxZAltnDf6TYwv4'.
             '1VtleEO4488JwNFGr_bks_4EzA4DoluDBCgfmULGpZpXykTZQMOMz9DfbESHnuBY9'.
@@ -633,7 +656,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             '5maW5pc2hFbnJvbGxtZW50In0"}';
         $registerResponse = RegisterResponse::fromJson($json);
 
-        $registration = $server->register($registerResponse);
+        $registration = $server->validateRegistration($registerRequest, $registerResponse);
         $this->assertInstanceOf(Registration::class, $registration);
     }
 

@@ -8,9 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - ChallengeProviderInterface (will replace ChallengeProvider)
+- Server::validateRegistration(RegisterRequest, RegistrationResponseInterface) (will replace Server::setRegisterRequest + Server::register)
 
 ### Deprecated
 - ChallengeProvider
+- Server::register(RegistrationResponseInterface)
+- Server::setRegisterRequest(RegisterRequest)
 
 
 ## [1.2.0] - 2021-10-26
