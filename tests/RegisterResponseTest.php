@@ -76,7 +76,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         $json = sprintf('{"registrationData":"%s"}', $this->validRegistrationData);
         $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode(InvalidDataException::MISSING_KEY);
-        $this->expectExceptionMessageRegExp('/clientData/');
+        $this->expectExceptionMessageMatches('/clientData/');
         RegisterResponse::fromJson($json);
     }
 
@@ -85,7 +85,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         $json = sprintf('{"clientData":"%s"}', $this->validClientData);
         $this->expectException(InvalidDataException::class);
         $this->expectExceptionCode(InvalidDataException::MISSING_KEY);
-        $this->expectExceptionMessageRegExp('/registrationData/');
+        $this->expectExceptionMessageMatches('/registrationData/');
         RegisterResponse::fromJson($json);
     }
 
