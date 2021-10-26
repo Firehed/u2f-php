@@ -7,20 +7,10 @@ use Firehed\U2F\ChallengeProvider;
 use Firehed\U2F\LoginResponseInterface;
 
 /**
- * @coversDefaultClass Firehed\U2F\WebAuthn\LoginResponse
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\WebAuthn\LoginResponse
  */
 class LoginResponseTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @covers ::fromDecodedJson
-     * @covers ::getChallenge
-     * @covers ::getCounter
-     * @covers ::getSignature
-     * @covers ::getKeyHandleBinary
-     * @covers ::getSignedData
-     */
     public function testFromDecodedJson(): void
     {
         $json = file_get_contents(__DIR__ . '/loginresponse.json');
@@ -60,9 +50,6 @@ class LoginResponseTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::__debugInfo
-     */
     public function testDebugInfoDoesntPrintBinary(): void
     {
         $json = file_get_contents(__DIR__ . '/loginresponse.json');

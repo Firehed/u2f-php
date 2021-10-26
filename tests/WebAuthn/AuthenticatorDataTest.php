@@ -4,19 +4,10 @@ declare(strict_types=1);
 namespace Firehed\U2F\WebAuthn;
 
 /**
- * @coversDefaultClass Firehed\U2F\WebAuthn\AuthenticatorData
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\WebAuthn\AuthenticatorData
  */
 class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @covers ::parse
-     * @covers ::isUserPresent
-     * @covers ::getSignCount
-     * @covers ::getAttestedCredentialData
-     * @covers ::getRpIdHash
-     */
     public function testParseOfRegistration(): void
     {
         $data = hex2bin(
@@ -61,13 +52,6 @@ class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
         ), $pk[-3], 'Key curve y-coordinate');
     }
 
-    /**
-     * @covers ::parse
-     * @covers ::isUserPresent
-     * @covers ::getSignCount
-     * @covers ::getAttestedCredentialData
-     * @covers ::getRpIdHash
-     */
     public function testParseOfLogin(): void
     {
         $data = hex2bin(
@@ -91,9 +75,6 @@ class AuthenticatorDataTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($authData->getAttestedCredentialData(), 'Attested credentials');
     }
 
-    /**
-     * @covers ::__debugInfo
-     */
     public function testDebugInfoDoesntPrintBinary(): void
     {
         $data = hex2bin(

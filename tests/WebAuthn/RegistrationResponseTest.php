@@ -4,22 +4,10 @@ declare(strict_types=1);
 namespace Firehed\U2F\WebAuthn;
 
 /**
- * @coversDefaultClass Firehed\U2F\WebAuthn\RegistrationResponse
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\WebAuthn\RegistrationResponse
  */
 class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @covers ::fromDecodedJson
-     * @covers ::getAttestationCertificate
-     * @covers ::getChallenge
-     * @covers ::getKeyHandleBinary
-     * @covers ::getPublicKey
-     * @covers ::getRpIdHash
-     * @covers ::getSignature
-     * @covers ::getSignedData
-     */
     public function testFromDecodedJson(): void
     {
         $json = file_get_contents(__DIR__ . '/registrationresponse.json');
@@ -95,9 +83,6 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
         ), $response->getAttestationCertificate()->getBinary(), 'Attestation cert');
     }
 
-    /**
-     * @covers ::__debugInfo
-     */
     public function testDebugInfoDoesntPrintBinary(): void
     {
         $json = file_get_contents(__DIR__ . '/registrationresponse.json');
