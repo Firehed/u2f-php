@@ -171,6 +171,46 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->server->register($this->getDefaultRegisterResponse());
     }
 
+    /**
+     * @deprecated
+     */
+    public function testLegacyRegistration(): void
+    {
+        $request = $this->getDefaultRegisterRequest();
+        $response = $this->getDefaultRegisterResponse();
+        $registration = $this->server->setRegisterRequest($request)
+            ->register($response);
+
+        $this->assertInstanceOf(
+            RegistrationInterface::class,
+            $registration,
+            'Server->register did not return a registration'
+        );
+        $this->assertSame(
+            0,
+            $registration->getCounter(),
+            'Counter should start at 0'
+        );
+
+        $this->assertSame(
+            $response->getAttestationCertificate()->getBinary(),
+            $registration->getAttestationCertificate()->getBinary(),
+            'Attestation cert was not copied from response'
+        );
+
+        $this->assertSame(
+            $response->getKeyHandleBinary(),
+            $registration->getKeyHandleBinary(),
+            'Key handle was not copied from response'
+        );
+
+        $this->assertSame(
+            $response->getPublicKey()->getBinary(),
+            $registration->getPublicKey()->getBinary(),
+            'Public key was not copied from response'
+        );
+    }
+
     public function testRegistration(): void
     {
         $request = $this->getDefaultRegisterRequest();
