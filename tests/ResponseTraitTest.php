@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\ResponseTrait
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\ResponseTrait
  */
 class ResponseTraitTest extends \PHPUnit\Framework\TestCase
 {
@@ -25,10 +23,6 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
         };
     }
 
-    /**
-     * @covers ::fromJson
-     * @covers ::getSignature
-     */
     public function testValidJson(): void
     {
         $signature = __METHOD__;
@@ -57,9 +51,6 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::fromJson
-     */
     public function testFromJsonWithNonJson(): void
     {
         $this->expectException(InvalidDataException::class);
@@ -68,7 +59,6 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers ::fromJson
      * @dataProvider clientErrors
      */
     public function testErrorResponse(int $code): void
@@ -80,7 +70,6 @@ class ResponseTraitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers ::fromJson
      * @dataProvider badClientData
      */
     public function testClientDataValidation(string $json, int $code): void

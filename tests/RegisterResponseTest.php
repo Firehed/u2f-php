@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\RegisterResponse
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\RegisterResponse
  */
 class RegisterResponseTest extends \PHPUnit\Framework\TestCase
 {
@@ -35,9 +33,6 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         'wp0gpxN0_cMNSTR3fFteK3SG2QwRAIgFTLJPY9_a0ZPujRfLufS-9ANCWemIWPHqs3ica'.
         'vMJIgCIFH5MSGDFkuY_NWhKa4mbLdbP6r7wMwspwHPG5_Xf48V';
 
-    /**
-     * @covers ::fromJson
-     */
     public function testFromJson(): void
     {
         $json = json_encode([
@@ -100,12 +95,6 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         RegisterResponse::fromJson($json);
     }
 
-    /**
-     * @covers ::getAttestationCertificate
-     * @covers ::getKeyHandleBinary
-     * @covers ::getPublicKey
-     * @covers ::getSignature
-     */
     public function testDataAccuracyAfterSuccessfulParsing(): void
     {
         $pubkey = "\x04".random_bytes(64);
@@ -140,9 +129,6 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::getSignedData
-     */
     public function testGetSignedData(): void
     {
         $json = file_get_contents(__DIR__ . '/register_response.json');
@@ -174,9 +160,6 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::getChallenge
-     */
     public function testGetChallenge(): void
     {
         $json = file_get_contents(__DIR__ . '/register_response.json');
@@ -188,9 +171,7 @@ class RegisterResponseTest extends \PHPUnit\Framework\TestCase
             $response->getChallenge()
         );
     }
-    /**
-     * @covers ::getRpIdHash
-     */
+
     public function testGetRpIdHash(): void
     {
         $json = file_get_contents(__DIR__ . '/register_response.json');

@@ -4,15 +4,10 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\AttestationCertificate
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\AttestationCertificate
  */
 class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @covers ::__construct
-     */
     public function testConstruct(): void
     {
         // Note: a future, stricter implementation which actually parses and
@@ -23,9 +18,6 @@ class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(AttestationCertificateInterface::class, $cert);
     }
 
-    /**
-     * @covers ::getBinary
-     */
     public function testGetBinary(): void
     {
         $raw = random_bytes(128);
@@ -37,9 +29,6 @@ class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::getPemFormatted
-     */
     public function testGetPemFormatted(): void
     {
         $raw = random_bytes(128);
@@ -54,9 +43,6 @@ class AttestationCertificateTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers ::__debugInfo
-     */
     public function testDebugInfoEncodesBinary(): void
     {
         $cert = new AttestationCertificate(random_bytes(128));

@@ -4,16 +4,10 @@ declare(strict_types=1);
 namespace Firehed\U2F;
 
 /**
- * @coversDefaultClass Firehed\U2F\RegisterRequest
- * @covers ::<protected>
- * @covers ::<private>
+ * @covers Firehed\U2F\RegisterRequest
  */
 class RegisterRequestTest extends \PHPUnit\Framework\TestCase
 {
-
-    /**
-     * @covers ::jsonSerialize
-     */
     public function testJsonSerialize(): void
     {
         $appId = 'https://u2f.example.com';
