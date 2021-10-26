@@ -25,9 +25,8 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function setUp(): void
     {
-        $this->server = (new Server())
-            ->disableCAVerification()
-            ->setAppId(self::APP_ID);
+        $this->server = (new Server(self::APP_ID))
+            ->disableCAVerification();
     }
 
     public function testConstruct(): void
@@ -268,7 +267,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // Should have CA verification enabled by default with an empty list,
         // meaning that an exception should be thrown unless either a)
         // a matching CA is provided or b) verification is explicitly disabled
-        $server = (new Server())->setAppId(self::APP_ID);
+        $server = new Server(self::APP_ID);
         $server->validateRegistration($request, $response);
     }
 
@@ -622,14 +621,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testRegistrationWithoutCidPubkeyBug14Case1(): void
     {
-        $server = (new Server())
-            ->disableCAVerification()
-            ->setAppId('https://u2f.ericstern.com');
-
         $registerRequest = new RegisterRequest();
-        $registerRequest->setAppId($server->getAppId())
+        $registerRequest->setAppId($this->server->getAppId())
             ->setChallenge('dNqjowssvlxx9zBhvsy03A');
-        $server->setRegisterRequest($registerRequest);
 
         $json = '{"registrationData":"BQSFDYsZaHlRBQcdLyu4jZ-Bukb1vw6QtSfmvTQO'.
             'IXpjZpfqYptdtpBznuNBslzlZdodspfqRkqwJIt3a0W2P_HlQImHG1FoSkYdPwSzp'.
@@ -648,18 +642,14 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             'uLmNvbSIsInR5cCI6Im5hdmlnYXRvci5pZC5maW5pc2hFbnJvbGxtZW50In0"}';
         $registerResponse = RegisterResponse::fromJson($json);
 
-        $registration = $server->register($registerResponse);
+        $registration = $this->server->validateRegistration($registerRequest, $registerResponse);
         $this->assertInstanceOf(Registration::class, $registration);
     }
 
     public function testRegistrationWithoutCidPubkeyBug14Case2(): void
     {
-        $server = (new Server())
-            ->disableCAVerification()
-            ->setAppId('https://u2f.ericstern.com');
-
         $registerRequest = new RegisterRequest();
-        $registerRequest->setAppId($server->getAppId())
+        $registerRequest->setAppId($this->server->getAppId())
             ->setChallenge('E23usdC7VkxjN1mwRAeyjg');
 
         $json = '{"registrationData":"BQSTffB-e9hdFwhsfb2t-2ppwyxZAltnDf6TYwv4'.
@@ -679,7 +669,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             '5maW5pc2hFbnJvbGxtZW50In0"}';
         $registerResponse = RegisterResponse::fromJson($json);
 
-        $registration = $server->validateRegistration($registerRequest, $registerResponse);
+        $registration = $this->server->validateRegistration($registerRequest, $registerResponse);
         $this->assertInstanceOf(Registration::class, $registration);
     }
 
