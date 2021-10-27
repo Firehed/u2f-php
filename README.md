@@ -85,11 +85,11 @@ Start by generating a challenge.
 You will need to store this temporarily (e.g. in a session), then send it to the user:
 
 ```php
-$request = $server->generateRegisterRequest();
-$_SESSION['registration_request'] = $request;
+$challenge = $server->generateChallenge();
+$_SESSION['registration_challenge'] = $challenge;
 
 header('Content-type: application/json');
-echo json_encode($request->getChallenge());
+echo json_encode($challenge);
 ```
 
 #### Client-side registration
@@ -149,8 +149,8 @@ $rawPostBody = trim(file_get_contents('php://input'));
 $data = json_decode($rawPostBody, true);
 $response = \Firehed\U2F\WebAuthn\RegistrationResponse::fromDecodedJson($data);
 
-$request = $_SESSION['registration_request'];
-$registration = $server->validateRegistration($request, $response);
+$challenge = $_SESSION['registration_challenge'];
+$registration = $server->validateRegistration($challenge, $response);
 ```
 
 #### Persist the `$registration`

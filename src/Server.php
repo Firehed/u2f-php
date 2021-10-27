@@ -227,7 +227,7 @@ class Server
      * @throws BadMethodCallException if a precondition is not met
      */
     public function validateRegistration(
-        RegisterRequest $request,
+        ChallengeProviderInterface $request,
         RegistrationResponseInterface $response
     ): RegistrationInterface {
         $this->validateChallenge($request, $response);
