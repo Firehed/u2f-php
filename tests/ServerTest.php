@@ -694,9 +694,56 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ->setChallenge('PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo');
     }
 
+    /**
+     * @deprecated
+     */
     private function getDefaultRegisterResponse(): RegisterResponse
     {
         return RegisterResponse::fromJson($this->safeReadFile('register_response.json'));
+    }
+
+    private function getDefaultRegistrationResponse(): RegistrationResponseInterface
+    {
+        // This data was manually extracted from an actual key exchange. It
+        // does NOT correspond to the values from getDefaultLoginResponse().
+        $mock = self::createMock(RegistrationResponseInterface::class);
+        $keyHandleBinary = hex2bin(
+            '6d4a7a7393fa51cf24dbe035f26cacc9868a9385320a099b17062ac0ddc11fc0'.
+            '0cb96b1a8fffe4736b7144c508fc343af81c104ba25e086ee5c1ba71da0c7d6d'
+        );
+        // @phpstan-ignore-next-line
+        $pk = new ECPublicKey(hex2bin(
+            '04'.
+            '43e68d1b03d1f9558d77c5a308163be26ab1b8778692b6282b4c6f023e5bd298'.
+            'f4028967599eeaec31609df19d34546fc7eba72c23f78bc9d75ac63eebd52d09'
+        ));
+        $mock->method('getAttestationCertificate')
+            ->willReturn($this->getDefaultAttestationCertificate());
+        $mock->method('getChallenge')
+            ->willReturn('PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo');
+        $mock->method('getKeyHandleBinary')
+            ->willReturn($keyHandleBinary);
+        $mock->method('getPublicKey')
+            ->willReturn($pk);
+        $mock->method('getRpIdHash')
+            ->willReturn(hash('sha256', 'https://u2f.ericstern.com', true));
+        $mock->method('getSignature')->willReturn(hex2bin(
+            '304402207646e5d330cb99cd86fddd67029bdb4c1d128146e4f70a046c5953ab'.
+            '64a40a6a0220683fa0c3bb1f6328f7ace7b00894e7dcd6d735474ac7ea517d3b'.
+            '2b441ebc95e4'
+        ));
+        $challengeParamaeterJson = '{"typ":"navigator.id.finishEnrollment","c'.
+            'hallenge":"PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo","origin"'.
+            ':"https://u2f.ericstern.com","cid_pubkey":""}';
+        $mock->method('getSignedData')->willReturn(sprintf(
+            '%s%s%s%s%s',
+            chr(0),
+            hash('sha256', 'https://u2f.ericstern.com', true),
+            hash('sha256', $challengeParamaeterJson, true),
+            $keyHandleBinary,
+            $pk->getBinary(),
+        ));
+        return $mock;
     }
 
     private function getDefaultSignRequest(): SignRequest
