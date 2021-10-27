@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SignRequest
 - SignResponse (Replaced by WebAuthn/LoginResponse)
 - ClientData (internal)
+- ResponseTrait (internal)
 
 
 ## [1.2.0] - 2021-10-26
