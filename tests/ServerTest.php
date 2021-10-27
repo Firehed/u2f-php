@@ -556,16 +556,15 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testValidateLoginThrowsIfSignatureIsInvalid(): void
     {
+        $challenge = $this->getDefaultLoginChallenge();
+        $response = $this->getDefaultLoginResponse([
+            'getSignature' => 'some-other-signature',
+        ]);
         $registration = $this->getDefaultRegistration();
-        $request = $this->getDefaultSignRequest();
-        // Trimming a byte off the signature to cause a mismatch
-        $data = $this->readJsonFile('sign_response.json');
-        $data['signatureData'] = substr($data['signatureData'], 0, -1);
-        $response = SignResponse::fromJson($this->safeEncode($data));
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateLogin($request, $response, [$registration]);
+        $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
     /**
