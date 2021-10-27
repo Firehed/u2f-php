@@ -741,7 +741,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             hash('sha256', 'https://u2f.ericstern.com', true),
             hash('sha256', $challengeParamaeterJson, true),
             $keyHandleBinary,
-            $pk->getBinary(),
+            $pk->getBinary()
         ));
         return $mock;
     }
