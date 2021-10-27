@@ -711,7 +711,18 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return RegisterResponse::fromJson($this->safeReadFile('register_response.json'));
     }
 
-    private function getDefaultRegistrationResponse(): RegistrationResponseInterface
+    /**
+     * @param array{
+     *   getAttestationCertificate?: AttestationCertificateInterface,
+     *   getChallenge?: string,
+     *   getKeyHandleBinary?: string,
+     *   getPublicKey?: PublicKeyInterface,
+     *   getRpIdHash?: string,
+     *   getSignature?: string,
+     *   getSignedData?: string,
+     * } $overrides
+     */
+    private function getDefaultRegistrationResponse(array $overrides = []): RegistrationResponseInterface
     {
         // This data was manually extracted from an actual key exchange. It
         // does NOT correspond to the values from getDefaultLoginResponse().
@@ -726,32 +737,38 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             '43e68d1b03d1f9558d77c5a308163be26ab1b8778692b6282b4c6f023e5bd298'.
             'f4028967599eeaec31609df19d34546fc7eba72c23f78bc9d75ac63eebd52d09'
         ));
-        $mock->method('getAttestationCertificate')
-            ->willReturn($this->getDefaultAttestationCertificate());
-        $mock->method('getChallenge')
-            ->willReturn('PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo');
-        $mock->method('getKeyHandleBinary')
-            ->willReturn($keyHandleBinary);
-        $mock->method('getPublicKey')
-            ->willReturn($pk);
-        $mock->method('getRpIdHash')
-            ->willReturn(hash('sha256', 'https://u2f.ericstern.com', true));
-        $mock->method('getSignature')->willReturn(hex2bin(
+        $signature = hex2bin(
             '304402207646e5d330cb99cd86fddd67029bdb4c1d128146e4f70a046c5953ab'.
             '64a40a6a0220683fa0c3bb1f6328f7ace7b00894e7dcd6d735474ac7ea517d3b'.
             '2b441ebc95e4'
-        ));
+        );
+
         $challengeParamaeterJson = '{"typ":"navigator.id.finishEnrollment","c'.
             'hallenge":"PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo","origin"'.
             ':"https://u2f.ericstern.com","cid_pubkey":""}';
-        $mock->method('getSignedData')->willReturn(sprintf(
+        $signedData = sprintf(
             '%s%s%s%s%s',
             chr(0),
             hash('sha256', 'https://u2f.ericstern.com', true),
             hash('sha256', $challengeParamaeterJson, true),
             $keyHandleBinary,
             $pk->getBinary()
-        ));
+        );
+        $defaults = [
+            'getAttestationCertificate' => $this->getDefaultAttestationCertificate(),
+            'getChallenge' => 'PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo', // defaultregchallenge
+            'getKeyHandleBinary' => $keyHandleBinary,
+            'getPublicKey' => $pk,
+            'getRpIdHash' => hash('sha256', 'https://u2f.ericstern.com', true),
+            'getSignature' => $signature,
+            'getSignedData' => $signedData,
+        ];
+
+        $data = array_merge($defaults, $overrides);
+
+        foreach ($data as $method => $value) {
+            $mock->method($method)->willReturn($value);
+        }
         return $mock;
     }
 
