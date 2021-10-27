@@ -769,7 +769,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     private function getDefaultLoginResponse(): LoginResponseInterface
     {
-        // This data was manually extracted from an actual key exchange
+        // This data was manually extracted from an actual key exchange. It
+        // does NOT correspond to the values from
+        // getDefaultRegistrationResponse().
         $mock = self::createMock(LoginResponseInterface::class);
         $mock->method('getChallenge')
             ->willReturn('wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg');
