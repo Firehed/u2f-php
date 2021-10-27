@@ -234,7 +234,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     public function testRegistration(): void
     {
         $request = $this->getDefaultRegisterRequest();
-        $response = $this->getDefaultRegisterResponse();
+        $response = $this->getDefaultRegistrationResponse();
 
         $registration = $this->server
             ->validateRegistration($request, $response);
@@ -271,7 +271,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     public function testRegisterDefaultsToTryingEmptyCAList(): void
     {
         $request = $this->getDefaultRegisterRequest();
-        $response = $this->getDefaultRegisterResponse();
+        $response = $this->getDefaultRegistrationResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::NO_TRUSTED_CA);
@@ -288,7 +288,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $request = (new RegisterRequest())
             ->setAppId('https://u2f.ericstern.com')
             ->setChallenge('some-other-challenge');
-        $response = $this->getDefaultRegisterResponse();
+        $response = $this->getDefaultRegistrationResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::CHALLENGE_MISMATCH);
@@ -298,7 +298,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     public function testRegisterThrowsWithUntrustedDeviceIssuerCertificate(): void
     {
         $request = $this->getDefaultRegisterRequest();
-        $response = $this->getDefaultRegisterResponse();
+        $response = $this->getDefaultRegistrationResponse();
 
         $this->server->setTrustedCAs([
             // This is a valid root CA, but not one that will verify the
@@ -313,7 +313,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     public function testRegisterWorksWithCAList(): void
     {
         $request = $this->getDefaultRegisterRequest();
-        $response = $this->getDefaultRegisterResponse();
+        $response = $this->getDefaultRegistrationResponse();
         // This contains the actual trusted + verified certificates which are
         // good to use in production. The messages in these tests were
         // generated with a YubiCo device and separately tested against
