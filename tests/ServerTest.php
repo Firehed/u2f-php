@@ -521,17 +521,15 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     public function testValidateLoginThrowsIfNoRegistrationMatchesKeyHandle(): void
     {
         // Change registration KH
-        $registration = (new Registration())
-            ->setKeyHandle(fromBase64Web('some-other-key-handle'))
-            ->setPublicKey($this->getDefaultPublicKey())
-            ->setCounter(2)
-            ;
-        $request = $this->getDefaultSignRequest();
+        $registration = $this->getDefaultRegistration([
+            'keyHandle' => 'some-other-key-handle',
+        ]);
+        $challenge = $this->getDefaultLoginChallenge();
         $response = $this->getDefaultLoginResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::KEY_HANDLE_UNRECOGNIZED);
-        $this->server->validateLogin($request, $response, [$registration]);
+        $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
     /**
@@ -763,17 +761,25 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     /**
      * @param array{
      *   counter?: int,
+     *   keyHandle?: string,
      * } $overrides
      */
     private function getDefaultRegistration(array $overrides = []): RegistrationInterface
     {
         $defaults = [
             'counter' => 2,
+            'keyHandle' => fromBase64Web(self::ENCODED_KEY_HANDLE),
         ];
+        /**
+         * @var array{
+         *   counter: int,
+         *   keyHandle: string,
+         * } (phpstan/phpstan#5846)
+         */
         $data = array_merge($defaults, $overrides);
         // From database attached to the authenticating user
         return  (new Registration())
-            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
+            ->setKeyHandle($data['keyHandle'])
             ->setAttestationCertificate($this->getDefaultAttestationCertificate())
             ->setPublicKey($this->getDefaultPublicKey())
             ->setCounter($data['counter'])
