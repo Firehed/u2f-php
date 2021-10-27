@@ -293,15 +293,24 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testRegisterThrowsIfChallengeDoesNotMatch(): void
     {
-        // This would have come from a session, database, etc.
-        $request = (new RegisterRequest())
-            ->setAppId('https://u2f.ericstern.com')
-            ->setChallenge('some-other-challenge');
+        $challenge = $this->getDefaultRegistrationChallenge();
+        $response = $this->getDefaultRegistrationResponse([
+            'getChallenge' => 'some-other-challenge',
+        ]);
+
+        $this->expectException(SecurityException::class);
+        $this->expectExceptionCode(SecurityException::CHALLENGE_MISMATCH);
+        $this->server->validateRegistration($challenge, $response);
+    }
+
+    public function testRegisterThrowsIfChallengeDoesNotMatchInverse(): void
+    {
+        $challenge = new Challenge('some-other-challenge');
         $response = $this->getDefaultRegistrationResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::CHALLENGE_MISMATCH);
-        $this->server->validateRegistration($request, $response);
+        $this->server->validateRegistration($challenge, $response);
     }
 
     public function testRegisterThrowsWithUntrustedDeviceIssuerCertificate(): void
@@ -345,7 +354,6 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     public function testRegisterThrowsWithChangedApplicationParameter(): void
     {
         $challenge = $this->getDefaultRegistrationChallenge();
-
         $response = $this->getDefaultRegistrationResponse([
             'getRpIdHash' => hash('sha256', 'https://some.otherdomain.com', true),
         ]);
@@ -655,6 +663,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     // -( Helpers )------------------------------------------------------------
 
+    /**
+     * @deprecated
+     */
     private function getDefaultRegisterRequest(): RegisterRequest
     {
         // This would have come from a session, database, etc.
@@ -737,6 +748,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return $mock;
     }
 
+    /**
+     * @deprecated
+     */
     private function getDefaultSignRequest(): SignRequest
     {
         // This would have come from a session, database, etc
