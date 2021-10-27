@@ -720,6 +720,37 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ;
     }
 
+    private function getDefaultLoginResponse(): LoginResponseInterface
+    {
+        // This data was manually extracted from an actual key exchange
+        $mock = self::createMock(LoginResponseInterface::class);
+        $mock->method('getChallenge')
+            ->willReturn('wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg');
+        $mock->method('getCounter')
+            ->willReturn(45);
+        $mock->method('getKeyHandleBinary')->willReturn(hex2bin(
+            '2549d54d2b4f9fe576f9b0aed1196f3dbba40691d30f9322d591a094339c374b'.
+            'c3e39ae74c3d015dd911b7bf21b93c09eed55ac53a927ad1e3af6dad0a39982d'
+        ));
+        $mock->method('getSignature')->willReturn(hex2bin(
+            '304602210093f2d51bc3d560b0d57657e77057c9d5ff2b27ff5d942e7854883e'.
+            '281117e0f6022100c776c9af98b1ad719d517d57a2801f873d7964863cac2e47'.
+            'e2a696ee042ca49e'
+        ));
+        $challengeParamaeterJson = '{"typ":"navigator.id.getAssertion","chall'.
+            'enge":"wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg","origin":"ht'.
+            'tps://u2f.ericstern.com","cid_pubkey":""}';
+        $mock->method('getSignedData')->willReturn(sprintf(
+            '%s%s%s%s',
+            hash('sha256', 'https://u2f.ericstern.com', true),
+            chr(1),
+            pack('N', 45),
+            hash('sha256', $challengeParamaeterJson, true),
+        ));
+
+        return $mock;
+    }
+
     private function getDefaultSignResponse(): SignResponse
     {
         // Value from user
