@@ -567,6 +567,19 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
+    public function testValidateLoginThrowsIfWrongDataIsSigned(): void
+    {
+        $challenge = $this->getDefaultLoginChallenge();
+        $response = $this->getDefaultLoginResponse([
+            'getSignedData' => 'some other signed data',
+        ]);
+        $registration = $this->getDefaultRegistration();
+
+        $this->expectException(SecurityException::class);
+        $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
+        $this->server->validateLogin($challenge, $response, [$registration]);
+    }
+
     /**
      * Arguably the most important authentication test: ensure that
      * a perfectly-valid signature is rejected if it's not actually from the
