@@ -751,6 +751,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return $mock;
     }
 
+    /**
+     * @deprecated
+     */
     private function getDefaultSignResponse(): SignResponse
     {
         // Value from user
