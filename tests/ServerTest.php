@@ -896,32 +896,10 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return new ECPublicKey($pk);
     }
 
-    /** @return mixed[] */
-    private function readJsonFile(string $file): array
-    {
-        return $this->safeDecode($this->safeReadFile($file));
-    }
-
     private function safeReadFile(string $file): string
     {
         $body = file_get_contents(__DIR__.'/'.$file);
         assert($body !== false);
         return $body;
-    }
-
-    /** @return mixed[] */
-    private function safeDecode(string $json): array
-    {
-        $data = json_decode($json, true);
-        assert($data !== false);
-        return $data;
-    }
-
-    /** @param mixed[] $data */
-    private function safeEncode(array $data): string
-    {
-        $json = json_encode($data);
-        assert($json !== false);
-        return $json;
     }
 }
