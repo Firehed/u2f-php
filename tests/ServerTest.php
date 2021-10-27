@@ -344,79 +344,39 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testRegisterThrowsWithChangedApplicationParameter(): void
     {
-        $request = $this->getDefaultRegisterRequest();
+        $challenge = $this->getDefaultRegistrationChallenge();
 
-        $response = $this->createMock(RegistrationResponseInterface::class);
-        $response->method('getChallenge')
-            ->willReturn($request->getChallenge());
-        $response->method('getRpIdHash')
-            ->willReturn(hash('sha256', 'https://some.otherdomain.com', true));
+        $response = $this->getDefaultRegistrationResponse([
+            'getRpIdHash' => hash('sha256', 'https://some.otherdomain.com', true),
+        ]);
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::WRONG_RELYING_PARTY);
-        $this->server->validateRegistration($request, $response);
+        $this->server->validateRegistration($challenge, $response);
     }
 
-    public function testRegisterThrowsWithChangedChallengeParameter(): void
+    public function testRegisterThrowsWithChangedSignedData(): void
     {
-        $request = $this->getDefaultRegisterRequest();
-        // Mess up some known-good data: challenge parameter
-        $data = $this->readJsonFile('register_response.json');
-        $cli = fromBase64Web($data['clientData']);
-        $obj = json_decode($cli, true);
-        $obj['cid_pubkey'] = 'nonsense';
-        $cli = toBase64Web($this->safeEncode($obj));
-        $data['clientData'] = $cli;
-        $response = RegisterResponse::fromJson($this->safeEncode($data));
+        $challenge = $this->getDefaultRegistrationChallenge();
+        $response = $this->getDefaultRegistrationResponse([
+            'getSignedData' => 'value changed',
+        ]);
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateRegistration($request, $response);
-    }
-
-    public function testRegisterThrowsWithChangedKeyHandle(): void
-    {
-        $request = $this->getDefaultRegisterRequest();
-        // Mess up some known-good data: key handle
-        $data = $this->readJsonFile('register_response.json');
-        $reg = $data['registrationData'];
-        $reg[70] = chr(ord($reg[70]) + 1); // Change a byte in the key handle
-        $data['registrationData'] = $reg;
-        $response = RegisterResponse::fromJson($this->safeEncode($data));
-
-        $this->expectException(SecurityException::class);
-        $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateRegistration($request, $response);
-    }
-
-    public function testRegisterThrowsWithChangedPubkey(): void
-    {
-        $request = $this->getDefaultRegisterRequest();
-        // Mess up some known-good data: public key
-        $data = $this->readJsonFile('register_response.json');
-        $reg = $data['registrationData'];
-        $reg[3] = chr(ord($reg[3]) + 1); // Change a byte in the public key
-        $data['registrationData'] = $reg;
-        $response = RegisterResponse::fromJson($this->safeEncode($data));
-
-        $this->expectException(SecurityException::class);
-        $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateRegistration($request, $response);
+        $this->server->validateRegistration($challenge, $response);
     }
 
     public function testRegisterThrowsWithBadSignature(): void
     {
-        $request = $this->getDefaultRegisterRequest();
-        // Mess up some known-good data: signature
-        $data = $this->readJsonFile('register_response.json');
-        $reg = $data['registrationData'];
-        $last = str_rot13(substr($reg, -5)); // rot13 a few chars in signature
-        $data['registrationData'] = substr($reg, 0, -5).$last;
-        $response = RegisterResponse::fromJson($this->safeEncode($data));
+        $challenge = $this->getDefaultRegistrationChallenge();
+        $response = $this->getDefaultRegistrationResponse([
+            'getSignature' => 'value changed',
+        ]);
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateRegistration($request, $response);
+        $this->server->validateRegistration($challenge, $response);
     }
 
     // -( Authentication )-----------------------------------------------------
@@ -701,6 +661,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return (new RegisterRequest())
             ->setAppId('https://u2f.ericstern.com')
             ->setChallenge('PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo');
+    }
+
+    private function getDefaultRegistrationChallenge(): ChallengeProviderInterface
+    {
+        return new Challenge('PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo');
     }
 
     /**
