@@ -5,6 +5,9 @@ namespace Firehed\U2F;
 
 use Firehed\U2F\InvalidDataException as IDE;
 
+/**
+ * @internal
+ */
 trait ResponseTrait
 {
     use KeyHandleTrait;

@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Server's constructor now can take `string $appId` as a parameter
+- WebAuthn\AuthenticatorData marked as internal
+- All traits marked as internal
 
 ### Deprecated
 - ChallengeProvider
@@ -31,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RegisterResponse (Replaced by WebAuthn/RegistrationResponse)
 - SignRequest
 - SignResponse (Replaced by WebAuthn/LoginResponse)
+- ClientData (internal)
 
 
 ## [1.2.0] - 2021-10-26
