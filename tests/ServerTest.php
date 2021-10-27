@@ -757,7 +757,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return SignResponse::fromJson($this->safeReadFile('sign_response.json'));
     }
 
-    private function getDefaultAttestationCertificate(): AttestationCertificate
+    private function getDefaultAttestationCertificate(): AttestationCertificateInterface
     {
         $attest = hex2bin(
             '3082022d30820117a003020102020405b60579300b06092a864886f70d01010b'.
