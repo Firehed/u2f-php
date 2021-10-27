@@ -585,16 +585,14 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             '9OxeRv2zYiz7SrVa8eb4LbGR9IDUE7gJySiiuQYWt1w='
         );
         assert($pk !== false);
-        $registration = (new Registration())
-            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey(new ECPublicKey($pk))
-            ->setCounter(2)
-            ;
-        $request = $this->getDefaultSignRequest();
+        $registration = $this->getDefaultRegistration([
+            'publicKey' => new ECPublicKey($pk),
+        ]);
+        $challenge = $this->getDefaultLoginChallenge();
         $response = $this->getDefaultLoginResponse();
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateLogin($request, $response, [$registration]);
+        $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
     // -( Alternate formats (see #14) )----------------------------------------
@@ -762,6 +760,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
      * @param array{
      *   counter?: int,
      *   keyHandle?: string,
+     *   publicKey?: PublicKeyInterface,
      * } $overrides
      */
     private function getDefaultRegistration(array $overrides = []): RegistrationInterface
@@ -769,11 +768,13 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $defaults = [
             'counter' => 2,
             'keyHandle' => fromBase64Web(self::ENCODED_KEY_HANDLE),
+            'publicKey' => $this->getDefaultPublicKey(),
         ];
         /**
          * @var array{
          *   counter: int,
          *   keyHandle: string,
+         *   publicKey: PublicKeyInterface,
          * } (phpstan/phpstan#5846)
          */
         $data = array_merge($defaults, $overrides);
@@ -781,7 +782,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return  (new Registration())
             ->setKeyHandle($data['keyHandle'])
             ->setAttestationCertificate($this->getDefaultAttestationCertificate())
-            ->setPublicKey($this->getDefaultPublicKey())
+            ->setPublicKey($data['publicKey'])
             ->setCounter($data['counter'])
             ;
     }
