@@ -609,6 +609,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     // -( Alternate formats (see #14) )----------------------------------------
 
+    /**
+     * @deprecated
+     */
     public function testRegistrationWithoutCidPubkeyBug14Case1(): void
     {
         $registerRequest = new RegisterRequest();
@@ -636,6 +639,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(Registration::class, $registration);
     }
 
+    /**
+     * @deprecated
+     */
     public function testRegistrationWithoutCidPubkeyBug14Case2(): void
     {
         $registerRequest = new RegisterRequest();
