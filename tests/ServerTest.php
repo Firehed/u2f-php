@@ -57,6 +57,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testGenerateRegisterRequest(): void
     {
         $req = $this->server->generateRegisterRequest();
@@ -76,6 +79,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testGenerateSignRequest(): void
     {
         $kh = \random_bytes(16);
@@ -104,6 +110,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testGenerateSignRequests(): void
     {
         $registrations = [
