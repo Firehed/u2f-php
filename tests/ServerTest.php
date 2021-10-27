@@ -470,7 +470,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // All normal
         $registration = $this->getDefaultRegistration();
         $request = $this->getDefaultSignRequest();
-        $response = $this->getDefaultSignResponse();
+        $response = $this->getDefaultLoginResponse();
 
         $return = $this->server->validateLogin($request, $response, [$registration]);
         $this->assertInstanceOf(
@@ -501,7 +501,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // All normal
         $registration = $this->getDefaultRegistration();
         $request = $this->getDefaultSignRequest();
-        $response = $this->getDefaultSignResponse();
+        $response = $this->getDefaultLoginResponse();
 
         $updatedRegistration = $this->server->validateLogin($request, $response, [$registration]);
         // Here is where you would persist $new_registration to update the
@@ -524,7 +524,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ->setCounter(82)
             ;
         $request = $this->getDefaultSignRequest();
-        $response = $this->getDefaultSignResponse();
+        $response = $this->getDefaultLoginResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::COUNTER_USED);
@@ -540,7 +540,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ->setChallenge('some-other-challenge')
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
             ;
-        $response = $this->getDefaultSignResponse();
+        $response = $this->getDefaultLoginResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::CHALLENGE_MISMATCH);
@@ -556,7 +556,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ->setCounter(2)
             ;
         $request = $this->getDefaultSignRequest();
-        $response = $this->getDefaultSignResponse();
+        $response = $this->getDefaultLoginResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::KEY_HANDLE_UNRECOGNIZED);
@@ -622,7 +622,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ->setCounter(2)
             ;
         $request = $this->getDefaultSignRequest();
-        $response = $this->getDefaultSignResponse();
+        $response = $this->getDefaultLoginResponse();
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
         $this->server->validateLogin($request, $response, [$registration]);
