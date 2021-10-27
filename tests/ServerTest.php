@@ -160,6 +160,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testSetRegistrationsEnforcesTypeCheck(): void
     {
         $wrong = true;
@@ -181,6 +184,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testSetSignRequestsEnforcesTypeCheck(): void
     {
         $wrong = true;
