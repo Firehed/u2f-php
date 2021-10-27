@@ -217,7 +217,7 @@ After doing so, send them to the user:
 $registrations = $user->getU2FRegistrations(); // this must be an array of Registration objects
 
 $challenge = $server->generateChallenge();
-$_SESSION['challenge'] = $challenge;
+$_SESSION['login_challenge'] = $challenge;
 
 // WebAuthn expects a single challenge for all key handles, and the Server generates the requests accordingly.
 header('Content-type: application/json');
@@ -280,7 +280,7 @@ $response = \Firehed\U2F\WebAuthn\LoginResponse::fromDecodedJson($data);
 
 $registrations = $user->getU2FRegistrations(); // Registration[]
 $registration = $server->validateLogin(
-    $_SESSION['challenge'],
+    $_SESSION['login_challenge'],
     $response,
     $registrations
 );
