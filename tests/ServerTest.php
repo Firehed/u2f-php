@@ -446,25 +446,25 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         // All normal
         $registration = $this->getDefaultRegistration();
-        $request = $this->getDefaultSignRequest();
+        $challenge = $this->getDefaultLoginChallenge();
         $response = $this->getDefaultLoginResponse();
 
-        $return = $this->server->validateLogin($request, $response, [$registration]);
+        $updated = $this->server->validateLogin($challenge, $response, [$registration]);
         $this->assertInstanceOf(
             RegistrationInterface::class,
-            $return,
-            'A successful authentication should have returned an object '.
+            $updated,
+            'A successful authentication should have registrationed an object '.
             'implementing RegistrationInterface'
         );
         $this->assertNotSame(
             $registration,
-            $return,
+            $updated,
             'A new object implementing RegistrationInterface should have been '.
             'returned'
         );
         $this->assertSame(
             $response->getCounter(),
-            $return->getCounter(),
+            $updated->getCounter(),
             'The new registration\'s counter did not match the Response'
         );
     }
@@ -477,11 +477,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         // All normal
         $registration = $this->getDefaultRegistration();
-        $request = $this->getDefaultSignRequest();
+        $challenge = $this->getDefaultLoginChallenge();
         $response = $this->getDefaultLoginResponse();
 
-        $updatedRegistration = $this->server->validateLogin($request, $response, [$registration]);
-        // Here is where you would persist $new_registration to update the
+        $updatedRegistration = $this->server->validateLogin($challenge, $response, [$registration]);
+        // Here is where you would persist $updatedRegistration to update the
         // stored counter value. This simulates fetching that updated value and
         // trying to authenticate with it. Uses a completely new Server
         // instances to fully simulate a new request. The available sign
@@ -489,39 +489,33 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // a worst-case scenario.
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::COUNTER_USED);
-        $this->server->validateLogin($request, $response, [$updatedRegistration]);
+        $this->server->validateLogin($challenge, $response, [$updatedRegistration]);
     }
 
     public function testValidateLoginThrowsWhenCounterGoesBackwards(): void
     {
         // Counter from "DB" bumped, suggesting response was cloned
-        $registration = (new Registration())
-            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey($this->getDefaultPublicKey())
-            ->setCounter(82)
-            ;
-        $request = $this->getDefaultSignRequest();
+        $registration = $this->getDefaultRegistration([
+            'counter' => 82,
+        ]);
+        $challenge = $this->getDefaultLoginChallenge();
         $response = $this->getDefaultLoginResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::COUNTER_USED);
-        $this->server->validateLogin($request, $response, [$registration]);
+        $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
     public function testValidateLoginThrowsWhenChallengeDoesNotMatch(): void
     {
         $registration = $this->getDefaultRegistration();
         // Change request challenge
-        $request = (new SignRequest())
-            ->setAppId('https://u2f.ericstern.com')
-            ->setChallenge('some-other-challenge')
-            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ;
+        $challenge = new Challenge('some-other-challenge');
         $response = $this->getDefaultLoginResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::CHALLENGE_MISMATCH);
-        $this->server->validateLogin($request, $response, [$registration]);
+        $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
     public function testValidateLoginThrowsIfNoRegistrationMatchesKeyHandle(): void
@@ -761,14 +755,28 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ;
     }
 
-    private function getDefaultRegistration(): RegistrationInterface
+    private function getDefaultLoginChallenge(): ChallengeProviderInterface
     {
+        return new Challenge('wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg');
+    }
+
+    /**
+     * @param array{
+     *   counter?: int,
+     * } $overrides
+     */
+    private function getDefaultRegistration(array $overrides = []): RegistrationInterface
+    {
+        $defaults = [
+            'counter' => 2,
+        ];
+        $data = array_merge($defaults, $overrides);
         // From database attached to the authenticating user
         return  (new Registration())
             ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
             ->setAttestationCertificate($this->getDefaultAttestationCertificate())
             ->setPublicKey($this->getDefaultPublicKey())
-            ->setCounter(2)
+            ->setCounter($data['counter'])
             ;
     }
 
