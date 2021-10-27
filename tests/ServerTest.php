@@ -694,7 +694,6 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         // This data was manually extracted from an actual key exchange. It
         // does NOT correspond to the values from getDefaultLoginResponse().
-        $mock = self::createMock(RegistrationResponseInterface::class);
         $keyHandleBinary = hex2bin(
             '6d4a7a7393fa51cf24dbe035f26cacc9868a9385320a099b17062ac0ddc11fc0'.
             '0cb96b1a8fffe4736b7144c508fc343af81c104ba25e086ee5c1ba71da0c7d6d'
@@ -724,7 +723,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
         $defaults = [
             'getAttestationCertificate' => $this->getDefaultAttestationCertificate(),
-            'getChallenge' => 'PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo', // defaultregchallenge
+            'getChallenge' => 'PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo', // getDefaultRegistrationChallenge
             'getKeyHandleBinary' => $keyHandleBinary,
             'getPublicKey' => $pk,
             'getRpIdHash' => hash('sha256', 'https://u2f.ericstern.com', true),
@@ -734,6 +733,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
         $data = array_merge($defaults, $overrides);
 
+        $mock = self::createMock(RegistrationResponseInterface::class);
         foreach ($data as $method => $value) {
             $mock->method($method)->willReturn($value);
         }
@@ -786,36 +786,52 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ;
     }
 
-    private function getDefaultLoginResponse(): LoginResponseInterface
+    /**
+     * @param array{
+     *   getChallenge?: string,
+     *   getCounter?: int,
+     *   getKeyHandleBinary?: string,
+     *   getSignature?: string,
+     *   getSignedData?: string,
+     * } $overrides
+     */
+    private function getDefaultLoginResponse(array $overrides = []): LoginResponseInterface
     {
         // This data was manually extracted from an actual key exchange. It
         // does NOT correspond to the values from
         // getDefaultRegistrationResponse().
-        $mock = self::createMock(LoginResponseInterface::class);
-        $mock->method('getChallenge')
-            ->willReturn('wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg');
-        $mock->method('getCounter')
-            ->willReturn(45);
-        $mock->method('getKeyHandleBinary')->willReturn(hex2bin(
+        $keyHandleBinary = hex2bin(
             '2549d54d2b4f9fe576f9b0aed1196f3dbba40691d30f9322d591a094339c374b'.
             'c3e39ae74c3d015dd911b7bf21b93c09eed55ac53a927ad1e3af6dad0a39982d'
-        ));
-        $mock->method('getSignature')->willReturn(hex2bin(
+        );
+        $signature = hex2bin(
             '304602210093f2d51bc3d560b0d57657e77057c9d5ff2b27ff5d942e7854883e'.
             '281117e0f6022100c776c9af98b1ad719d517d57a2801f873d7964863cac2e47'.
             'e2a696ee042ca49e'
-        ));
+        );
         $challengeParamaeterJson = '{"typ":"navigator.id.getAssertion","chall'.
             'enge":"wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg","origin":"ht'.
             'tps://u2f.ericstern.com","cid_pubkey":""}';
-        $mock->method('getSignedData')->willReturn(sprintf(
+        $signedData = sprintf(
             '%s%s%s%s',
             hash('sha256', 'https://u2f.ericstern.com', true),
             chr(1),
             pack('N', 45),
             hash('sha256', $challengeParamaeterJson, true)
-        ));
+        );
 
+        $defaults = [
+            'getChallenge' => 'wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg', // getDefaultLoginChallenge
+            'getCounter' => 45,
+            'getKeyHandleBinary' => $keyHandleBinary,
+            'getSignature' => $signature,
+            'getSignedData' => $signedData,
+        ];
+        $data = array_merge($defaults, $overrides);
+        $mock = self::createMock(LoginResponseInterface::class);
+        foreach ($data as $method => $result) {
+            $mock->method($method)->willReturn($result);
+        }
         return $mock;
     }
 
