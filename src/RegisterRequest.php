@@ -4,6 +4,9 @@ namespace Firehed\U2F;
 
 use JsonSerializable;
 
+/**
+ * @deprecated
+ */
 class RegisterRequest implements JsonSerializable, ChallengeProvider
 {
     use AppIdTrait;

@@ -24,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Server::setRegisterRequest(RegisterRequest)
 - Server::setRegistrations(RegistrationInterface[])
 - Server::setSignRequests(SignRequest[])
+- Server::generateRegisterRequest()
+- Server::generateSignRequest(RegistrationInterface)
+- Server::generateSignRequests(RegistrationInterface[])
+- RegisterRequest
+- SignRequest
 
 
 ## [1.2.0] - 2021-10-26
