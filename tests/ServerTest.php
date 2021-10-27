@@ -242,11 +242,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testRegistration(): void
     {
-        $request = $this->getDefaultRegisterRequest();
+        $challenge = $this->getDefaultRegistrationChallenge();
         $response = $this->getDefaultRegistrationResponse();
 
         $registration = $this->server
-            ->validateRegistration($request, $response);
+            ->validateRegistration($challenge, $response);
         $this->assertInstanceOf(
             RegistrationInterface::class,
             $registration,
@@ -279,7 +279,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testRegisterDefaultsToTryingEmptyCAList(): void
     {
-        $request = $this->getDefaultRegisterRequest();
+        $challenge = $this->getDefaultRegistrationChallenge();
         $response = $this->getDefaultRegistrationResponse();
 
         $this->expectException(SecurityException::class);
@@ -288,7 +288,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // meaning that an exception should be thrown unless either a)
         // a matching CA is provided or b) verification is explicitly disabled
         $server = new Server(self::APP_ID);
-        $server->validateRegistration($request, $response);
+        $server->validateRegistration($challenge, $response);
     }
 
     public function testRegisterThrowsIfChallengeDoesNotMatch(): void
@@ -306,7 +306,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testRegisterThrowsWithUntrustedDeviceIssuerCertificate(): void
     {
-        $request = $this->getDefaultRegisterRequest();
+        $challenge = $this->getDefaultRegistrationChallenge();
         $response = $this->getDefaultRegistrationResponse();
 
         $this->server->setTrustedCAs([
@@ -316,12 +316,12 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::NO_TRUSTED_CA);
-        $this->server->validateRegistration($request, $response);
+        $this->server->validateRegistration($challenge, $response);
     }
 
     public function testRegisterWorksWithCAList(): void
     {
-        $request = $this->getDefaultRegisterRequest();
+        $challenge = $this->getDefaultRegistrationChallenge();
         $response = $this->getDefaultRegistrationResponse();
         // This contains the actual trusted + verified certificates which are
         // good to use in production. The messages in these tests were
@@ -332,7 +332,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->server->setTrustedCAs($CAs);
 
         try {
-            $reg = $this->server->validateRegistration($request, $response);
+            $reg = $this->server->validateRegistration($challenge, $response);
         } catch (SecurityException $e) {
             if ($e->getCode() === SecurityException::NO_TRUSTED_CA) {
                 $this->fail('CA Verification should have succeeded');
