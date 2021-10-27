@@ -85,11 +85,11 @@ Start by generating a challenge.
 You will need to store this temporarily (e.g. in a session), then send it to the user:
 
 ```php
-$request = $server->generateRegisterRequest();
-$_SESSION['registration_request'] = $request;
+$challenge = $server->generateChallenge();
+$_SESSION['registration_challenge'] = $challenge;
 
 header('Content-type: application/json');
-echo json_encode($request->getChallenge());
+echo json_encode($challenge);
 ```
 
 #### Client-side registration
@@ -149,8 +149,8 @@ $rawPostBody = trim(file_get_contents('php://input'));
 $data = json_decode($rawPostBody, true);
 $response = \Firehed\U2F\WebAuthn\RegistrationResponse::fromDecodedJson($data);
 
-$request = $_SESSION['registration_request'];
-$registration = $server->validateRegistration($request, $response);
+$challenge = $_SESSION['registration_challenge'];
+$registration = $server->validateRegistration($challenge, $response);
 ```
 
 #### Persist the `$registration`
@@ -217,7 +217,7 @@ After doing so, send them to the user:
 $registrations = $user->getU2FRegistrations(); // this must be an array of Registration objects
 
 $challenge = $server->generateChallenge();
-$_SESSION['challenge'] = $challenge;
+$_SESSION['login_challenge'] = $challenge;
 
 // WebAuthn expects a single challenge for all key handles, and the Server generates the requests accordingly.
 header('Content-type: application/json');
@@ -280,7 +280,7 @@ $response = \Firehed\U2F\WebAuthn\LoginResponse::fromDecodedJson($data);
 
 $registrations = $user->getU2FRegistrations(); // Registration[]
 $registration = $server->validateLogin(
-    $_SESSION['challenge'],
+    $_SESSION['login_challenge'],
     $response,
     $registrations
 );
