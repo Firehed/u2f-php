@@ -24,6 +24,9 @@ use Firehed\CBOR\Decoder;
  */
 class AuthenticatorData
 {
+    /** @var string */
+    private $raw;
+
     /** @var bool */
     private $isUserPresent;
 
@@ -61,6 +64,7 @@ class AuthenticatorData
         $signCount = unpack('N', substr($bytes, 33, 4))[1];
 
         $authData = new AuthenticatorData();
+        $authData->raw = $bytes;
         $authData->isUserPresent = $UP;
         $authData->isUserVerified = $UV;
         $authData->rpIdHash = $rpIdHash;
@@ -68,6 +72,7 @@ class AuthenticatorData
 
         $restOfBytes = substr($bytes, 37);
         $restOfBytesLength = strlen($restOfBytes);
+        // 6.5.1 Attested Credential Data
         if ($AT) {
             assert($restOfBytesLength >= 18);
 
@@ -104,6 +109,11 @@ class AuthenticatorData
         return $this->ACD;
     }
 
+    public function getRawBytes(): string
+    {
+        return $this->raw;
+    }
+
     public function getRpIdHash(): string
     {
         return $this->rpIdHash;
@@ -117,6 +127,11 @@ class AuthenticatorData
     public function isUserPresent(): bool
     {
         return $this->isUserPresent;
+    }
+
+    public function isUserVerified(): bool
+    {
+        return $this->isUserVerified;
     }
 
     /**
@@ -176,4 +191,22 @@ class AuthenticatorData
         }
         return $data;
     }
+
+    // COSE_Key format constants from RFC8152
+    const COSE_KEY_KTY = 1;
+    // OPENSSL_KEYTYPE_RSA = 0
+    // OPENSSL_KEYTYPE_DSA = 1
+    const KEY_TYPE_EC2 = 2; // OPENSSL_KEYTYPE_DH
+    const KEY_TYPE_RSA = 3; // OPENSSL_KEYTYPE_EC
+
+    const COSE_KEY_ALG = 3;
+    const ALG_ES256 = -7;
+    const ALG_PS256 = -37;
+    const ALG_RS256 = -257;
+
+    // These are specific to EC2/ES256
+    const COSE_KEY_CRV = -1;
+    const CURVE_P256 = 1; // RFC8152 s13.1 tbl 22
+    const COSE_KEY_X_COORDINATE = -2;
+    const COSE_KEY_Y_COORDINATE = -3;
 }

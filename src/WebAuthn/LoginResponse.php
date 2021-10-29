@@ -78,19 +78,76 @@ class LoginResponse implements LoginResponseInterface
         // @phpstan-ignore-next-line
         assert(isset($data['response']['authenticatorData']));
 
-        $authDataBytes = self::byteArrayToBinaryString($data['response']['authenticatorData']);
-        $authData = AuthenticatorData::parse($authDataBytes);
-        // 7.2.12
-        assert($authData->isUserPresent());
 
-        // 7.2.5
-        $jsonText = self::byteArrayToBinaryString($data['response']['clientDataJSON']);
-        // 7.2.6
-        $clientData = json_decode($jsonText, true);
-        assert(is_array($clientData));
-        // 7.2.7
-        assert($clientData['type'] === 'webauthn.get');
+        // 7.2.8
+        $cData = $data['response']['clientDataJSON'];
+        $authData = self::byteArrayToBinaryString($data['response']['authenticatorData']);
+        $parsedAuthData = AuthenticatorData::parse($authData);
+        $sig = self::byteArrayToBinaryString($data['response']['signature']);
 
+        // $authDataBytes = self::byteArrayToBinaryString($data['response']['authenticatorData']);
+        // $authData = AuthenticatorData::parse($authDataBytes);
+
+        // 7.2.9
+        $jsonText = self::byteArrayToBinaryString($cData);
+
+        // 7.2.10
+        $C = json_decode($jsonText, true);
+        assert(is_array($C));
+
+        // 7.2.11
+        assert($C['type'] === 'webauthn.get');
+
+        // TODO: 7.2.12 verify challenge matches
+        // assert($C['challenge'] === session value);
+
+        // TODO: 7.2.13 verify origin matches
+        // assert($C['origin'] === ???)
+
+        // TODO?: 7.2.14 token binding (skip?)
+
+        // TODO: 7.2.15 check $authData->getRpIdHash() aligns with server
+
+        // 7.2.16 Check for user presence bit
+        assert($parsedAuthData->isUserPresent());
+        // TODO 7.2.17 check user verified if needed
+        // TODO 7.2.18 extended data etc
+
+        // 7.2.19
+        // $hash = hash('sha256', $cData, true);
+        $hash = hash('sha256', $jsonText, true);
+
+        // print_r($parsedAuthData);
+        $userInfoFromDemo = json_decode(file_get_contents(__DIR__.'/../../../u2f-php-examples/users/touchid.json'), true);
+        $regs = $userInfoFromDemo['registrations'];
+        $reg = array_pop($regs);
+        $registration = new \Firehed\U2F\Registration();
+        $registration->setCounter($reg['counter']);
+        $registration->setKeyHandle(base64_decode($reg['key_handle']));
+        $registration->setPublicKey(new \Firehed\U2F\ECPublicKey(base64_decode($reg['public_key'])));
+        $registration->setAttestationCertificate(new \Firehed\U2F\AttestationCertificate(base64_decode($reg['attestation_certificate'])));
+
+        print_r($registration);
+        // $storedCredential =RegistrationResponse::fromDecodedJson(
+        //     json_decode(
+        //         file_get_contents(__DIR__.
+
+        // 7.2.20
+        $verifyResult = \openssl_verify(
+            $authData . $hash,
+            $sig,
+            // $credentialPublicKey,
+            $registration->getPublicKey()->getPemFormatted(),
+            \OPENSSL_ALGO_SHA256
+        );
+        if ($verifyResult !== 1) {
+            throw new \Exception('Sig invalid');
+        }
+
+
+
+
+        print_r(get_defined_vars());
         $response = new LoginResponse();
         $response->authenticatorData = $authData;
         $response->authenticatorDataBytes = $authDataBytes;

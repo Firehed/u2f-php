@@ -230,25 +230,27 @@ class Server
         ChallengeProviderInterface $request,
         RegistrationResponseInterface $response
     ): RegistrationInterface {
-        $this->validateChallenge($request, $response);
+        // Challenge verification now inside WA/RegResp
+        // $this->validateChallenge($request, $response);
         // Check the Application Parameter
-        $this->validateRelyingParty($response->getRpIdHash());
+        // also now internal
+        // $this->validateRelyingParty($response->getRpIdHash());
 
         if ($this->verifyCA) {
             $this->verifyAttestationCertAgainstTrustedCAs($response);
         }
 
         // Signature must validate against device issuer's public key
-        $pem = $response->getAttestationCertificate()->getPemFormatted();
-        $sig_check = openssl_verify(
-            $response->getSignedData(),
-            $response->getSignature(),
-            $pem,
-            \OPENSSL_ALGO_SHA256
-        );
-        if ($sig_check !== 1) {
-            throw new SE(SE::SIGNATURE_INVALID);
-        }
+        // $pem = $response->getAttestationCertificate()->getPemFormatted();
+        // $sig_check = openssl_verify(
+        //     $response->getSignedData(),
+        //     $response->getSignature(),
+        //     $pem,
+        //     \OPENSSL_ALGO_SHA256
+        // );
+        // if ($sig_check !== 1) {
+        //     throw new SE(SE::SIGNATURE_INVALID);
+        // }
 
         return (new Registration())
             ->setAttestationCertificate($response->getAttestationCertificate())

@@ -64,4 +64,14 @@ class LoginResponseTest extends \PHPUnit\Framework\TestCase
             'Debug output contained non-ascii'
         );
     }
+
+    public function testAppleAuthentication(): void
+    {
+        $json = file_get_contents(__DIR__ . '/apple_login.json');
+        assert($json !== false);
+        $data = json_decode($json, true);
+
+        $response = LoginResponse::fromDecodedJson($data);
+        print_r($response);
+    }
 }

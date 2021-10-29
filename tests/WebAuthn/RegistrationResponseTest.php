@@ -97,4 +97,18 @@ class RegistrationResponseTest extends \PHPUnit\Framework\TestCase
             'Debug output contained non-ascii'
         );
     }
+
+    // Test cases for specfic Attestation Statement Format Identifiers
+    // https://www.w3.org/TR/webauthn-2/#sctn-defined-attestation-formats
+    // (section 8)
+
+    public function testAppleRegistration(): void
+    {
+        $json = file_get_contents(__DIR__ . '/apple_registration.json');
+        assert($json !== false);
+        $data = json_decode($json, true);
+
+        $response = RegistrationResponse::fromDecodedJson($data);
+        // print_r($response);
+    }
 }
