@@ -25,7 +25,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Server::setRegistrations(RegistrationInterface[])
 - Server::setSignRequests(SignRequest[])
 
-
 ## [1.2.0] - 2021-10-26
 ### Added
-- Support for WebAuthn protocols and APIs
+Support for WebAuthn protocols and APIs
+
+- WebAuthn\RegistrationResponse
+- WebAuthn\LoginResponse
+
+## [1.1.0] - 2021-10-25
+### Added
+- AttestationCertificate
+- AttestationCertificateInterface
+- ECPublicKey
+- KeyHandleInterface
+- LoginResponseInterface
+- PublicKeyInterface
+- RegistrationInterface
+- RegistrationResponseInterface
+
+### Changed
+- Type information improved throughout
+- RegisterResponse implements RegistrationResponseInterface
+- Registration implements RegistrationInterface
+- SignResponse implements LoginResponseInterface-
+
+## [1.0.1] - 2019-06-07
+### Changed
+- Handle missing `cid_pubkey` field in response client data
+
+## [1.0.0] - 2018-04-29
+Initial Release
