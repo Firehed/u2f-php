@@ -192,6 +192,8 @@ class AuthenticatorData
         return $data;
     }
 
+    // https://www.iana.org/assignments/cose/cose.xhtml
+
     // COSE_Key format constants from RFC8152
     const COSE_KEY_KTY = 1;
     // OPENSSL_KEYTYPE_RSA = 0
@@ -199,14 +201,22 @@ class AuthenticatorData
     const KEY_TYPE_EC2 = 2; // OPENSSL_KEYTYPE_DH
     const KEY_TYPE_RSA = 3; // OPENSSL_KEYTYPE_EC
 
+    // https://www.w3.org/TR/webauthn-2/#typedefdef-cosealgorithmidentifier
+    // (5.8.5)
     const COSE_KEY_ALG = 3;
     const ALG_ES256 = -7;
+    // es384=-35
+    // es512=-36
     const ALG_PS256 = -37;
     const ALG_RS256 = -257;
 
     // These are specific to EC2/ES256
     const COSE_KEY_CRV = -1;
     const CURVE_P256 = 1; // RFC8152 s13.1 tbl 22
+    // p384=2
+    // p521=3
+    // Ed25519=6
+    //
     const COSE_KEY_X_COORDINATE = -2;
     const COSE_KEY_Y_COORDINATE = -3;
 }
