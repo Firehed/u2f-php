@@ -57,6 +57,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testGenerateRegisterRequest(): void
     {
         $req = $this->server->generateRegisterRequest();
@@ -76,6 +79,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testGenerateSignRequest(): void
     {
         $kh = \random_bytes(16);
@@ -104,6 +110,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testGenerateSignRequests(): void
     {
         $registrations = [
@@ -151,6 +160,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testSetRegistrationsEnforcesTypeCheck(): void
     {
         $wrong = true;
@@ -172,6 +184,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function testSetSignRequestsEnforcesTypeCheck(): void
     {
         $wrong = true;
@@ -233,11 +248,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testRegistration(): void
     {
-        $request = $this->getDefaultRegisterRequest();
+        $challenge = $this->getDefaultRegistrationChallenge();
         $response = $this->getDefaultRegistrationResponse();
 
         $registration = $this->server
-            ->validateRegistration($request, $response);
+            ->validateRegistration($challenge, $response);
         $this->assertInstanceOf(
             RegistrationInterface::class,
             $registration,
@@ -270,7 +285,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testRegisterDefaultsToTryingEmptyCAList(): void
     {
-        $request = $this->getDefaultRegisterRequest();
+        $challenge = $this->getDefaultRegistrationChallenge();
         $response = $this->getDefaultRegistrationResponse();
 
         $this->expectException(SecurityException::class);
@@ -279,25 +294,34 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // meaning that an exception should be thrown unless either a)
         // a matching CA is provided or b) verification is explicitly disabled
         $server = new Server(self::APP_ID);
-        $server->validateRegistration($request, $response);
+        $server->validateRegistration($challenge, $response);
     }
 
     public function testRegisterThrowsIfChallengeDoesNotMatch(): void
     {
-        // This would have come from a session, database, etc.
-        $request = (new RegisterRequest())
-            ->setAppId('https://u2f.ericstern.com')
-            ->setChallenge('some-other-challenge');
+        $challenge = $this->getDefaultRegistrationChallenge();
+        $response = $this->getDefaultRegistrationResponse([
+            'getChallenge' => 'some-other-challenge',
+        ]);
+
+        $this->expectException(SecurityException::class);
+        $this->expectExceptionCode(SecurityException::CHALLENGE_MISMATCH);
+        $this->server->validateRegistration($challenge, $response);
+    }
+
+    public function testRegisterThrowsIfChallengeDoesNotMatchInverse(): void
+    {
+        $challenge = new Challenge('some-other-challenge');
         $response = $this->getDefaultRegistrationResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::CHALLENGE_MISMATCH);
-        $this->server->validateRegistration($request, $response);
+        $this->server->validateRegistration($challenge, $response);
     }
 
     public function testRegisterThrowsWithUntrustedDeviceIssuerCertificate(): void
     {
-        $request = $this->getDefaultRegisterRequest();
+        $challenge = $this->getDefaultRegistrationChallenge();
         $response = $this->getDefaultRegistrationResponse();
 
         $this->server->setTrustedCAs([
@@ -307,12 +331,12 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::NO_TRUSTED_CA);
-        $this->server->validateRegistration($request, $response);
+        $this->server->validateRegistration($challenge, $response);
     }
 
     public function testRegisterWorksWithCAList(): void
     {
-        $request = $this->getDefaultRegisterRequest();
+        $challenge = $this->getDefaultRegistrationChallenge();
         $response = $this->getDefaultRegistrationResponse();
         // This contains the actual trusted + verified certificates which are
         // good to use in production. The messages in these tests were
@@ -323,7 +347,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->server->setTrustedCAs($CAs);
 
         try {
-            $reg = $this->server->validateRegistration($request, $response);
+            $reg = $this->server->validateRegistration($challenge, $response);
         } catch (SecurityException $e) {
             if ($e->getCode() === SecurityException::NO_TRUSTED_CA) {
                 $this->fail('CA Verification should have succeeded');
@@ -335,79 +359,38 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testRegisterThrowsWithChangedApplicationParameter(): void
     {
-        $request = $this->getDefaultRegisterRequest();
-
-        $response = $this->createMock(RegistrationResponseInterface::class);
-        $response->method('getChallenge')
-            ->willReturn($request->getChallenge());
-        $response->method('getRpIdHash')
-            ->willReturn(hash('sha256', 'https://some.otherdomain.com', true));
+        $challenge = $this->getDefaultRegistrationChallenge();
+        $response = $this->getDefaultRegistrationResponse([
+            'getRpIdHash' => hash('sha256', 'https://some.otherdomain.com', true),
+        ]);
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::WRONG_RELYING_PARTY);
-        $this->server->validateRegistration($request, $response);
+        $this->server->validateRegistration($challenge, $response);
     }
 
-    public function testRegisterThrowsWithChangedChallengeParameter(): void
+    public function testRegisterThrowsWithChangedSignedData(): void
     {
-        $request = $this->getDefaultRegisterRequest();
-        // Mess up some known-good data: challenge parameter
-        $data = $this->readJsonFile('register_response.json');
-        $cli = fromBase64Web($data['clientData']);
-        $obj = json_decode($cli, true);
-        $obj['cid_pubkey'] = 'nonsense';
-        $cli = toBase64Web($this->safeEncode($obj));
-        $data['clientData'] = $cli;
-        $response = RegisterResponse::fromJson($this->safeEncode($data));
+        $challenge = $this->getDefaultRegistrationChallenge();
+        $response = $this->getDefaultRegistrationResponse([
+            'getSignedData' => 'value changed',
+        ]);
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateRegistration($request, $response);
-    }
-
-    public function testRegisterThrowsWithChangedKeyHandle(): void
-    {
-        $request = $this->getDefaultRegisterRequest();
-        // Mess up some known-good data: key handle
-        $data = $this->readJsonFile('register_response.json');
-        $reg = $data['registrationData'];
-        $reg[70] = chr(ord($reg[70]) + 1); // Change a byte in the key handle
-        $data['registrationData'] = $reg;
-        $response = RegisterResponse::fromJson($this->safeEncode($data));
-
-        $this->expectException(SecurityException::class);
-        $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateRegistration($request, $response);
-    }
-
-    public function testRegisterThrowsWithChangedPubkey(): void
-    {
-        $request = $this->getDefaultRegisterRequest();
-        // Mess up some known-good data: public key
-        $data = $this->readJsonFile('register_response.json');
-        $reg = $data['registrationData'];
-        $reg[3] = chr(ord($reg[3]) + 1); // Change a byte in the public key
-        $data['registrationData'] = $reg;
-        $response = RegisterResponse::fromJson($this->safeEncode($data));
-
-        $this->expectException(SecurityException::class);
-        $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateRegistration($request, $response);
+        $this->server->validateRegistration($challenge, $response);
     }
 
     public function testRegisterThrowsWithBadSignature(): void
     {
-        $request = $this->getDefaultRegisterRequest();
-        // Mess up some known-good data: signature
-        $data = $this->readJsonFile('register_response.json');
-        $reg = $data['registrationData'];
-        $last = str_rot13(substr($reg, -5)); // rot13 a few chars in signature
-        $data['registrationData'] = substr($reg, 0, -5).$last;
-        $response = RegisterResponse::fromJson($this->safeEncode($data));
+        $challenge = $this->getDefaultRegistrationChallenge();
+        $response = $this->getDefaultRegistrationResponse([
+            'getSignature' => 'value changed',
+        ]);
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateRegistration($request, $response);
+        $this->server->validateRegistration($challenge, $response);
     }
 
     // -( Authentication )-----------------------------------------------------
@@ -469,25 +452,25 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         // All normal
         $registration = $this->getDefaultRegistration();
-        $request = $this->getDefaultSignRequest();
+        $challenge = $this->getDefaultLoginChallenge();
         $response = $this->getDefaultLoginResponse();
 
-        $return = $this->server->validateLogin($request, $response, [$registration]);
+        $updated = $this->server->validateLogin($challenge, $response, [$registration]);
         $this->assertInstanceOf(
             RegistrationInterface::class,
-            $return,
-            'A successful authentication should have returned an object '.
+            $updated,
+            'A successful authentication should have registrationed an object '.
             'implementing RegistrationInterface'
         );
         $this->assertNotSame(
             $registration,
-            $return,
+            $updated,
             'A new object implementing RegistrationInterface should have been '.
             'returned'
         );
         $this->assertSame(
             $response->getCounter(),
-            $return->getCounter(),
+            $updated->getCounter(),
             'The new registration\'s counter did not match the Response'
         );
     }
@@ -500,11 +483,11 @@ class ServerTest extends \PHPUnit\Framework\TestCase
     {
         // All normal
         $registration = $this->getDefaultRegistration();
-        $request = $this->getDefaultSignRequest();
+        $challenge = $this->getDefaultLoginChallenge();
         $response = $this->getDefaultLoginResponse();
 
-        $updatedRegistration = $this->server->validateLogin($request, $response, [$registration]);
-        // Here is where you would persist $new_registration to update the
+        $updatedRegistration = $this->server->validateLogin($challenge, $response, [$registration]);
+        // Here is where you would persist $updatedRegistration to update the
         // stored counter value. This simulates fetching that updated value and
         // trying to authenticate with it. Uses a completely new Server
         // instances to fully simulate a new request. The available sign
@@ -512,55 +495,47 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         // a worst-case scenario.
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::COUNTER_USED);
-        $this->server->validateLogin($request, $response, [$updatedRegistration]);
+        $this->server->validateLogin($challenge, $response, [$updatedRegistration]);
     }
 
     public function testValidateLoginThrowsWhenCounterGoesBackwards(): void
     {
         // Counter from "DB" bumped, suggesting response was cloned
-        $registration = (new Registration())
-            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey($this->getDefaultPublicKey())
-            ->setCounter(82)
-            ;
-        $request = $this->getDefaultSignRequest();
+        $registration = $this->getDefaultRegistration([
+            'counter' => 82,
+        ]);
+        $challenge = $this->getDefaultLoginChallenge();
         $response = $this->getDefaultLoginResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::COUNTER_USED);
-        $this->server->validateLogin($request, $response, [$registration]);
+        $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
     public function testValidateLoginThrowsWhenChallengeDoesNotMatch(): void
     {
         $registration = $this->getDefaultRegistration();
         // Change request challenge
-        $request = (new SignRequest())
-            ->setAppId('https://u2f.ericstern.com')
-            ->setChallenge('some-other-challenge')
-            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ;
+        $challenge = new Challenge('some-other-challenge');
         $response = $this->getDefaultLoginResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::CHALLENGE_MISMATCH);
-        $this->server->validateLogin($request, $response, [$registration]);
+        $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
     public function testValidateLoginThrowsIfNoRegistrationMatchesKeyHandle(): void
     {
         // Change registration KH
-        $registration = (new Registration())
-            ->setKeyHandle(fromBase64Web('some-other-key-handle'))
-            ->setPublicKey($this->getDefaultPublicKey())
-            ->setCounter(2)
-            ;
-        $request = $this->getDefaultSignRequest();
+        $registration = $this->getDefaultRegistration([
+            'keyHandle' => 'some-other-key-handle',
+        ]);
+        $challenge = $this->getDefaultLoginChallenge();
         $response = $this->getDefaultLoginResponse();
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::KEY_HANDLE_UNRECOGNIZED);
-        $this->server->validateLogin($request, $response, [$registration]);
+        $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
     /**
@@ -587,16 +562,28 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     public function testValidateLoginThrowsIfSignatureIsInvalid(): void
     {
+        $challenge = $this->getDefaultLoginChallenge();
+        $response = $this->getDefaultLoginResponse([
+            'getSignature' => 'some-other-signature',
+        ]);
         $registration = $this->getDefaultRegistration();
-        $request = $this->getDefaultSignRequest();
-        // Trimming a byte off the signature to cause a mismatch
-        $data = $this->readJsonFile('sign_response.json');
-        $data['signatureData'] = substr($data['signatureData'], 0, -1);
-        $response = SignResponse::fromJson($this->safeEncode($data));
 
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateLogin($request, $response, [$registration]);
+        $this->server->validateLogin($challenge, $response, [$registration]);
+    }
+
+    public function testValidateLoginThrowsIfWrongDataIsSigned(): void
+    {
+        $challenge = $this->getDefaultLoginChallenge();
+        $response = $this->getDefaultLoginResponse([
+            'getSignedData' => 'some other signed data',
+        ]);
+        $registration = $this->getDefaultRegistration();
+
+        $this->expectException(SecurityException::class);
+        $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
+        $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
     /**
@@ -616,20 +603,21 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             '9OxeRv2zYiz7SrVa8eb4LbGR9IDUE7gJySiiuQYWt1w='
         );
         assert($pk !== false);
-        $registration = (new Registration())
-            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
-            ->setPublicKey(new ECPublicKey($pk))
-            ->setCounter(2)
-            ;
-        $request = $this->getDefaultSignRequest();
+        $registration = $this->getDefaultRegistration([
+            'publicKey' => new ECPublicKey($pk),
+        ]);
+        $challenge = $this->getDefaultLoginChallenge();
         $response = $this->getDefaultLoginResponse();
         $this->expectException(SecurityException::class);
         $this->expectExceptionCode(SecurityException::SIGNATURE_INVALID);
-        $this->server->validateLogin($request, $response, [$registration]);
+        $this->server->validateLogin($challenge, $response, [$registration]);
     }
 
     // -( Alternate formats (see #14) )----------------------------------------
 
+    /**
+     * @deprecated
+     */
     public function testRegistrationWithoutCidPubkeyBug14Case1(): void
     {
         $registerRequest = new RegisterRequest();
@@ -657,6 +645,9 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(Registration::class, $registration);
     }
 
+    /**
+     * @deprecated
+     */
     public function testRegistrationWithoutCidPubkeyBug14Case2(): void
     {
         $registerRequest = new RegisterRequest();
@@ -686,12 +677,20 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 
     // -( Helpers )------------------------------------------------------------
 
+    /**
+     * @deprecated
+     */
     private function getDefaultRegisterRequest(): RegisterRequest
     {
         // This would have come from a session, database, etc.
         return (new RegisterRequest())
             ->setAppId('https://u2f.ericstern.com')
             ->setChallenge('PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo');
+    }
+
+    private function getDefaultRegistrationChallenge(): ChallengeProviderInterface
+    {
+        return new Challenge('PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo');
     }
 
     /**
@@ -702,11 +701,21 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return RegisterResponse::fromJson($this->safeReadFile('register_response.json'));
     }
 
-    private function getDefaultRegistrationResponse(): RegistrationResponseInterface
+    /**
+     * @param array{
+     *   getAttestationCertificate?: AttestationCertificateInterface,
+     *   getChallenge?: string,
+     *   getKeyHandleBinary?: string,
+     *   getPublicKey?: PublicKeyInterface,
+     *   getRpIdHash?: string,
+     *   getSignature?: string,
+     *   getSignedData?: string,
+     * } $overrides
+     */
+    private function getDefaultRegistrationResponse(array $overrides = []): RegistrationResponseInterface
     {
         // This data was manually extracted from an actual key exchange. It
         // does NOT correspond to the values from getDefaultLoginResponse().
-        $mock = self::createMock(RegistrationResponseInterface::class);
         $keyHandleBinary = hex2bin(
             '6d4a7a7393fa51cf24dbe035f26cacc9868a9385320a099b17062ac0ddc11fc0'.
             '0cb96b1a8fffe4736b7144c508fc343af81c104ba25e086ee5c1ba71da0c7d6d'
@@ -717,35 +726,45 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             '43e68d1b03d1f9558d77c5a308163be26ab1b8778692b6282b4c6f023e5bd298'.
             'f4028967599eeaec31609df19d34546fc7eba72c23f78bc9d75ac63eebd52d09'
         ));
-        $mock->method('getAttestationCertificate')
-            ->willReturn($this->getDefaultAttestationCertificate());
-        $mock->method('getChallenge')
-            ->willReturn('PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo');
-        $mock->method('getKeyHandleBinary')
-            ->willReturn($keyHandleBinary);
-        $mock->method('getPublicKey')
-            ->willReturn($pk);
-        $mock->method('getRpIdHash')
-            ->willReturn(hash('sha256', 'https://u2f.ericstern.com', true));
-        $mock->method('getSignature')->willReturn(hex2bin(
+        $signature = hex2bin(
             '304402207646e5d330cb99cd86fddd67029bdb4c1d128146e4f70a046c5953ab'.
             '64a40a6a0220683fa0c3bb1f6328f7ace7b00894e7dcd6d735474ac7ea517d3b'.
             '2b441ebc95e4'
-        ));
+        );
+
         $challengeParamaeterJson = '{"typ":"navigator.id.finishEnrollment","c'.
             'hallenge":"PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo","origin"'.
             ':"https://u2f.ericstern.com","cid_pubkey":""}';
-        $mock->method('getSignedData')->willReturn(sprintf(
+        $signedData = sprintf(
             '%s%s%s%s%s',
             chr(0),
             hash('sha256', 'https://u2f.ericstern.com', true),
             hash('sha256', $challengeParamaeterJson, true),
             $keyHandleBinary,
             $pk->getBinary()
-        ));
+        );
+        $defaults = [
+            'getAttestationCertificate' => $this->getDefaultAttestationCertificate(),
+            'getChallenge' => 'PfsWR1Umy2V5Al1Bam2tG0yfPLeJElfwRzzAzkYPgzo', // getDefaultRegistrationChallenge
+            'getKeyHandleBinary' => $keyHandleBinary,
+            'getPublicKey' => $pk,
+            'getRpIdHash' => hash('sha256', 'https://u2f.ericstern.com', true),
+            'getSignature' => $signature,
+            'getSignedData' => $signedData,
+        ];
+
+        $data = array_merge($defaults, $overrides);
+
+        $mock = self::createMock(RegistrationResponseInterface::class);
+        foreach ($data as $method => $value) {
+            $mock->method($method)->willReturn($value);
+        }
         return $mock;
     }
 
+    /**
+     * @deprecated
+     */
     private function getDefaultSignRequest(): SignRequest
     {
         // This would have come from a session, database, etc
@@ -756,47 +775,88 @@ class ServerTest extends \PHPUnit\Framework\TestCase
             ;
     }
 
-    private function getDefaultRegistration(): RegistrationInterface
+    private function getDefaultLoginChallenge(): ChallengeProviderInterface
     {
+        return new Challenge('wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg');
+    }
+
+    /**
+     * @param array{
+     *   counter?: int,
+     *   keyHandle?: string,
+     *   publicKey?: PublicKeyInterface,
+     * } $overrides
+     */
+    private function getDefaultRegistration(array $overrides = []): RegistrationInterface
+    {
+        $defaults = [
+            'counter' => 2,
+            'keyHandle' => fromBase64Web(self::ENCODED_KEY_HANDLE),
+            'publicKey' => $this->getDefaultPublicKey(),
+        ];
+        /**
+         * @var array{
+         *   counter: int,
+         *   keyHandle: string,
+         *   publicKey: PublicKeyInterface,
+         * } (phpstan/phpstan#5846)
+         */
+        $data = array_merge($defaults, $overrides);
         // From database attached to the authenticating user
         return  (new Registration())
-            ->setKeyHandle(fromBase64Web(self::ENCODED_KEY_HANDLE))
+            ->setKeyHandle($data['keyHandle'])
             ->setAttestationCertificate($this->getDefaultAttestationCertificate())
-            ->setPublicKey($this->getDefaultPublicKey())
-            ->setCounter(2)
+            ->setPublicKey($data['publicKey'])
+            ->setCounter($data['counter'])
             ;
     }
 
-    private function getDefaultLoginResponse(): LoginResponseInterface
+    /**
+     * @param array{
+     *   getChallenge?: string,
+     *   getCounter?: int,
+     *   getKeyHandleBinary?: string,
+     *   getSignature?: string,
+     *   getSignedData?: string,
+     * } $overrides
+     */
+    private function getDefaultLoginResponse(array $overrides = []): LoginResponseInterface
     {
         // This data was manually extracted from an actual key exchange. It
         // does NOT correspond to the values from
         // getDefaultRegistrationResponse().
-        $mock = self::createMock(LoginResponseInterface::class);
-        $mock->method('getChallenge')
-            ->willReturn('wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg');
-        $mock->method('getCounter')
-            ->willReturn(45);
-        $mock->method('getKeyHandleBinary')->willReturn(hex2bin(
+        $keyHandleBinary = hex2bin(
             '2549d54d2b4f9fe576f9b0aed1196f3dbba40691d30f9322d591a094339c374b'.
             'c3e39ae74c3d015dd911b7bf21b93c09eed55ac53a927ad1e3af6dad0a39982d'
-        ));
-        $mock->method('getSignature')->willReturn(hex2bin(
+        );
+        $signature = hex2bin(
             '304602210093f2d51bc3d560b0d57657e77057c9d5ff2b27ff5d942e7854883e'.
             '281117e0f6022100c776c9af98b1ad719d517d57a2801f873d7964863cac2e47'.
             'e2a696ee042ca49e'
-        ));
+        );
         $challengeParamaeterJson = '{"typ":"navigator.id.getAssertion","chall'.
             'enge":"wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg","origin":"ht'.
             'tps://u2f.ericstern.com","cid_pubkey":""}';
-        $mock->method('getSignedData')->willReturn(sprintf(
+        $signedData = sprintf(
             '%s%s%s%s',
             hash('sha256', 'https://u2f.ericstern.com', true),
             chr(1),
             pack('N', 45),
             hash('sha256', $challengeParamaeterJson, true)
-        ));
+        );
 
+        $defaults = [
+            'getChallenge' => 'wt2ze8IskcTO3nIsO2D2hFjE5tVD041NpnYesLpJweg', // getDefaultLoginChallenge
+            'getCounter' => 45,
+            'getKeyHandleBinary' => $keyHandleBinary,
+            'getSignature' => $signature,
+            'getSignedData' => $signedData,
+        ];
+        $data = array_merge($defaults, $overrides);
+        $mock = self::createMock(LoginResponseInterface::class);
+        foreach ($data as $method => $result) {
+            $mock->method($method)->willReturn($result);
+        }
         return $mock;
     }
 
@@ -842,32 +902,10 @@ class ServerTest extends \PHPUnit\Framework\TestCase
         return new ECPublicKey($pk);
     }
 
-    /** @return mixed[] */
-    private function readJsonFile(string $file): array
-    {
-        return $this->safeDecode($this->safeReadFile($file));
-    }
-
     private function safeReadFile(string $file): string
     {
         $body = file_get_contents(__DIR__.'/'.$file);
         assert($body !== false);
         return $body;
-    }
-
-    /** @return mixed[] */
-    private function safeDecode(string $json): array
-    {
-        $data = json_decode($json, true);
-        assert($data !== false);
-        return $data;
-    }
-
-    /** @param mixed[] $data */
-    private function safeEncode(array $data): string
-    {
-        $json = json_encode($data);
-        assert($json !== false);
-        return $json;
     }
 }

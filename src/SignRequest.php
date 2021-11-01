@@ -4,6 +4,9 @@ namespace Firehed\U2F;
 
 use JsonSerializable;
 
+/**
+ * @deprecated
+ */
 class SignRequest implements JsonSerializable, ChallengeProvider, KeyHandleInterface
 {
     use AppIdTrait;

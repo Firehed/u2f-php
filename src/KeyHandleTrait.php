@@ -2,6 +2,9 @@
 
 namespace Firehed\U2F;
 
+/**
+ * @internal
+ */
 trait KeyHandleTrait
 {
     /** @var string (binary) */

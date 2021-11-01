@@ -5,6 +5,10 @@ namespace Firehed\U2F;
 
 use Firehed\U2F\InvalidDataException as IDE;
 
+/**
+ * @deprecated
+ * @internal
+ */
 class ClientData
 {
     use ChallengeTrait;

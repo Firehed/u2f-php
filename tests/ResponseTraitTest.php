@@ -5,6 +5,7 @@ namespace Firehed\U2F;
 
 /**
  * @covers Firehed\U2F\ResponseTrait
+ * @deprecated
  */
 class ResponseTraitTest extends \PHPUnit\Framework\TestCase
 {

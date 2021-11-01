@@ -2,6 +2,9 @@
 
 namespace Firehed\U2F;
 
+/**
+ * @internal
+ */
 trait ChallengeTrait
 {
     /** @var string */

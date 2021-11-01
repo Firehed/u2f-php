@@ -5,6 +5,9 @@ namespace Firehed\U2F;
 
 use Firehed\U2F\InvalidDataException as IDE;
 
+/**
+ * @deprecated U2F support is being removed. Migrate to WebAuthn flows.
+ */
 class SignResponse implements LoginResponseInterface
 {
     use ResponseTrait;

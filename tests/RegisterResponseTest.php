@@ -5,6 +5,7 @@ namespace Firehed\U2F;
 
 /**
  * @covers Firehed\U2F\RegisterResponse
+ * @deprecated
  */
 class RegisterResponseTest extends \PHPUnit\Framework\TestCase
 {

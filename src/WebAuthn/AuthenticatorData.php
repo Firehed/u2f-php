@@ -7,6 +7,8 @@ use BadMethodCallException;
 use Firehed\CBOR\Decoder;
 
 /**
+ * @internal
+ *
  * @phpstan-type AttestedCredentialData array{
  *   aaguid: string,
  *   credentialId: string,

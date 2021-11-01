@@ -368,6 +368,8 @@ class Server
      * Creates a new RegisterRequest to be sent to the authenticated user to be
      * used by the `u2f.register` API.
      *
+     * @deprecated
+     *
      * @return RegisterRequest
      */
     public function generateRegisterRequest(): RegisterRequest
@@ -380,6 +382,8 @@ class Server
     /**
      * Creates a new SignRequest for an existing registration for an
      * authenticating user, used by the `u2f.sign` API.
+     *
+     * @deprecated
      *
      * @param RegistrationInterface $reg one of the user's existing Registrations
      * @return SignRequest
@@ -396,6 +400,8 @@ class Server
      * Wraps generateSignRequest for multiple registrations. Using this API
      * ensures that all sign requests share a single challenge, which greatly
      * simplifies compatibility with WebAuthn
+     *
+     * @deprecated
      *
      * @param RegistrationInterface[] $registrations
      * @return SignRequest[]

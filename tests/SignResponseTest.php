@@ -5,6 +5,7 @@ namespace Firehed\U2F;
 
 /**
  * @covers Firehed\U2F\SignResponse
+ * @deprecated
  */
 class SignResponseTest extends \PHPUnit\Framework\TestCase
 {
