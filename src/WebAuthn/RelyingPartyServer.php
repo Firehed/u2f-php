@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Firehed\U2F\WebAuthn;
 
+use Firehed\CBOR\Decoder;
 use Firehed\U2F\ChallengeProviderInterface;
 
 use function hash;
@@ -26,6 +27,64 @@ class RelyingPartyServer
      */
     public function __construct(private string $origin)
     {
+    }
+
+    /**
+     * 7.1. Registering a New Credential
+     *
+     * Starts at step 5
+     */
+    public function register(Web\AuthenticatorAttestationResponse $response, ChallengeProviderInterface $challenge)
+    {
+        // 7.1.5
+        $JSONText = $response->clientDataJSON;
+
+        // 7.1.6
+        $C = json_decode($JSONText, true, flags: JSON_THROW_ON_ERROR);
+
+        // 7.1.7
+        self::assert($C['type'] === 'webauthn.create', 'clientDataJSON.type incorrect');
+
+        // 7.1.8
+        self::assert($C['challenge'] === toBase64Web($challenge->getChallenge()), 'clientDataJSON.challenge incorrect');
+        // 7.1.9
+        self::assert($C['origin'] === $this->origin, 'clientDataJSON.origin incorrect');
+        // 7.1.10
+        // TODO: C.tokenBinding.status (?)
+
+        // 7.1.11
+        $hash = self::hash($response->clientDataJSON); // Strictly speaking this would be over the non-utf8-decoded version
+
+        // 7.1.12
+        $decoder = new Decoder();
+        $attestationObject = $decoder->decode($response->attestationObject);
+        // var_dump($attestationObject);
+        $fmt = $attestationObject['fmt'];
+        $authData = $attestationObject['authData'];
+        $attStmt = $attestationObject['attStmt'];
+
+        $parsedAuthData = AuthenticatorData::parse($authData);
+
+        // 7.1.13
+        $this->validateRpIdHash($parsedAuthData->getRpIdHash());
+
+        // 7.1.14
+        self::assert($parsedAuthData->isUserPresent(), 'authData User Present bit missing');
+
+        // 7.1.15
+        $userVerificationIsRequired = false; // FIXME: how is this configured?
+        if ($userVerificationIsRequired) {
+            self::assert($parsedAuthData->isUserVerified(), 'authData User Verified bit missing');
+        }
+
+        // 7.1.16
+        // FIXME: this API is bonkers
+        self::assert($parsedAuthData->getAttestedCredentialData()['credentialPublicKey'][3] === -7, 'Credential public key algorithm is not permitted');
+
+        // 7.1.17
+        // FIXME: client extension outputs
+
+        print_R($parsedAuthData);
     }
 
     /**
