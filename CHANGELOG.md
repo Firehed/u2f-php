@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<<<<<<< Updated upstream
+=======
+Intended changes:
+- Update server constructor to handle validation mode?
+
+Keep:
+- Server::generateRegisterRequest
+- RegisterRequest
+- WA\RegistrationResponse
+- SignRequest
+- WA\LoginResponse
+- Registration
+
+Drop:
+
+TODO:
+- server setAppId
+## 2.0.0
+### Removed
+- ChallengeProvider
+- RegisterRequest
+- RegisterResponse (Replaced by WebAuthn/RegistrationResponse)
+- ResponseTrait (internal)
+- SignRequest
+- SignResponse (Replaced by WebAuthn/LoginResponse)
+- Server::authenticate(LoginResponseInterface)
+- Server::register(RegistrationResponseInterface)
+- Server::setRegisterRequest(RegisterRequest)
+- Server::setRegistrations(RegistrationInterface[])
+- Server::setSignRequests(SignRequest[])
+- Server::generateRegisterRequest()
+- Server::generateSignRequest(RegistrationInterface)
+- Server::generateSignRequests(RegistrationInterface[])
+
 ## [1.3.0] - Unreleased
 
 ### Added
@@ -17,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Server's constructor now can take `string $appId` as a parameter
 - WebAuthn\AuthenticatorData marked as internal
 - All traits marked as internal
+- webauthn ns going away
 
 ### Deprecated
 - ChallengeProvider

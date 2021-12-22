@@ -77,6 +77,20 @@ class Server
         // @codeCoverageIgnoreEnd
     }
 
+    // dep authenticate
+    // dep generateRegisterRequest
+    // dep generateSignRequest
+    // dep generateSignRequests
+    // dep register
+    // dep setAppId
+    // dep setRegisterRequest
+    // dep setRegistrations
+    // dep setSignRequests
+    // disableCAVerification
+    // setTrustedCAs
+    // validateLogin
+    // validateRegistration
+
     /**
      * This method authenticates a `LoginResponseInterface` against outstanding
      * registrations and a known challenge. If the response's signature

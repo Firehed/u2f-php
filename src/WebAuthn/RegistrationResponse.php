@@ -94,6 +94,13 @@ class RegistrationResponse implements RegistrationResponseInterface
 
         // 7.1.12
         $decoder = new Decoder();
+        /**
+         * @var array{
+         *   fmt: string,
+         *   authData: string,
+         *   attStmt: array<string, mixed>,
+         * }
+         */
         $attestationObject = $decoder->decode(
             self::byteArrayToBinaryString($data['response']['attestationObject'])
         );
@@ -286,10 +293,6 @@ class RegistrationResponse implements RegistrationResponseInterface
     // see also RFC8809
     private static function parseAttestationObject(array $attestationObject): AttestationCertificateInterface
     {
-        return match ($attestationObject['fmt']) {
-            'apple' => self::parseApple($attestationObject),
-            'fido-u2f' => self::parseFidoU2F($attestationObject),
-        };
     }
 
     /**
@@ -479,7 +482,7 @@ jAGGiQIwHFj+dJZYUJR786osByBelJYsVZd2GbHQu209b5RCmGQ21gpSAk9QZW4B
 
             $verificationResult = openssl_x509_verify($certToVerify, $signingCert);
             if ($verificationResult !== 1) {
-                throw new \Exception("Signature could not be verified");
+                throw new \Exception("Certificate chain signature could not be verified");
             }
             // print_r(\openssl_x509_parse($certToVerify));
             // print_r(\openssl_x509_parse($signingCert));

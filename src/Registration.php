@@ -5,7 +5,7 @@ namespace Firehed\U2F;
 
 use OutOfBoundsException;
 
-class Registration implements RegistrationInterface
+class Registration implements RegistrationInterface, WebAuthn\CredentialInterface
 {
     use KeyHandleTrait;
 
@@ -52,6 +52,20 @@ class Registration implements RegistrationInterface
     {
         $this->publicKey = $publicKey;
         return $this;
+    }
+
+    // -( CredentialInterface )-
+    public function getId(): string
+    {
+        return $this->getKeyHandleBinary();
+    }
+    public function getPublicKeyPem(): string
+    {
+        return $this->getPublicKey()->getPemFormatted();
+    }
+    public function getSignatureCounter(): int
+    {
+        return $this->getCounter();
     }
 
     /**

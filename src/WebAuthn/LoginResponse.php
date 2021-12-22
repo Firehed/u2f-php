@@ -90,6 +90,7 @@ class LoginResponse implements LoginResponseInterface
 
         // 7.2.9
         $jsonText = self::byteArrayToBinaryString($cData);
+        print_r($jsonText);
 
         // 7.2.10
         $C = json_decode($jsonText, true);
@@ -127,7 +128,7 @@ class LoginResponse implements LoginResponseInterface
         $registration->setPublicKey(new \Firehed\U2F\ECPublicKey(base64_decode($reg['public_key'])));
         $registration->setAttestationCertificate(new \Firehed\U2F\AttestationCertificate(base64_decode($reg['attestation_certificate'])));
 
-        print_r($registration);
+        // print_r($registration);
         // $storedCredential =RegistrationResponse::fromDecodedJson(
         //     json_decode(
         //         file_get_contents(__DIR__.

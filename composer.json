@@ -23,11 +23,14 @@
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": "^8.5 || ^9.0",
         "squizlabs/php_codesniffer": "^3.2",
-        "phpstan/phpstan-phpunit": "^0.12"
+        "phpstan/phpstan-phpunit": "^0.12",
+        "phpstan/phpstan-strict-rules": "^0.12.11",
+        "phpstan/phpstan-deprecation-rules": "^0.12.6",
+        "spatie/phpunit-watcher": "^1.23"
     },
     "autoload": {
         "psr-4": {
-            "Firehed\\U2F\\": "src/"
+            "Firehed\\U2F\\": "src"
         },
         "files": [
             "src/functions.php"
