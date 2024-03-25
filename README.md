@@ -1,3 +1,7 @@
+# Important: This repository is archived
+
+This repository has been replaced by [firehed/webauthn-php](https://github.com/Firehed/webauthn-php), and is no longer being maintained. The replacement no longer supports the long-deprecated U2F protocol, which allows for a more modern and flexible API. It DOES support U2F hardware keys, but only through the WebAuthn protocols.
+
 # U2F
 
 A PHP implementation of the FIDO U2F authentication standard.
