@@ -5,6 +5,7 @@ namespace Firehed\U2F;
 
 /**
  * @covers Firehed\U2F\ClientData
+ * @deprecated
  */
 class ClientDataTest extends \PHPUnit\Framework\TestCase
 {
